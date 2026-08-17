@@ -114,7 +114,7 @@ export default function ResultsPage() {
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
+    visible: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 300, damping: 24 } }
   };
 
   if (loading) {
@@ -188,9 +188,9 @@ export default function ResultsPage() {
                 <AnimatePresence>
                   {message.text && (
                     <motion.div 
-                      initial={{ opacity: 0, height: 0, mb: 0 }}
-                      animate={{ opacity: 1, height: 'auto', mb: 24 }}
-                      exit={{ opacity: 0, height: 0, mb: 0 }}
+                      initial={{ opacity: 0, height: 0, marginBottom: 0 }}
+                      animate={{ opacity: 1, height: 'auto', marginBottom: 24 }}
+                      exit={{ opacity: 0, height: 0, marginBottom: 0 }}
                       className={`p-4 rounded-xl text-sm font-bold border ${message.type === "error" ? "bg-red-50 text-red-600 border-red-100" : "bg-emerald-50 text-emerald-700 border-emerald-100"}`}
                     >
                       {message.text}

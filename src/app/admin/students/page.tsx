@@ -78,7 +78,7 @@ export default function StudentsPage() {
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
+    visible: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 300, damping: 24 } }
   };
 
   return (
@@ -115,9 +115,9 @@ export default function StudentsPage() {
         <AnimatePresence mode="wait">
           {error && (
             <motion.div 
-              initial={{ opacity: 0, height: 0, mb: 0 }}
-              animate={{ opacity: 1, height: 'auto', mb: 24 }}
-              exit={{ opacity: 0, height: 0, mb: 0 }}
+              initial={{ opacity: 0, height: 0, marginBottom: 0 }}
+              animate={{ opacity: 1, height: 'auto', marginBottom: 24 }}
+              exit={{ opacity: 0, height: 0, marginBottom: 0 }}
               className="flex items-center bg-red-50 text-red-600 p-4 rounded-xl border border-red-100"
             >
               <AlertCircle className="h-5 w-5 mr-3 flex-shrink-0" />
@@ -127,9 +127,9 @@ export default function StudentsPage() {
 
           {success && (
             <motion.div 
-              initial={{ opacity: 0, height: 0, mb: 0 }}
-              animate={{ opacity: 1, height: 'auto', mb: 24 }}
-              exit={{ opacity: 0, height: 0, mb: 0 }}
+              initial={{ opacity: 0, height: 0, marginBottom: 0 }}
+              animate={{ opacity: 1, height: 'auto', marginBottom: 24 }}
+              exit={{ opacity: 0, height: 0, marginBottom: 0 }}
               className="flex items-center bg-emerald-50 text-emerald-700 p-4 rounded-xl border border-emerald-100"
             >
               <CheckCircle2 className="h-5 w-5 mr-3 flex-shrink-0" />

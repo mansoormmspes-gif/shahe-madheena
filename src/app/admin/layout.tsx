@@ -95,7 +95,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                       <motion.div
                         layoutId="activeTab"
                         className="absolute inset-0 bg-slate-900 rounded-xl -z-10 shadow-md shadow-slate-900/20"
-                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                        transition={{ type: "spring" as const, stiffness: 300, damping: 30 }}
                       />
                     )}
                     <Icon className={cn("h-5 w-5 mr-3", isActive ? "text-white" : "text-slate-400")} />
@@ -158,7 +158,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               initial={{ x: "-100%" }}
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
-              transition={{ type: "spring", bounce: 0, duration: 0.4 }}
+              transition={{ type: "spring" as const, bounce: 0, duration: 0.4 }}
               className="lg:hidden fixed inset-y-0 left-0 w-72 bg-white shadow-2xl z-50 flex flex-col"
             >
               <div className="absolute top-4 right-4">

@@ -175,7 +175,7 @@ export default function PublicPage() {
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
+    visible: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 300, damping: 24 } }
   };
 
   return (
@@ -230,7 +230,7 @@ export default function PublicPage() {
           <motion.div 
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.2, type: "spring", stiffness: 200, damping: 20 }}
+            transition={{ delay: 0.2, type: "spring" as const, stiffness: 200, damping: 20 }}
             className="relative w-48 h-48 md:w-64 md:h-64 mx-auto mb-10"
           >
             <div className="absolute inset-0 bg-white rounded-[3rem] shadow-2xl rotate-3 scale-105 opacity-50 blur-sm pointer-events-none" />
@@ -306,7 +306,7 @@ export default function PublicPage() {
                   initial={{ opacity: 0, scale: 0.9, y: 20 }}
                   whileInView={{ opacity: 1, scale: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: index * 0.1, type: "spring", stiffness: 200, damping: 20 }}
+                  transition={{ delay: index * 0.1, type: "spring" as const, stiffness: 200, damping: 20 }}
                   whileHover={{ scale: 1.02 }}
                   className={cn(
                     "rounded-[2.5rem] p-10 flex items-center justify-between relative overflow-hidden shadow-lg",
