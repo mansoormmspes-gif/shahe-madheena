@@ -21,6 +21,7 @@ export default function LoginPage() {
     setError("");
 
     const email = `${username}@shahemadeena.com`;
+    console.log("Fresh Build Triggered");
     console.log("Supabase URL:", process.env.NEXT_PUBLIC_SUPABASE_URL);
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
@@ -172,7 +173,7 @@ export default function LoginPage() {
                   <Loader2 className="animate-spin h-5 w-5" />
                 ) : (
                   <>
-                    Sign In
+                    Secure Sign In
                     <ArrowRight className="ml-2 h-4 w-4 opacity-70 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
                   </>
                 )}
