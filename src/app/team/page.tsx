@@ -591,21 +591,30 @@ export default function TeamDashboard() {
               </div>
               
               <div className="flex-1 overflow-y-auto p-6 bg-slate-50/30">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div>
                   {(() => {
                     const studentRegs = registrations.filter(r => r.student_id === modalStudent.id);
                     const indCount = getStudentIndividualEventCount(modalStudent.id);
                     const isMaxedOut = indCount >= (settings?.max_individual_items || 4);
-                    const eligibleComps = competitions.filter(c => 
-                      c.category?.toLowerCase().trim() === modalStudent.category?.toLowerCase().trim() || 
-                      c.category?.toLowerCase().trim() === "general zone"
-                    ).filter(c => c.name.toLowerCase().includes(eventSearchQuery.toLowerCase()));
+                    
+                    const filteredComps = competitions.filter(c => 
+                      c.name.toLowerCase().includes(eventSearchQuery.toLowerCase())
+                    );
 
-                    if (eligibleComps.length === 0) {
-                      return <div className="col-span-full py-8 text-center text-slate-500 font-medium">No events found.</div>;
+                    const zoneComps = filteredComps.filter(c => 
+                      c.category?.toLowerCase().trim() === modalStudent.category?.toLowerCase().trim() &&
+                      c.category?.toLowerCase().trim() !== "general zone"
+                    );
+
+                    const generalComps = filteredComps.filter(c => 
+                      c.category?.toLowerCase().trim() === "general zone"
+                    );
+
+                    if (zoneComps.length === 0 && generalComps.length === 0) {
+                      return <div className="py-8 text-center text-slate-500 font-medium w-full">No events found.</div>;
                     }
 
-                    return eligibleComps.map(comp => {
+                    const renderCompCard = (comp: any) => {
                       const studentReg = studentRegs.find(r => r.event_id === comp.id);
                       const isRegistered = !!studentReg;
                       const isGrp = comp.type === "Group";
@@ -696,7 +705,33 @@ export default function TeamDashboard() {
                           )}
                         </div>
                       );
-                    });
+                    };
+
+                    return (
+                      <div className="w-full flex flex-col space-y-8">
+                        {zoneComps.length > 0 && (
+                          <div>
+                            <h3 className="text-sm font-bold text-slate-500 uppercase tracking-widest mb-4">
+                              Events for {modalStudent.category || "Unassigned"}
+                            </h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                              {zoneComps.map(renderCompCard)}
+                            </div>
+                          </div>
+                        )}
+                        
+                        {generalComps.length > 0 && (
+                          <div>
+                            <h3 className="text-sm font-bold text-slate-500 uppercase tracking-widest mb-4 pt-4 border-t border-slate-200">
+                              General Zone Events
+                            </h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                              {generalComps.map(renderCompCard)}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    );
                   })()}
                 </div>
               </div>
