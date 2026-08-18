@@ -69,7 +69,7 @@ export default function TeamDashboard() {
     }).length;
   };
 
-  const handleRegister = async (studentId: string, eventId: string) => {
+  const handleRegister = async (studentId: string, eventId: string, groupSlot: number = 1) => {
     setError("");
     
     if (!isRegistrationOpen()) {
@@ -90,17 +90,33 @@ export default function TeamDashboard() {
       }
     }
 
-    setAdding(`${studentId}-${eventId}`);
+    if (comp.type === "Group") {
+      const teamGroupCount = registrations.filter(r => r.event_id === eventId && r.team === teamName && r.group_slot === groupSlot).length;
+      if (teamGroupCount >= (comp.max_participants || 2)) {
+        setError(`Group ${groupSlot} for this event has reached the maximum limit of ${comp.max_participants || 2} participants.`);
+        setTimeout(() => setError(""), 3000);
+        return;
+      }
+      
+      const alreadyInEvent = registrations.some(r => r.event_id === eventId && r.student_id === studentId);
+      if (alreadyInEvent) {
+        setError("This student is already registered for this event.");
+        setTimeout(() => setError(""), 3000);
+        return;
+      }
+    }
+
+    setAdding(`${studentId}-${eventId}-${groupSlot}`);
     
     const { error: insertError } = await supabase
       .from("registrations")
-      .insert({ student_id: studentId, event_id: eventId, team: teamName });
+      .insert({ student_id: studentId, event_id: eventId, team: teamName, group_slot: groupSlot });
 
     if (insertError) {
       setError(insertError.message);
       setTimeout(() => setError(""), 3000);
     } else {
-      setRegistrations([...registrations, { student_id: studentId, event_id: eventId, team: teamName }]);
+      setRegistrations([...registrations, { student_id: studentId, event_id: eventId, team: teamName, group_slot: groupSlot }]);
     }
     
     setAdding(null);
@@ -158,7 +174,8 @@ export default function TeamDashboard() {
         const studentRegs = registrations.filter(r => r.student_id === student.id);
         const eventNames = studentRegs.map(r => {
           const comp = competitions.find(c => c.id === r.event_id);
-          return comp ? comp.name : r.event_id;
+          const name = comp ? comp.name : r.event_id;
+          return comp?.type === "Group" ? `${name} (G${r.group_slot || 1})` : name;
         }).join(", ");
         
         tableData.push([
@@ -317,9 +334,10 @@ export default function TeamDashboard() {
                         
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                           {catCompetitions.map(comp => {
-                            const isRegistered = studentRegs.some(r => r.event_id === comp.id);
-                            const isLoading = adding === `${student.id}-${comp.id}` || adding === `remove-${student.id}-${comp.id}`;
-                            const isGrp = comp.type !== "Individual";
+                            const studentReg = studentRegs.find(r => r.event_id === comp.id);
+                            const isRegistered = !!studentReg;
+                            const isGrp = comp.type === "Group";
+                            const isLoadingAny = adding?.startsWith(`${student.id}-${comp.id}`) || adding === `remove-${student.id}-${comp.id}`;
                             
                             return (
                               <div key={comp.id} className={cn(
@@ -328,7 +346,7 @@ export default function TeamDashboard() {
                                   ? "border-emerald-200 bg-emerald-50/50 shadow-sm" 
                                   : "border-slate-100 bg-white hover:border-blue-200 hover:shadow-sm"
                               )}>
-                                <div className="pr-3 flex-1 min-w-0">
+                                <div className="pr-2 flex-1 min-w-0">
                                   <p className={cn(
                                     "text-sm font-bold truncate mb-1",
                                     isRegistered ? "text-emerald-900" : "text-slate-800"
@@ -341,29 +359,70 @@ export default function TeamDashboard() {
                                   </span>
                                 </div>
                                 
-                                {isRegistered ? (
-                                  <button
-                                    onClick={() => handleRemove(student.id, comp.id)}
-                                    disabled={!isOpen || isLoading}
-                                    className="flex-shrink-0 p-2 text-emerald-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50 group"
-                                    title="Remove registration"
-                                  >
-                                    {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : (
-                                      <>
-                                        <Check className="h-5 w-5 block group-hover:hidden" />
-                                        <Trash2 className="h-5 w-5 hidden group-hover:block" />
-                                      </>
-                                    )}
-                                  </button>
+                                {isGrp ? (
+                                  <div className="flex flex-col gap-1.5 flex-shrink-0">
+                                    {[1, 2].map(slot => {
+                                      const isRegThisSlot = isRegistered && studentReg.group_slot === slot;
+                                      const isRegOtherSlot = isRegistered && studentReg.group_slot !== slot;
+                                      const slotCount = registrations.filter(r => r.event_id === comp.id && r.team === teamName && r.group_slot === slot).length;
+                                      const isFull = slotCount >= (comp.max_participants || 2);
+                                      const isAddingSlot = adding === `${student.id}-${comp.id}-${slot}`;
+                                      const isRemoving = adding === `remove-${student.id}-${comp.id}` && isRegThisSlot;
+
+                                      if (isRegThisSlot) {
+                                        return (
+                                          <button
+                                            key={slot}
+                                            onClick={() => handleRemove(student.id, comp.id)}
+                                            disabled={!isOpen || isLoadingAny}
+                                            className="flex items-center justify-center px-2 py-1 text-[10px] font-bold bg-emerald-100 text-emerald-800 hover:bg-red-100 hover:text-red-700 rounded transition-colors disabled:opacity-50"
+                                            title="Remove from group"
+                                          >
+                                            {isRemoving ? <Loader2 className="w-3 h-3 animate-spin" /> : `Group ${slot} (✓)`}
+                                          </button>
+                                        );
+                                      }
+
+                                      return (
+                                        <button
+                                          key={slot}
+                                          onClick={() => handleRegister(student.id, comp.id, slot)}
+                                          disabled={!isOpen || isLoadingAny || isRegOtherSlot || isFull}
+                                          className="flex items-center justify-center px-2 py-1 text-[10px] font-bold bg-slate-100 text-slate-600 hover:bg-blue-100 hover:text-blue-700 rounded transition-colors disabled:opacity-50"
+                                          title={isFull ? `Group ${slot} is full` : isRegOtherSlot ? "Already in another group" : `Add to Group ${slot}`}
+                                        >
+                                          {isAddingSlot ? <Loader2 className="w-3 h-3 animate-spin" /> : `+ G${slot} (${slotCount}/${comp.max_participants || 2})`}
+                                        </button>
+                                      );
+                                    })}
+                                  </div>
                                 ) : (
-                                  <button
-                                    onClick={() => handleRegister(student.id, comp.id)}
-                                    disabled={!isOpen || isLoading || (!isGrp && comp.category !== "General Zone" && isMaxedOut)}
-                                    className="flex-shrink-0 p-2 text-slate-300 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors disabled:opacity-50"
-                                    title={!isGrp && comp.category !== "General Zone" && isMaxedOut ? "Max individual events reached" : "Add registration"}
-                                  >
-                                    {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Plus className="h-5 w-5" />}
-                                  </button>
+                                  <>
+                                    {isRegistered ? (
+                                      <button
+                                        onClick={() => handleRemove(student.id, comp.id)}
+                                        disabled={!isOpen || isLoadingAny}
+                                        className="flex-shrink-0 p-2 text-emerald-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50 group"
+                                        title="Remove registration"
+                                      >
+                                        {isLoadingAny ? <Loader2 className="h-5 w-5 animate-spin" /> : (
+                                          <>
+                                            <Check className="h-5 w-5 block group-hover:hidden" />
+                                            <Trash2 className="h-5 w-5 hidden group-hover:block" />
+                                          </>
+                                        )}
+                                      </button>
+                                    ) : (
+                                      <button
+                                        onClick={() => handleRegister(student.id, comp.id, 1)}
+                                        disabled={!isOpen || isLoadingAny || (comp.category !== "General Zone" && isMaxedOut)}
+                                        className="flex-shrink-0 p-2 text-slate-300 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors disabled:opacity-50"
+                                        title={comp.category !== "General Zone" && isMaxedOut ? "Max individual events reached" : "Add registration"}
+                                      >
+                                        {isLoadingAny ? <Loader2 className="h-5 w-5 animate-spin" /> : <Plus className="h-5 w-5" />}
+                                      </button>
+                                    )}
+                                  </>
                                 )}
                               </div>
                             );
@@ -390,7 +449,8 @@ export default function TeamDashboard() {
                 </div>
                 <div className="divide-y divide-slate-100">
                   {catCompetitions.map(comp => {
-                    const registeredStudentIds = registrations.filter(r => r.event_id === comp.id).map(r => r.student_id);
+                    const isGrp = comp.type === "Group";
+                    const registeredRegs = registrations.filter(r => r.event_id === comp.id);
                     
                     return (
                       <div key={comp.id} className="p-8 hover:bg-white/40 transition-colors">
@@ -399,21 +459,39 @@ export default function TeamDashboard() {
                             <h3 className="text-lg font-bold text-slate-900">{comp.name}</h3>
                             <span className={cn(
                               "inline-block mt-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider",
-                              comp.type === "Group" ? "bg-purple-100 text-purple-700" : "bg-slate-100 text-slate-600"
+                              isGrp ? "bg-purple-100 text-purple-700" : "bg-slate-100 text-slate-600"
                             )}>
                               {comp.type}
                             </span>
                           </div>
-                          <div className="flex items-center bg-white px-5 py-2.5 rounded-xl shadow-sm border border-slate-100">
-                            <span className="text-xs font-bold uppercase tracking-widest text-slate-500 mr-3">Registered</span>
-                            <span className="font-black text-lg text-blue-600">{registeredStudentIds.length}</span>
-                          </div>
+                          
+                          {isGrp ? (
+                            <div className="flex gap-4">
+                              {[1, 2].map(slot => {
+                                const count = registeredRegs.filter(r => r.team === teamName && r.group_slot === slot).length;
+                                return (
+                                  <div key={slot} className="flex flex-col items-center bg-white px-4 py-2 rounded-xl shadow-sm border border-slate-100">
+                                    <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">Group {slot}</span>
+                                    <span className={cn("font-black text-sm", count >= (comp.max_participants || 2) ? "text-purple-600" : "text-slate-700")}>
+                                      {count}/{comp.max_participants || 2}
+                                    </span>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          ) : (
+                            <div className="flex items-center bg-white px-5 py-2.5 rounded-xl shadow-sm border border-slate-100">
+                              <span className="text-xs font-bold uppercase tracking-widest text-slate-500 mr-3">Registered</span>
+                              <span className="font-black text-lg text-blue-600">{registeredRegs.length}</span>
+                            </div>
+                          )}
                         </div>
                         
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                           {catStudents.map(student => {
-                            const isRegistered = registeredStudentIds.includes(student.id);
-                            const isLoading = adding === `${student.id}-${comp.id}` || adding === `remove-${student.id}-${comp.id}`;
+                            const studentReg = registeredRegs.find(r => r.student_id === student.id);
+                            const isRegistered = !!studentReg;
+                            const isLoadingAny = adding?.startsWith(`${student.id}-${comp.id}`) || adding === `remove-${student.id}-${comp.id}`;
                             const indCount = getStudentIndividualEventCount(student.id);
                             const isMaxedOut = indCount >= (settings?.max_individual_items || 4);
                             
@@ -434,27 +512,68 @@ export default function TeamDashboard() {
                                   </p>
                                 </div>
                                 
-                                {isRegistered ? (
-                                  <button
-                                    onClick={() => handleRemove(student.id, comp.id)}
-                                    disabled={!isOpen || isLoading}
-                                    className="flex-shrink-0 p-2 text-emerald-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50 group"
-                                  >
-                                    {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : (
-                                      <>
-                                        <Check className="h-5 w-5 block group-hover:hidden" />
-                                        <Trash2 className="h-5 w-5 hidden group-hover:block" />
-                                      </>
-                                    )}
-                                  </button>
+                                {isGrp ? (
+                                  <div className="flex flex-col gap-1.5 flex-shrink-0">
+                                    {[1, 2].map(slot => {
+                                      const isRegThisSlot = isRegistered && studentReg.group_slot === slot;
+                                      const isRegOtherSlot = isRegistered && studentReg.group_slot !== slot;
+                                      const slotCount = registeredRegs.filter(r => r.team === teamName && r.group_slot === slot).length;
+                                      const isFull = slotCount >= (comp.max_participants || 2);
+                                      const isAddingSlot = adding === `${student.id}-${comp.id}-${slot}`;
+                                      const isRemoving = adding === `remove-${student.id}-${comp.id}` && isRegThisSlot;
+
+                                      if (isRegThisSlot) {
+                                        return (
+                                          <button
+                                            key={slot}
+                                            onClick={() => handleRemove(student.id, comp.id)}
+                                            disabled={!isOpen || isLoadingAny}
+                                            className="flex items-center justify-center px-2 py-1 text-[10px] font-bold bg-emerald-100 text-emerald-800 hover:bg-red-100 hover:text-red-700 rounded transition-colors disabled:opacity-50"
+                                            title="Remove from group"
+                                          >
+                                            {isRemoving ? <Loader2 className="w-3 h-3 animate-spin" /> : `Group ${slot} (✓)`}
+                                          </button>
+                                        );
+                                      }
+
+                                      return (
+                                        <button
+                                          key={slot}
+                                          onClick={() => handleRegister(student.id, comp.id, slot)}
+                                          disabled={!isOpen || isLoadingAny || isRegOtherSlot || isFull}
+                                          className="flex items-center justify-center px-2 py-1 text-[10px] font-bold bg-slate-100 text-slate-600 hover:bg-blue-100 hover:text-blue-700 rounded transition-colors disabled:opacity-50"
+                                          title={isFull ? `Group ${slot} is full` : isRegOtherSlot ? "Already in another group" : `Add to Group ${slot}`}
+                                        >
+                                          {isAddingSlot ? <Loader2 className="w-3 h-3 animate-spin" /> : `+ G${slot}`}
+                                        </button>
+                                      );
+                                    })}
+                                  </div>
                                 ) : (
-                                  <button
-                                    onClick={() => handleRegister(student.id, comp.id)}
-                                    disabled={!isOpen || isLoading || (comp.type === "Individual" && comp.category !== "General Zone" && isMaxedOut)}
-                                    className="flex-shrink-0 p-2 text-slate-300 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors disabled:opacity-50"
-                                  >
-                                    {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Plus className="h-5 w-5" />}
-                                  </button>
+                                  <>
+                                    {isRegistered ? (
+                                      <button
+                                        onClick={() => handleRemove(student.id, comp.id)}
+                                        disabled={!isOpen || isLoadingAny}
+                                        className="flex-shrink-0 p-2 text-emerald-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50 group"
+                                      >
+                                        {isLoadingAny ? <Loader2 className="h-5 w-5 animate-spin" /> : (
+                                          <>
+                                            <Check className="h-5 w-5 block group-hover:hidden" />
+                                            <Trash2 className="h-5 w-5 hidden group-hover:block" />
+                                          </>
+                                        )}
+                                      </button>
+                                    ) : (
+                                      <button
+                                        onClick={() => handleRegister(student.id, comp.id, 1)}
+                                        disabled={!isOpen || isLoadingAny || (comp.category !== "General Zone" && isMaxedOut)}
+                                        className="flex-shrink-0 p-2 text-slate-300 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors disabled:opacity-50"
+                                      >
+                                        {isLoadingAny ? <Loader2 className="h-5 w-5 animate-spin" /> : <Plus className="h-5 w-5" />}
+                                      </button>
+                                    )}
+                                  </>
                                 )}
                               </div>
                             );

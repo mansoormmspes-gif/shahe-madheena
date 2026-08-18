@@ -44,7 +44,7 @@ export default function ResultsPage() {
     
     const { data: regs } = await supabase
       .from("registrations")
-      .select("student_id, students(name, team)")
+      .select("student_id, group_slot, students(name, team)")
       .eq("event_id", eventId);
       
     if (regs) {
@@ -226,7 +226,7 @@ export default function ResultsPage() {
                           <option value="">-- None --</option>
                           {registrations.map(r => (
                             <option key={r.student_id} value={r.student_id}>
-                              {r.students.name} — Team {r.students.team}
+                              {r.students.name} — Team {r.students.team} {r.group_slot ? `(Group ${r.group_slot})` : ''}
                             </option>
                           ))}
                         </select>
