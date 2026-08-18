@@ -3,7 +3,9 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import Papa from "papaparse";
-import { Upload, AlertCircle, CheckCircle2, Loader2, Edit3, X, Save, ClipboardList, Download, Users, Trash2, Plus } from "lucide-react";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+import { Upload, AlertCircle, CheckCircle2, Loader2, Edit3, X, Save, ClipboardList, Download, Users, Trash2, Plus, FileText } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function CompetitionsPage() {
@@ -26,8 +28,89 @@ export default function CompetitionsPage() {
 
   const [savingComp, setSavingComp] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [isExporting, setIsExporting] = useState(false);
 
   const zones = ["Minor Zone", "Mid Zone", "Premier Zone", "General Zone"];
+
+  const exportParticipantsPDF = async () => {
+    setIsExporting(true);
+    setError("");
+
+    try {
+      const { data: regsData, error: regsError } = await supabase
+        .from("registrations")
+        .select(`
+          event_id,
+          group_slot,
+          team,
+          students ( name, class )
+        `);
+      
+      if (regsError) throw regsError;
+
+      const doc = new jsPDF();
+      doc.setFontSize(22);
+      doc.text("Fest Participants by Competition", 14, 22);
+      
+      doc.setFontSize(11);
+      doc.setTextColor(100, 100, 100);
+      doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 30);
+
+      let startY = 40;
+      const allZones = [...new Set(competitions.map(c => c.category))].sort();
+
+      for (const zone of allZones) {
+        const zoneComps = competitions.filter(c => c.category === zone);
+        
+        for (const comp of zoneComps) {
+          const compRegs = regsData.filter(r => r.event_id === comp.id);
+          
+          if (compRegs.length === 0) continue;
+
+          compRegs.sort((a, b) => a.team.localeCompare(b.team) || (a.group_slot || 1) - (b.group_slot || 1));
+
+          if (startY > 250) {
+            doc.addPage();
+            startY = 20;
+          }
+
+          doc.setFontSize(14);
+          doc.setTextColor(0, 0, 0);
+          doc.text(`${comp.name} - ${zone} (${comp.type})`, 14, startY);
+          startY += 6;
+
+          const tableData = compRegs.map(r => {
+            const student = r.students || { name: 'Unknown', class: 'Unknown' };
+            return [
+              student.name,
+              r.team,
+              student.class,
+              comp.type === 'Group' ? `Group ${r.group_slot || 1}` : 'N/A'
+            ];
+          });
+
+          autoTable(doc, {
+            startY: startY,
+            head: [['Student Name', 'Team', 'Class', 'Group']],
+            body: tableData,
+            theme: 'grid',
+            headStyles: { fillColor: [192, 38, 211] },
+            styles: { fontSize: 10 },
+            margin: { left: 14, right: 14 }
+          });
+
+          startY = (doc as any).lastAutoTable.finalY + 15;
+        }
+      }
+
+      doc.save("Fest_Participants_List.pdf");
+    } catch (err: any) {
+      setError("Failed to export PDF: " + err.message);
+      setTimeout(() => setError(""), 3000);
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   const handleDelete = async (id: string) => {
     if (!window.confirm("Are you sure you want to delete this competition?")) return;
@@ -236,7 +319,17 @@ export default function CompetitionsPage() {
               Upload a CSV file or add a competition manually.
             </p>
           </div>
-          <div className="flex gap-3">
+          <div className="flex flex-wrap gap-3 mt-4 md:mt-0">
+            <motion.button 
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={exportParticipantsPDF}
+              disabled={isExporting}
+              className="inline-flex items-center px-4 py-2 bg-slate-900 text-white text-sm font-semibold rounded-xl hover:bg-slate-800 transition-colors shadow-sm disabled:opacity-50"
+            >
+              {isExporting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <FileText className="w-4 h-4 mr-2" />}
+              Export PDF
+            </motion.button>
             <motion.a 
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
