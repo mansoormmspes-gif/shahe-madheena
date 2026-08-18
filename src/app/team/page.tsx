@@ -65,7 +65,7 @@ export default function TeamDashboard() {
     return registrations.filter(r => {
       if (r.student_id !== studentId) return false;
       const comp = competitions.find(c => c.id === r.event_id);
-      return comp?.type === "Individual";
+      return comp?.type === "Individual" && comp?.category !== "General Zone";
     }).length;
   };
 
@@ -81,10 +81,10 @@ export default function TeamDashboard() {
     const comp = competitions.find(c => c.id === eventId);
     if (!comp) return;
 
-    if (comp.type === "Individual") {
+    if (comp.type === "Individual" && comp.category !== "General Zone") {
       const count = getStudentIndividualEventCount(studentId);
       if (count >= (settings?.max_individual_items || 4)) {
-        setError(`Student has reached the maximum allowed individual events (${settings?.max_individual_items}).`);
+        setError(`This student has already reached the maximum limit of ${settings?.max_individual_items || 4} individual competitions.`);
         setTimeout(() => setError(""), 3000);
         return;
       }
@@ -358,9 +358,9 @@ export default function TeamDashboard() {
                                 ) : (
                                   <button
                                     onClick={() => handleRegister(student.id, comp.id)}
-                                    disabled={!isOpen || isLoading || (!isGrp && isMaxedOut)}
+                                    disabled={!isOpen || isLoading || (!isGrp && comp.category !== "General Zone" && isMaxedOut)}
                                     className="flex-shrink-0 p-2 text-slate-300 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors disabled:opacity-50"
-                                    title={!isGrp && isMaxedOut ? "Max individual events reached" : "Add registration"}
+                                    title={!isGrp && comp.category !== "General Zone" && isMaxedOut ? "Max individual events reached" : "Add registration"}
                                   >
                                     {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Plus className="h-5 w-5" />}
                                   </button>
@@ -450,7 +450,7 @@ export default function TeamDashboard() {
                                 ) : (
                                   <button
                                     onClick={() => handleRegister(student.id, comp.id)}
-                                    disabled={!isOpen || isLoading || (comp.type === "Individual" && isMaxedOut)}
+                                    disabled={!isOpen || isLoading || (comp.type === "Individual" && comp.category !== "General Zone" && isMaxedOut)}
                                     className="flex-shrink-0 p-2 text-slate-300 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors disabled:opacity-50"
                                   >
                                     {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Plus className="h-5 w-5" />}
