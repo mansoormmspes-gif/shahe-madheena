@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import Papa from "papaparse";
-import { Upload, AlertCircle, CheckCircle2, Loader2, Edit3, X, Save, ClipboardList, Download, Users, Trash2 } from "lucide-react";
+import { Upload, AlertCircle, CheckCircle2, Loader2, Edit3, X, Save, ClipboardList, Download, Users, Trash2, Plus } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function CompetitionsPage() {
@@ -14,8 +14,20 @@ export default function CompetitionsPage() {
   const [competitions, setCompetitions] = useState<any[]>([]);
   
   const [editingComp, setEditingComp] = useState<any | null>(null);
+  const [isAddingNew, setIsAddingNew] = useState(false);
+  const [newComp, setNewComp] = useState({
+    name: "",
+    category: "Minor Zone",
+    type: "Individual",
+    max_participants: 2,
+    max_groups_per_team: 1,
+    rules: ""
+  });
+
   const [savingComp, setSavingComp] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  const zones = ["Minor Zone", "Mid Zone", "Premier Zone", "General Zone"];
 
   const handleDelete = async (id: string) => {
     if (!window.confirm("Are you sure you want to delete this competition?")) return;
@@ -88,6 +100,7 @@ export default function CompetitionsPage() {
               category: category,
               type: "Individual", // Default type since it's not in CSV
               max_participants: 1, // Default to 1 for Individual
+              max_groups_per_team: 1,
               rules: cleanRow.rules || null,
             };
           });
@@ -146,6 +159,53 @@ export default function CompetitionsPage() {
     setSavingComp(false);
   };
 
+  const handleSaveNew = async () => {
+    if (!newComp.name.trim()) {
+      setError("Competition name is required.");
+      setTimeout(() => setError(""), 3000);
+      return;
+    }
+
+    setSavingComp(true);
+    
+    const generatedId = `${newComp.category}-${newComp.name}`.toLowerCase().replace(/[^a-z0-9]/g, '-');
+    const finalMax = newComp.type === "Individual" ? 1 : Math.max(2, newComp.max_participants);
+    const finalMaxGroups = newComp.type === "Individual" ? 1 : Math.max(1, newComp.max_groups_per_team || 1);
+    
+    const newRecord = {
+      id: generatedId,
+      name: newComp.name,
+      category: newComp.category,
+      type: newComp.type,
+      max_participants: finalMax,
+      max_groups_per_team: finalMaxGroups,
+      rules: newComp.rules
+    };
+
+    const { error: insertError } = await supabase
+      .from("competitions")
+      .insert(newRecord);
+      
+    if (!insertError) {
+      setCompetitions([...competitions, newRecord].sort((a, b) => a.category.localeCompare(b.category) || a.name.localeCompare(b.name)));
+      setIsAddingNew(false);
+      setNewComp({
+        name: "",
+        category: "Minor Zone",
+        type: "Individual",
+        max_participants: 2,
+        max_groups_per_team: 1,
+        rules: ""
+      });
+      setSuccess("Competition added successfully.");
+      setTimeout(() => setSuccess(""), 3000);
+    } else {
+      setError("Failed to add competition: " + insertError.message);
+      setTimeout(() => setError(""), 3000);
+    }
+    setSavingComp(false);
+  };
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
@@ -171,24 +231,33 @@ export default function CompetitionsPage() {
       <motion.div variants={itemVariants} className="glass-card rounded-[2rem] overflow-hidden p-8 sm:p-10 mb-8">
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 pb-6 border-b border-slate-100 gap-4">
           <div>
-            <h2 className="text-xl font-bold text-slate-900 mb-1">Batch Upload (CSV)</h2>
+            <h2 className="text-xl font-bold text-slate-900 mb-1">Add Competitions</h2>
             <p className="text-sm text-slate-500 font-medium">
-              Upload a CSV file with columns: 
-              <code className="bg-slate-100 text-slate-700 px-2 py-0.5 rounded ml-1 font-mono text-xs">zone, competition_name, rules (optional)</code>
+              Upload a CSV file or add a competition manually.
             </p>
           </div>
-          <motion.a 
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            href="#" 
-            className="inline-flex items-center px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold rounded-xl transition-colors"
-          >
-            <Download className="w-4 h-4 mr-2" /> Template
-          </motion.a>
+          <div className="flex gap-3">
+            <motion.a 
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              href="#" 
+              className="inline-flex items-center px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold rounded-xl transition-colors"
+            >
+              <Download className="w-4 h-4 mr-2" /> Template
+            </motion.a>
+            <motion.button 
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setIsAddingNew(true)}
+              className="inline-flex items-center px-4 py-2 bg-fuchsia-600 text-white text-sm font-semibold rounded-xl hover:bg-fuchsia-700 transition-colors shadow-sm"
+            >
+              <Plus className="w-4 h-4 mr-2" /> Manual Add
+            </motion.button>
+          </div>
         </div>
 
         <AnimatePresence mode="wait">
-          {error && !editingComp && (
+          {error && !editingComp && !isAddingNew && (
             <motion.div 
               initial={{ opacity: 0, height: 0, marginBottom: 0 }}
               animate={{ opacity: 1, height: 'auto', marginBottom: 24 }}
@@ -256,7 +325,7 @@ export default function CompetitionsPage() {
           </div>
         ) : competitions.length === 0 ? (
           <div className="p-12 text-center text-slate-500 font-medium">
-            No competitions found. Please upload a CSV first.
+            No competitions found. Please upload a CSV or manually add one first.
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -432,6 +501,124 @@ export default function CompetitionsPage() {
                 >
                   {savingComp ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
                   Save Changes
+                </motion.button>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* Add New Modal */}
+      <AnimatePresence>
+        {isAddingNew && (
+          <>
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsAddingNew(false)}
+              className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-40"
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white rounded-3xl shadow-2xl z-50 overflow-hidden border border-slate-100"
+            >
+              <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                <h3 className="text-lg font-bold text-slate-900">Add New Competition</h3>
+                <button onClick={() => setIsAddingNew(false)} className="p-2 text-slate-400 hover:bg-slate-200 hover:text-slate-700 rounded-full transition-colors">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              <div className="p-6 space-y-5">
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">Event Name</label>
+                  <input
+                    type="text"
+                    value={newComp.name}
+                    onChange={(e) => setNewComp({...newComp, name: e.target.value})}
+                    placeholder="e.g. Essay Writing"
+                    className="block w-full px-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-slate-900 outline-none"
+                  />
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">Zone / Category</label>
+                    <select
+                      value={newComp.category}
+                      onChange={(e) => setNewComp({ ...newComp, category: e.target.value })}
+                      className="block w-full px-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-slate-900 outline-none"
+                    >
+                      {zones.map(z => (
+                        <option key={z} value={z}>{z}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">Type</label>
+                    <select
+                      value={newComp.type}
+                      onChange={(e) => setNewComp({ ...newComp, type: e.target.value })}
+                      className="block w-full px-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-slate-900 outline-none"
+                    >
+                      <option value="Individual">Individual</option>
+                      <option value="Group">Group</option>
+                    </select>
+                  </div>
+
+                  {newComp.type === "Group" && (
+                    <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="col-span-2 grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-semibold text-slate-700 mb-2">Max Participants (Per Group)</label>
+                        <input
+                          type="number"
+                          min="2"
+                          value={newComp.max_participants || 2}
+                          onChange={(e) => setNewComp({ ...newComp, max_participants: parseInt(e.target.value) })}
+                          className="block w-full px-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-slate-900 outline-none"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-semibold text-slate-700 mb-2">Max Groups (Per Team)</label>
+                        <input
+                          type="number"
+                          min="1"
+                          value={newComp.max_groups_per_team || 1}
+                          onChange={(e) => setNewComp({ ...newComp, max_groups_per_team: parseInt(e.target.value) })}
+                          className="block w-full px-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-slate-900 outline-none"
+                        />
+                      </div>
+                    </motion.div>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">Rules (Optional)</label>
+                  <textarea
+                    rows={4}
+                    value={newComp.rules || ""}
+                    onChange={(e) => setNewComp({ ...newComp, rules: e.target.value })}
+                    className="block w-full px-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-slate-900 outline-none resize-none"
+                    placeholder="Enter competition rules here..."
+                  />
+                </div>
+
+                {error && (
+                  <p className="text-sm font-bold text-red-600 bg-red-50 p-3 rounded-lg border border-red-100">{error}</p>
+                )}
+              </div>
+              <div className="px-6 py-4 border-t border-slate-100 bg-slate-50/50 flex justify-end">
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={handleSaveNew}
+                  disabled={savingComp}
+                  className="flex items-center px-6 py-2.5 bg-fuchsia-600 text-white font-bold rounded-xl shadow-sm hover:bg-fuchsia-700 focus:ring-4 focus:ring-fuchsia-100 disabled:opacity-50 transition-all"
+                >
+                  {savingComp ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Plus className="w-4 h-4 mr-2" />}
+                  Add Competition
                 </motion.button>
               </div>
             </motion.div>
