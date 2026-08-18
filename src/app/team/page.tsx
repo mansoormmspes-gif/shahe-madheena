@@ -23,6 +23,7 @@ export default function TeamDashboard() {
   
   const [modalStudent, setModalStudent] = useState<any | null>(null);
   const [eventSearchQuery, setEventSearchQuery] = useState("");
+  const [eventTypeFilter, setEventTypeFilter] = useState("All");
 
   useEffect(() => {
     fetchData();
@@ -384,6 +385,7 @@ export default function TeamDashboard() {
                             onClick={() => {
                               setModalStudent(student);
                               setEventSearchQuery("");
+                              setEventTypeFilter("All");
                             }}
                             className="flex items-center justify-center p-4 rounded-xl border-2 border-dashed border-slate-300 hover:border-fuchsia-400 hover:bg-fuchsia-50 transition-all text-slate-500 hover:text-fuchsia-600 font-bold text-sm min-h-[76px]"
                           >
@@ -577,16 +579,29 @@ export default function TeamDashboard() {
                 </button>
               </div>
               
-              <div className="p-6 border-b border-slate-100">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
-                  <input
-                    type="text"
-                    placeholder="Search events by name..."
-                    value={eventSearchQuery}
-                    onChange={(e) => setEventSearchQuery(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:bg-white transition-all font-medium text-slate-700"
-                  />
+              <div className="p-4 sm:p-6 border-b border-slate-100 bg-white">
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <div className="relative flex-1">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
+                    <input
+                      type="text"
+                      placeholder="Search events by name..."
+                      value={eventSearchQuery}
+                      onChange={(e) => setEventSearchQuery(e.target.value)}
+                      className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:bg-white transition-all font-medium text-slate-700"
+                    />
+                  </div>
+                  <div className="flex-shrink-0">
+                    <select
+                      value={eventTypeFilter}
+                      onChange={(e) => setEventTypeFilter(e.target.value)}
+                      className="w-full sm:w-auto px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-fuchsia-500 transition-all font-medium text-slate-700 cursor-pointer"
+                    >
+                      <option value="All">All Types</option>
+                      <option value="Individual">Individual</option>
+                      <option value="Group">Group</option>
+                    </select>
+                  </div>
                 </div>
               </div>
               
@@ -598,7 +613,8 @@ export default function TeamDashboard() {
                     const isMaxedOut = indCount >= (settings?.max_individual_items || 4);
                     
                     const filteredComps = competitions.filter(c => 
-                      c.name.toLowerCase().includes(eventSearchQuery.toLowerCase())
+                      c.name.toLowerCase().includes(eventSearchQuery.toLowerCase()) &&
+                      (eventTypeFilter === "All" || c.type === eventTypeFilter)
                     );
 
                     const zoneComps = filteredComps.filter(c => 
