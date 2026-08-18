@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import Papa from "papaparse";
-import { Upload, AlertCircle, CheckCircle2, Loader2, Edit3, X, Save, ClipboardList, Download, Users } from "lucide-react";
+import { Upload, AlertCircle, CheckCircle2, Loader2, Edit3, X, Save, ClipboardList, Download, Users, Trash2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function CompetitionsPage() {
@@ -15,6 +15,22 @@ export default function CompetitionsPage() {
   
   const [editingComp, setEditingComp] = useState<any | null>(null);
   const [savingComp, setSavingComp] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  const handleDelete = async (id: string) => {
+    if (!window.confirm("Are you sure you want to delete this competition?")) return;
+    setDeletingId(id);
+    const { error: deleteError } = await supabase.from("competitions").delete().eq("id", id);
+    if (deleteError) {
+      setError("Failed to delete competition: " + deleteError.message);
+      setTimeout(() => setError(""), 3000);
+    } else {
+      setCompetitions(competitions.filter((c) => c.id !== id));
+      setSuccess("Competition deleted successfully.");
+      setTimeout(() => setSuccess(""), 3000);
+    }
+    setDeletingId(null);
+  };
 
   useEffect(() => {
     fetchCompetitions();
@@ -281,14 +297,27 @@ export default function CompetitionsPage() {
                       <p className="text-slate-600 line-clamp-2 leading-relaxed text-xs max-w-xs">{c.rules || <span className="text-slate-400 italic">No rules specified</span>}</p>
                     </td>
                     <td className="px-8 py-5 text-right">
-                      <motion.button 
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                        onClick={() => setEditingComp({...c})}
-                        className="p-2 text-slate-400 hover:text-fuchsia-600 hover:bg-fuchsia-50 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
-                      >
-                        <Edit3 className="h-4 w-4" />
-                      </motion.button>
+                      <div className="flex justify-end space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <motion.button 
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
+                          onClick={() => setEditingComp({...c})}
+                          className="p-2 text-slate-400 hover:text-fuchsia-600 hover:bg-fuchsia-50 rounded-lg transition-colors"
+                          title="Edit Competition"
+                        >
+                          <Edit3 className="h-4 w-4" />
+                        </motion.button>
+                        <motion.button 
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
+                          onClick={() => handleDelete(c.id)}
+                          disabled={deletingId === c.id}
+                          className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          title="Delete Competition"
+                        >
+                          {deletingId === c.id ? <Loader2 className="h-4 w-4 animate-spin text-red-600" /> : <Trash2 className="h-4 w-4" />}
+                        </motion.button>
+                      </div>
                     </td>
                   </motion.tr>
                 ))}
