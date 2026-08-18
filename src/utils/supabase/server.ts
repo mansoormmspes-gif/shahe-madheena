@@ -4,7 +4,10 @@ import { cookies } from 'next/headers'
 export async function createClient() {
   const cookieStore = await cookies()
 
-  let url = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
+  let url = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+  if (url && !url.startsWith('http')) {
+    url = `https://${url}`;
+  }
   try {
     new URL(url);
   } catch (e) {

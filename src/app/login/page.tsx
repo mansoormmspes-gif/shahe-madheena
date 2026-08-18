@@ -27,7 +27,7 @@ export default function LoginPage() {
     });
 
     if (error) {
-      setError("Invalid username or password");
+      setError(error.message || "Invalid username or password");
       setLoading(false);
     } else {
       // Fetch profile to determine role and redirect accordingly
