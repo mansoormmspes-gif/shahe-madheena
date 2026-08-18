@@ -1,5 +1,4 @@
 "use client";
-export const dynamic = 'force-dynamic';
 
 import { motion } from "framer-motion";
 import { LayoutDashboard, Users, Trophy, ClipboardList, Settings } from "lucide-react";
