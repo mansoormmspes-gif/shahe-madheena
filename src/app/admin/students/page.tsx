@@ -5,7 +5,7 @@ import { supabase } from "@/lib/supabase";
 import Papa from "papaparse";
 import { 
   AlertCircle, CheckCircle2, Loader2, Users, Search, 
-  Trash2, Plus, X, Upload, Filter
+  Trash2, Plus, X, Upload, Filter, Edit2
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -22,6 +22,7 @@ export default function StudentsPage() {
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
   const [manualStudent, setManualStudent] = useState({ id: "", name: "", class: "", team: "", zone: "" });
   const [manualLoading, setManualLoading] = useState(false);
   const [csvLoading, setCsvLoading] = useState(false);
@@ -58,6 +59,24 @@ export default function StudentsPage() {
     }
   };
 
+  const handleDeleteAll = async () => {
+    const userInput = window.prompt("Are you ABSOLUTELY sure you want to delete ALL students? Type 'DELETE ALL' to confirm:");
+    if (userInput !== "DELETE ALL") return;
+    
+    setLoading(true);
+    // Delete all by matching all records (id is not null)
+    const { error } = await supabase.from("students").delete().not("id", "is", null);
+    if (error) {
+      setError("Failed to delete students: " + error.message);
+      setLoading(false);
+    } else {
+      setSuccess("All students have been deleted.");
+      setStudents([]);
+      setTimeout(() => setSuccess(""), 3000);
+      setLoading(false);
+    }
+  };
+
   const handleManualAdd = async (e: React.FormEvent) => {
     e.preventDefault();
     setManualLoading(true);
@@ -83,13 +102,14 @@ export default function StudentsPage() {
 
       if (insertError) throw insertError;
 
-      setSuccess(`Successfully added ${manualStudent.name}.`);
+      setSuccess(`Successfully ${isEditMode ? 'updated' : 'added'} ${manualStudent.name}.`);
       setManualStudent({ id: "", name: "", class: "", team: "", zone: "" });
       setIsModalOpen(false);
+      setIsEditMode(false);
       fetchStudents();
       setTimeout(() => setSuccess(""), 3000);
     } catch (err: any) {
-      setError(err.message || "Failed to add student.");
+      setError(err.message || `Failed to ${isEditMode ? 'update' : 'add'} student.`);
     } finally {
       setManualLoading(false);
     }
@@ -181,18 +201,29 @@ export default function StudentsPage() {
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
+          <button
+            onClick={handleDeleteAll}
+            className="flex items-center px-4 py-2 bg-red-50 text-red-600 rounded-xl shadow-sm hover:bg-red-100 transition-colors text-sm font-bold border border-red-200"
+          >
+            <Trash2 className="h-4 w-4 mr-2" />
+            Delete All
+          </button>
           <label className="flex items-center px-4 py-2 bg-white border border-slate-200 rounded-xl shadow-sm cursor-pointer hover:bg-slate-50 transition-colors text-sm font-semibold text-slate-700">
             {csvLoading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Upload className="h-4 w-4 mr-2" />}
             Upload CSV
             <input type="file" className="hidden" accept=".csv" onChange={handleFileUpload} disabled={csvLoading} />
           </label>
           <button
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => {
+              setManualStudent({ id: "", name: "", class: "", team: "", zone: "" });
+              setIsEditMode(false);
+              setIsModalOpen(true);
+            }}
             className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-xl shadow-sm shadow-indigo-200 hover:bg-indigo-700 transition-colors text-sm font-bold"
           >
             <Plus className="h-4 w-4 mr-2" />
-            Manual Add
+            Add Student
           </button>
         </div>
       </motion.div>
@@ -312,13 +343,26 @@ export default function StudentsPage() {
                       {student.category || "-"}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <button
-                        onClick={() => handleDelete(student.id)}
-                        className="text-red-400 hover:text-red-600 hover:bg-red-50 p-2 rounded-lg transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100"
-                        title="Delete Student"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </button>
+                      <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
+                        <button
+                          onClick={() => {
+                            setManualStudent({ id: student.id, name: student.name, class: student.class, team: student.team, zone: student.category });
+                            setIsEditMode(true);
+                            setIsModalOpen(true);
+                          }}
+                          className="text-blue-400 hover:text-blue-600 hover:bg-blue-50 p-2 rounded-lg transition-colors"
+                          title="Edit Student"
+                        >
+                          <Edit2 className="h-4 w-4" />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(student.id)}
+                          className="text-red-400 hover:text-red-600 hover:bg-red-50 p-2 rounded-lg transition-colors"
+                          title="Delete Student"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))
@@ -344,7 +388,7 @@ export default function StudentsPage() {
               className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white rounded-[2rem] shadow-2xl z-50 overflow-hidden"
             >
               <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
-                <h2 className="text-xl font-bold text-slate-900">Add New Student</h2>
+                <h2 className="text-xl font-bold text-slate-900">{isEditMode ? "Edit Student" : "Add New Student"}</h2>
                 <button type="button" onClick={() => setIsModalOpen(false)} className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors">
                   <X className="h-5 w-5" />
                 </button>
@@ -355,7 +399,8 @@ export default function StudentsPage() {
                   <input
                     type="text" required value={manualStudent.id}
                     onChange={(e) => setManualStudent({...manualStudent, id: e.target.value})}
-                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm"
+                    disabled={isEditMode}
+                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm disabled:opacity-60 disabled:cursor-not-allowed"
                     placeholder="e.g. 101"
                   />
                 </div>
@@ -410,8 +455,8 @@ export default function StudentsPage() {
                     type="submit" disabled={manualLoading}
                     className="w-full flex items-center justify-center px-4 py-3 bg-indigo-600 text-white rounded-xl shadow-sm hover:bg-indigo-700 transition-colors font-bold text-sm disabled:opacity-50"
                   >
-                    {manualLoading ? <Loader2 className="h-5 w-5 mr-2 animate-spin" /> : <Plus className="h-5 w-5 mr-2" />}
-                    Add Student
+                    {manualLoading ? <Loader2 className="h-5 w-5 mr-2 animate-spin" /> : isEditMode ? <CheckCircle2 className="h-5 w-5 mr-2" /> : <Plus className="h-5 w-5 mr-2" />}
+                    {isEditMode ? "Save Changes" : "Add Student"}
                   </button>
                 </div>
               </form>
