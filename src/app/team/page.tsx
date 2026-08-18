@@ -215,7 +215,8 @@ export default function TeamDashboard() {
     );
   }
 
-  const categories = Array.from(new Set(students.map(s => s.category)));
+  const studentCategories = Array.from(new Set(students.map(s => s.category)));
+  const compCategories = Array.from(new Set(competitions.map(c => c.category)));
   const isOpen = isRegistrationOpen();
 
   const containerVariants = {
@@ -302,9 +303,12 @@ export default function TeamDashboard() {
 
       {viewMode === "participant" ? (
         <div className="space-y-8">
-          {categories.map(category => {
+          {studentCategories.map(category => {
             const catStudents = students.filter(s => s.category === category);
-            const catCompetitions = competitions.filter(c => c.category === category);
+            const catCompetitions = competitions.filter(c => 
+              c.category?.toLowerCase().trim() === (category as string)?.toLowerCase().trim() || 
+              c.category?.toLowerCase().trim() === "general zone"
+            );
             
             return (
               <motion.div variants={itemVariants} key={category as string} className="glass-card rounded-[2rem] overflow-hidden">
@@ -442,9 +446,12 @@ export default function TeamDashboard() {
         </div>
       ) : (
         <div className="space-y-8">
-           {categories.map(category => {
+           {compCategories.map(category => {
             const catCompetitions = competitions.filter(c => c.category === category);
-            const catStudents = students.filter(s => s.category === category);
+            const catStudents = students.filter(s => 
+              s.category?.toLowerCase().trim() === (category as string)?.toLowerCase().trim() || 
+              (category as string)?.toLowerCase().trim() === "general zone"
+            );
             
             return (
               <motion.div variants={itemVariants} key={category as string} className="glass-card rounded-[2rem] overflow-hidden">
