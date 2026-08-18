@@ -21,13 +21,18 @@ export default function LoginPage() {
     setError("");
 
     const email = `${username}@shahemadeena.com`;
+    console.log("Supabase URL:", process.env.NEXT_PUBLIC_SUPABASE_URL);
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
     if (error) {
-      setError(error.message || "Invalid username or password");
+      if (error.message === "Failed to fetch") {
+        setError("Network Error: Cannot connect to database.");
+      } else {
+        setError(error.message || "Invalid username or password");
+      }
       setLoading(false);
     } else {
       // Fetch profile to determine role and redirect accordingly
