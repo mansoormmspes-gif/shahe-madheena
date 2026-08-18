@@ -113,8 +113,10 @@ export default function TeamDashboard() {
       .insert({ student_id: studentId, event_id: eventId, team: teamName, group_slot: groupSlot });
 
     if (insertError) {
-      setError(insertError.message);
-      setTimeout(() => setError(""), 3000);
+      console.error("Registration Insert Error Details:", insertError);
+      setError(`DB Error: ${insertError.message} (Code: ${insertError.code})`);
+      alert(`Registration failed!\n\nMessage: ${insertError.message}\nDetails: ${insertError.details}\nHint: ${insertError.hint}`);
+      setTimeout(() => setError(""), 5000);
     } else {
       setRegistrations([...registrations, { student_id: studentId, event_id: eventId, team: teamName, group_slot: groupSlot }]);
     }
@@ -139,8 +141,10 @@ export default function TeamDashboard() {
       .match({ student_id: studentId, event_id: eventId });
 
     if (deleteError) {
-      setError(deleteError.message);
-      setTimeout(() => setError(""), 3000);
+      console.error("Registration Delete Error Details:", deleteError);
+      setError(`DB Error: ${deleteError.message}`);
+      alert(`Removal failed!\n\nMessage: ${deleteError.message}`);
+      setTimeout(() => setError(""), 5000);
     } else {
       setRegistrations(registrations.filter(r => !(r.student_id === studentId && r.event_id === eventId)));
     }
