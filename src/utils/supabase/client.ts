@@ -1,8 +1,15 @@
 import { createBrowserClient } from '@supabase/ssr'
 
 export function createClient() {
+  let url = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
+  try {
+    new URL(url);
+  } catch (e) {
+    url = 'https://placeholder.supabase.co';
+  }
+
   return createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co',
+    url,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder'
   )
 }

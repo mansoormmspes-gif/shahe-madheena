@@ -6,9 +6,16 @@ export async function proxy(request: NextRequest) {
     request,
   })
 
+  let url = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
+  try {
+    new URL(url);
+  } catch (e) {
+    url = 'https://placeholder.supabase.co';
+  }
+
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    url,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder',
     {
       cookies: {
         getAll() {
