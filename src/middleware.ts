@@ -1,24 +1,14 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
-export async function proxy(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
     request,
   })
 
-  let url = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-  if (url && !url.startsWith('http')) {
-    url = `https://${url}`;
-  }
-  try {
-    new URL(url);
-  } catch (e) {
-    url = 'https://placeholder.supabase.co';
-  }
-
   const supabase = createServerClient(
-    url,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder',
+    'https://phdjnvqaqtgnqqjbsksp.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBoZGpudnFhcXRnbnFxamJza3NwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY5ODIxNjAsImV4cCI6MjEwMjU1ODE2MH0.bQ2UB7f_1VWa3M9bW9Bg0L8Ay-XAz8CDLOiplfQCNMk',
     {
       cookies: {
         getAll() {
@@ -37,7 +27,6 @@ export async function proxy(request: NextRequest) {
     }
   )
 
-  // We just call getSession to refresh the auth token if needed.
   try {
     await supabase.auth.getSession()
   } catch (error) {
@@ -49,13 +38,6 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * Feel free to modify this pattern to include more paths.
-     */
     '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 }
