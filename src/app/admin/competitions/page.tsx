@@ -47,7 +47,7 @@ export default function CompetitionsPage() {
           const rows = results.data as any[];
           
           if (rows.length === 0) throw new Error("CSV file is empty");
-          const requiredKeys = ["id", "name", "category", "type"];
+          const requiredKeys = ["zone", "competition_name"];
           const keys = Object.keys(rows[0]).map(k => k.toLowerCase().trim());
           const missingKeys = requiredKeys.filter(k => !keys.includes(k));
           
@@ -60,11 +60,16 @@ export default function CompetitionsPage() {
             for (const key in row) {
               cleanRow[key.toLowerCase().trim()] = row[key];
             }
+            
+            const name = cleanRow.competition_name;
+            const category = cleanRow.zone;
+            const generatedId = `${category}-${name}`.toLowerCase().replace(/[^a-z0-9]/g, '-');
+            
             return {
-              id: cleanRow.id,
-              name: cleanRow.name,
-              category: cleanRow.category,
-              type: cleanRow.type,
+              id: generatedId,
+              name: name,
+              category: category,
+              type: "Individual", // Default type since it's not in CSV
               rules: cleanRow.rules || null,
             };
           });
@@ -132,7 +137,7 @@ export default function CompetitionsPage() {
             <h2 className="text-xl font-bold text-slate-900 mb-1">Batch Upload (CSV)</h2>
             <p className="text-sm text-slate-500 font-medium">
               Upload a CSV file with columns: 
-              <code className="bg-slate-100 text-slate-700 px-2 py-0.5 rounded ml-1 font-mono text-xs">id, name, category, type, rules (optional)</code>
+              <code className="bg-slate-100 text-slate-700 px-2 py-0.5 rounded ml-1 font-mono text-xs">zone, competition_name, rules (optional)</code>
             </p>
           </div>
           <motion.a 
