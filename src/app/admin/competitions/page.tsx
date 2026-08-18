@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import Papa from "papaparse";
-import { Upload, AlertCircle, CheckCircle2, Loader2, Edit3, X, Save, ClipboardList, Download } from "lucide-react";
+import { Upload, AlertCircle, CheckCircle2, Loader2, Edit3, X, Save, ClipboardList, Download, Users } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function CompetitionsPage() {
@@ -12,8 +12,9 @@ export default function CompetitionsPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [competitions, setCompetitions] = useState<any[]>([]);
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [editRules, setEditRules] = useState("");
+  
+  const [editingComp, setEditingComp] = useState<any | null>(null);
+  const [savingComp, setSavingComp] = useState(false);
 
   useEffect(() => {
     fetchCompetitions();
@@ -70,6 +71,7 @@ export default function CompetitionsPage() {
               name: name,
               category: category,
               type: "Individual", // Default type since it's not in CSV
+              max_participants: 1, // Default to 1 for Individual
               rules: cleanRow.rules || null,
             };
           });
@@ -97,16 +99,32 @@ export default function CompetitionsPage() {
     });
   };
 
-  const handleSaveRules = async (id: string) => {
-    const { error } = await supabase
+  const handleSaveEdit = async () => {
+    setSavingComp(true);
+    const finalMax = editingComp.type === "Individual" ? 1 : Math.max(2, editingComp.max_participants);
+    
+    const { error: updateError } = await supabase
       .from("competitions")
-      .update({ rules: editRules })
-      .eq("id", id);
+      .update({ 
+        type: editingComp.type,
+        max_participants: finalMax,
+        rules: editingComp.rules
+      })
+      .eq("id", editingComp.id);
       
-    if (!error) {
-      setCompetitions(competitions.map(c => c.id === id ? { ...c, rules: editRules } : c));
-      setEditingId(null);
+    if (!updateError) {
+      setCompetitions(competitions.map(c => c.id === editingComp.id ? { 
+        ...c, 
+        type: editingComp.type, 
+        max_participants: finalMax, 
+        rules: editingComp.rules 
+      } : c));
+      setEditingComp(null);
+    } else {
+      setError("Failed to update competition: " + updateError.message);
+      setTimeout(() => setError(""), 3000);
     }
+    setSavingComp(false);
   };
 
   const containerVariants = {
@@ -120,7 +138,7 @@ export default function CompetitionsPage() {
   };
 
   return (
-    <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-8">
+    <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-8 relative">
       <motion.div variants={itemVariants} className="flex items-center space-x-3 mb-8">
         <div className="p-3 bg-fuchsia-100 text-fuchsia-600 rounded-2xl shadow-sm">
           <ClipboardList className="h-6 w-6" />
@@ -151,7 +169,7 @@ export default function CompetitionsPage() {
         </div>
 
         <AnimatePresence mode="wait">
-          {error && (
+          {error && !editingComp && (
             <motion.div 
               initial={{ opacity: 0, height: 0, marginBottom: 0 }}
               animate={{ opacity: 1, height: 'auto', marginBottom: 24 }}
@@ -208,7 +226,7 @@ export default function CompetitionsPage() {
 
       <motion.div variants={itemVariants} className="glass-card rounded-[2rem] overflow-hidden">
         <div className="px-8 py-6 border-b border-slate-100 bg-white/50">
-          <h2 className="text-xl font-bold text-slate-900">Event Rules Editor</h2>
+          <h2 className="text-xl font-bold text-slate-900">Event Registry</h2>
         </div>
         
         {fetching ? (
@@ -226,11 +244,10 @@ export default function CompetitionsPage() {
             <table className="w-full text-sm text-left">
               <thead className="bg-slate-50 text-slate-500 border-b border-slate-100">
                 <tr>
-                  <th className="px-8 py-4 font-bold uppercase tracking-wider text-xs">ID</th>
                   <th className="px-8 py-4 font-bold uppercase tracking-wider text-xs">Name</th>
                   <th className="px-8 py-4 font-bold uppercase tracking-wider text-xs">Category</th>
-                  <th className="px-8 py-4 font-bold uppercase tracking-wider text-xs">Type</th>
-                  <th className="px-8 py-4 font-bold uppercase tracking-wider text-xs min-w-[300px]">Rules</th>
+                  <th className="px-8 py-4 font-bold uppercase tracking-wider text-xs">Type & Max</th>
+                  <th className="px-8 py-4 font-bold uppercase tracking-wider text-xs">Rules</th>
                   <th className="px-8 py-4 font-bold uppercase tracking-wider text-xs text-right">Actions</th>
                 </tr>
               </thead>
@@ -243,61 +260,35 @@ export default function CompetitionsPage() {
                     key={c.id} 
                     className="hover:bg-slate-50/50 transition-colors group"
                   >
-                    <td className="px-8 py-5 font-bold text-slate-900">{c.id}</td>
-                    <td className="px-8 py-5 text-slate-700 font-medium">{c.name}</td>
+                    <td className="px-8 py-5 text-slate-900 font-bold">{c.name}</td>
                     <td className="px-8 py-5">
                       <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-fuchsia-100 text-fuchsia-800 border border-fuchsia-200">
                         {c.category}
                       </span>
                     </td>
                     <td className="px-8 py-5">
-                      <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200">
-                        {c.type}
-                      </span>
+                      <div className="flex flex-col items-start space-y-1">
+                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border ${c.type === 'Group' ? 'bg-purple-100 text-purple-700 border-purple-200' : 'bg-slate-100 text-slate-700 border-slate-200'}`}>
+                          {c.type === 'Group' ? <Users className="w-3 h-3 mr-1" /> : null}
+                          {c.type}
+                        </span>
+                        <span className="text-xs font-medium text-slate-500 ml-1">
+                          Max: {c.max_participants || 1}
+                        </span>
+                      </div>
                     </td>
                     <td className="px-8 py-5">
-                      {editingId === c.id ? (
-                        <textarea
-                          className="w-full p-3 bg-white border border-slate-200 rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 outline-none transition-all resize-none text-slate-900"
-                          rows={3}
-                          value={editRules}
-                          onChange={(e) => setEditRules(e.target.value)}
-                          placeholder="Enter rules for this event..."
-                        />
-                      ) : (
-                        <p className="text-slate-600 line-clamp-2 leading-relaxed">{c.rules || <span className="text-slate-400 italic">No rules specified</span>}</p>
-                      )}
+                      <p className="text-slate-600 line-clamp-2 leading-relaxed text-xs max-w-xs">{c.rules || <span className="text-slate-400 italic">No rules specified</span>}</p>
                     </td>
                     <td className="px-8 py-5 text-right">
-                      {editingId === c.id ? (
-                        <div className="flex justify-end space-x-2">
-                          <motion.button 
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
-                            onClick={() => setEditingId(null)} 
-                            className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
-                          >
-                            <X className="h-4 w-4" />
-                          </motion.button>
-                          <motion.button 
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
-                            onClick={() => handleSaveRules(c.id)} 
-                            className="p-2 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg transition-colors"
-                          >
-                            <Save className="h-4 w-4" />
-                          </motion.button>
-                        </div>
-                      ) : (
-                        <motion.button 
-                          whileHover={{ scale: 1.1 }}
-                          whileTap={{ scale: 0.9 }}
-                          onClick={() => { setEditingId(c.id); setEditRules(c.rules || ""); }}
-                          className="p-2 text-slate-400 hover:text-fuchsia-600 hover:bg-fuchsia-50 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
-                        >
-                          <Edit3 className="h-4 w-4" />
-                        </motion.button>
-                      )}
+                      <motion.button 
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                        onClick={() => setEditingComp({...c})}
+                        className="p-2 text-slate-400 hover:text-fuchsia-600 hover:bg-fuchsia-50 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+                      >
+                        <Edit3 className="h-4 w-4" />
+                      </motion.button>
                     </td>
                   </motion.tr>
                 ))}
@@ -306,6 +297,98 @@ export default function CompetitionsPage() {
           </div>
         )}
       </motion.div>
+
+      {/* Edit Modal */}
+      <AnimatePresence>
+        {editingComp && (
+          <>
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setEditingComp(null)}
+              className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-40"
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white rounded-3xl shadow-2xl z-50 overflow-hidden border border-slate-100"
+            >
+              <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                <h3 className="text-lg font-bold text-slate-900">Edit Competition</h3>
+                <button onClick={() => setEditingComp(null)} className="p-2 text-slate-400 hover:bg-slate-200 hover:text-slate-700 rounded-full transition-colors">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              <div className="p-6 space-y-5">
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">Event Name</label>
+                  <input
+                    type="text"
+                    disabled
+                    value={editingComp.name}
+                    className="block w-full px-4 py-3 bg-slate-100 border border-slate-200 rounded-xl text-slate-500 font-medium cursor-not-allowed outline-none"
+                  />
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">Type</label>
+                    <select
+                      value={editingComp.type}
+                      onChange={(e) => setEditingComp({ ...editingComp, type: e.target.value })}
+                      className="block w-full px-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-slate-900 outline-none"
+                    >
+                      <option value="Individual">Individual</option>
+                      <option value="Group">Group</option>
+                    </select>
+                  </div>
+                  {editingComp.type === "Group" && (
+                    <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}>
+                      <label className="block text-sm font-semibold text-slate-700 mb-2">Max Participants</label>
+                      <input
+                        type="number"
+                        min="2"
+                        value={editingComp.max_participants || 2}
+                        onChange={(e) => setEditingComp({ ...editingComp, max_participants: parseInt(e.target.value) })}
+                        className="block w-full px-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-slate-900 outline-none"
+                      />
+                    </motion.div>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">Rules (Optional)</label>
+                  <textarea
+                    rows={4}
+                    value={editingComp.rules || ""}
+                    onChange={(e) => setEditingComp({ ...editingComp, rules: e.target.value })}
+                    className="block w-full px-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-slate-900 outline-none resize-none"
+                    placeholder="Enter competition rules here..."
+                  />
+                </div>
+
+                {error && (
+                  <p className="text-sm font-bold text-red-600 bg-red-50 p-3 rounded-lg border border-red-100">{error}</p>
+                )}
+              </div>
+              <div className="px-6 py-4 border-t border-slate-100 bg-slate-50/50 flex justify-end">
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={handleSaveEdit}
+                  disabled={savingComp}
+                  className="flex items-center px-6 py-2.5 bg-fuchsia-600 text-white font-bold rounded-xl shadow-sm hover:bg-fuchsia-700 focus:ring-4 focus:ring-fuchsia-100 disabled:opacity-50 transition-all"
+                >
+                  {savingComp ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+                  Save Changes
+                </motion.button>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }
