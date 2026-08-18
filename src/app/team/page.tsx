@@ -25,6 +25,10 @@ export default function TeamDashboard() {
   const [eventSearchQuery, setEventSearchQuery] = useState("");
   const [eventTypeFilter, setEventTypeFilter] = useState("All");
 
+  const [globalSearch, setGlobalSearch] = useState("");
+  const [globalType, setGlobalType] = useState("All");
+  const [globalZone, setGlobalZone] = useState("All");
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -291,6 +295,41 @@ export default function TeamDashboard() {
         </div>
       </motion.div>
 
+      <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4 bg-white/60 backdrop-blur-xl p-4 sm:p-5 rounded-[1.5rem] border border-white/50 shadow-sm">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
+          <input
+            type="text"
+            placeholder="Search events by name..."
+            value={globalSearch}
+            onChange={(e) => setGlobalSearch(e.target.value)}
+            className="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-fuchsia-500 transition-all font-medium text-slate-700 text-sm"
+          />
+        </div>
+        <div className="flex gap-4 flex-shrink-0">
+          <select
+            value={globalType}
+            onChange={(e) => setGlobalType(e.target.value)}
+            className="w-full sm:w-auto px-4 py-2 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-fuchsia-500 transition-all font-medium text-slate-700 text-sm cursor-pointer"
+          >
+            <option value="All">All Types</option>
+            <option value="Individual">Individual</option>
+            <option value="Group">Group</option>
+          </select>
+          <select
+            value={globalZone}
+            onChange={(e) => setGlobalZone(e.target.value)}
+            className="w-full sm:w-auto px-4 py-2 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-fuchsia-500 transition-all font-medium text-slate-700 text-sm cursor-pointer"
+          >
+            <option value="All">All Zones</option>
+            <option value="Minor Zone">Minor Zone</option>
+            <option value="Mid Zone">Mid Zone</option>
+            <option value="Premier Zone">Premier Zone</option>
+            <option value="General Zone">General Zone</option>
+          </select>
+        </div>
+      </motion.div>
+
       <AnimatePresence mode="wait">
         {error && (
           <motion.div 
@@ -310,20 +349,33 @@ export default function TeamDashboard() {
           {studentCategories.map(category => {
             const catStudents = students.filter(s => s.category === category);
             const catCompetitions = competitions.filter(c => 
-              c.category?.toLowerCase().trim() === (category as string)?.toLowerCase().trim() || 
-              c.category?.toLowerCase().trim() === "general zone"
+              (c.category?.toLowerCase().trim() === (category as string)?.toLowerCase().trim() || 
+              c.category?.toLowerCase().trim() === "general zone") &&
+              c.name.toLowerCase().includes(globalSearch.toLowerCase()) &&
+              (globalType === "All" || c.type === globalType) &&
+              (globalZone === "All" || c.category === globalZone)
             );
             
+            const isFilterActive = globalSearch !== "" || globalType !== "All" || globalZone !== "All";
+            const validStudents = catStudents.filter(student => {
+              if (isFilterActive && catCompetitions.length === 0) return false;
+              return true;
+            });
+
+            if (validStudents.length === 0) return null;
+
             return (
               <motion.div variants={itemVariants} key={category as string} className="glass-card rounded-[2rem] overflow-hidden">
                 <div className="px-8 py-5 border-b border-white/50 bg-white/40">
                   <h2 className="text-xl font-black text-slate-900">{category as string}</h2>
                 </div>
                 <div className="divide-y divide-slate-100">
-                  {catStudents.map(student => {
+                  {validStudents.map(student => {
                     const studentRegs = registrations.filter(r => r.student_id === student.id);
                     const indCount = getStudentIndividualEventCount(student.id);
                     const isMaxedOut = indCount >= (settings?.max_individual_items || 4);
+                    
+                    const matchingRegisteredComps = catCompetitions.filter(comp => studentRegs.some(r => r.event_id === comp.id));
                     
                     return (
                       <div key={student.id} className="p-8 hover:bg-white/40 transition-colors">
@@ -345,9 +397,7 @@ export default function TeamDashboard() {
                         </div>
                         
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                          {catCompetitions
-                            .filter(comp => studentRegs.some(r => r.event_id === comp.id))
-                            .map(comp => {
+                          {matchingRegisteredComps.map(comp => {
                             const studentReg = studentRegs.find(r => r.event_id === comp.id)!;
                             const isGrp = comp.type === "Group";
                             const isLoadingAny = adding === `remove-${student.id}-${comp.id}`;
@@ -403,7 +453,15 @@ export default function TeamDashboard() {
       ) : (
         <div className="space-y-8">
            {compCategories.map(category => {
-            const catCompetitions = competitions.filter(c => c.category === category);
+            const catCompetitions = competitions.filter(c => 
+              c.category === category &&
+              c.name.toLowerCase().includes(globalSearch.toLowerCase()) &&
+              (globalType === "All" || c.type === globalType) &&
+              (globalZone === "All" || c.category === globalZone)
+            );
+            
+            if (catCompetitions.length === 0) return null;
+
             const catStudents = students.filter(s => 
               s.category?.toLowerCase().trim() === (category as string)?.toLowerCase().trim() || 
               (category as string)?.toLowerCase().trim() === "general zone"
