@@ -361,7 +361,7 @@ export default function TeamDashboard() {
                                 
                                 {isGrp ? (
                                   <div className="flex flex-col gap-1.5 flex-shrink-0">
-                                    {[1, 2].map(slot => {
+                                    {Array.from({ length: comp.max_groups_per_team || 1 }, (_, i) => i + 1).map(slot => {
                                       const isRegThisSlot = isRegistered && studentReg.group_slot === slot;
                                       const isRegOtherSlot = isRegistered && studentReg.group_slot !== slot;
                                       const slotCount = registrations.filter(r => r.event_id === comp.id && r.team === teamName && r.group_slot === slot).length;
@@ -467,7 +467,7 @@ export default function TeamDashboard() {
                           
                           {isGrp ? (
                             <div className="flex gap-4">
-                              {[1, 2].map(slot => {
+                              {Array.from({ length: comp.max_groups_per_team || 1 }, (_, i) => i + 1).map(slot => {
                                 const count = registeredRegs.filter(r => r.team === teamName && r.group_slot === slot).length;
                                 return (
                                   <div key={slot} className="flex flex-col items-center bg-white px-4 py-2 rounded-xl shadow-sm border border-slate-100">
@@ -514,7 +514,7 @@ export default function TeamDashboard() {
                                 
                                 {isGrp ? (
                                   <div className="flex flex-col gap-1.5 flex-shrink-0">
-                                    {[1, 2].map(slot => {
+                                    {Array.from({ length: comp.max_groups_per_team || 1 }, (_, i) => i + 1).map(slot => {
                                       const isRegThisSlot = isRegistered && studentReg.group_slot === slot;
                                       const isRegOtherSlot = isRegistered && studentReg.group_slot !== slot;
                                       const slotCount = registeredRegs.filter(r => r.team === teamName && r.group_slot === slot).length;

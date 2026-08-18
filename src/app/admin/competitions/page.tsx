@@ -118,12 +118,14 @@ export default function CompetitionsPage() {
   const handleSaveEdit = async () => {
     setSavingComp(true);
     const finalMax = editingComp.type === "Individual" ? 1 : Math.max(2, editingComp.max_participants);
+    const finalMaxGroups = editingComp.type === "Individual" ? 1 : Math.max(1, editingComp.max_groups_per_team || 1);
     
     const { error: updateError } = await supabase
       .from("competitions")
       .update({ 
         type: editingComp.type,
         max_participants: finalMax,
+        max_groups_per_team: finalMaxGroups,
         rules: editingComp.rules
       })
       .eq("id", editingComp.id);
@@ -133,6 +135,7 @@ export default function CompetitionsPage() {
         ...c, 
         type: editingComp.type, 
         max_participants: finalMax, 
+        max_groups_per_team: finalMaxGroups,
         rules: editingComp.rules 
       } : c));
       setEditingComp(null);
@@ -289,8 +292,13 @@ export default function CompetitionsPage() {
                           {c.type}
                         </span>
                         <span className="text-xs font-medium text-slate-500 ml-1">
-                          Max: {c.max_participants || 1}
+                          Max size: {c.max_participants || 1}
                         </span>
+                        {c.type === 'Group' && (
+                          <span className="text-xs font-medium text-slate-500 ml-1">
+                            Max groups: {c.max_groups_per_team || 1}
+                          </span>
+                        )}
                       </div>
                     </td>
                     <td className="px-8 py-5">
@@ -374,15 +382,27 @@ export default function CompetitionsPage() {
                     </select>
                   </div>
                   {editingComp.type === "Group" && (
-                    <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}>
-                      <label className="block text-sm font-semibold text-slate-700 mb-2">Max Participants</label>
-                      <input
-                        type="number"
-                        min="2"
-                        value={editingComp.max_participants || 2}
-                        onChange={(e) => setEditingComp({ ...editingComp, max_participants: parseInt(e.target.value) })}
-                        className="block w-full px-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-slate-900 outline-none"
-                      />
+                    <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="col-span-2 grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-semibold text-slate-700 mb-2">Max Participants (Per Group)</label>
+                        <input
+                          type="number"
+                          min="2"
+                          value={editingComp.max_participants || 2}
+                          onChange={(e) => setEditingComp({ ...editingComp, max_participants: parseInt(e.target.value) })}
+                          className="block w-full px-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-slate-900 outline-none"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-semibold text-slate-700 mb-2">Max Groups (Per Team)</label>
+                        <input
+                          type="number"
+                          min="1"
+                          value={editingComp.max_groups_per_team || 1}
+                          onChange={(e) => setEditingComp({ ...editingComp, max_groups_per_team: parseInt(e.target.value) })}
+                          className="block w-full px-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-slate-900 outline-none"
+                        />
+                      </div>
                     </motion.div>
                   )}
                 </div>
