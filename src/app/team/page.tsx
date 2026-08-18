@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
-import { Loader2, Download, AlertCircle, Users, ClipboardList, Plus, Trash2, Check, Lock, Unlock } from "lucide-react";
+import { Loader2, Download, AlertCircle, Users, ClipboardList, Plus, Trash2, Check, Lock, Unlock, Search, X } from "lucide-react";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { motion, AnimatePresence } from "framer-motion";
@@ -20,6 +20,9 @@ export default function TeamDashboard() {
   
   const [error, setError] = useState("");
   const [adding, setAdding] = useState<string | null>(null);
+  
+  const [modalStudent, setModalStudent] = useState<any | null>(null);
+  const [eventSearchQuery, setEventSearchQuery] = useState("");
 
   useEffect(() => {
     fetchData();
@@ -341,100 +344,51 @@ export default function TeamDashboard() {
                         </div>
                         
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                          {catCompetitions.map(comp => {
-                            const studentReg = studentRegs.find(r => r.event_id === comp.id);
-                            const isRegistered = !!studentReg;
+                          {catCompetitions
+                            .filter(comp => studentRegs.some(r => r.event_id === comp.id))
+                            .map(comp => {
+                            const studentReg = studentRegs.find(r => r.event_id === comp.id)!;
                             const isGrp = comp.type === "Group";
-                            const isLoadingAny = adding?.startsWith(`${student.id}-${comp.id}`) || adding === `remove-${student.id}-${comp.id}`;
+                            const isLoadingAny = adding === `remove-${student.id}-${comp.id}`;
                             
                             return (
-                              <div key={comp.id} className={cn(
-                                "relative flex items-center justify-between p-4 rounded-xl border-2 transition-all",
-                                isRegistered 
-                                  ? "border-emerald-200 bg-emerald-50/50 shadow-sm" 
-                                  : "border-slate-100 bg-white hover:border-blue-200 hover:shadow-sm"
-                              )}>
+                              <div key={comp.id} className="relative flex items-center justify-between p-4 rounded-xl border-2 border-emerald-200 bg-emerald-50/50 shadow-sm transition-all">
                                 <div className="pr-2 flex-1 min-w-0">
-                                  <p className={cn(
-                                    "text-sm font-bold truncate mb-1",
-                                    isRegistered ? "text-emerald-900" : "text-slate-800"
-                                  )} title={comp.name}>{comp.name}</p>
+                                  <p className="text-sm font-bold truncate mb-1 text-emerald-900" title={comp.name}>{comp.name}</p>
                                   <span className={cn(
                                     "inline-block px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider",
-                                    isGrp ? "bg-purple-100 text-purple-700" : "bg-slate-100 text-slate-500"
+                                    isGrp ? "bg-purple-100 text-purple-700" : "bg-emerald-100 text-emerald-700"
                                   )}>
-                                    {isGrp ? "Group" : "Individual"}
+                                    {isGrp ? `Group ${studentReg.group_slot || 1}` : "Individual"}
                                   </span>
                                 </div>
                                 
-                                {isGrp ? (
-                                  <div className="flex flex-col gap-1.5 flex-shrink-0">
-                                    {Array.from({ length: comp.max_groups_per_team || 1 }, (_, i) => i + 1).map(slot => {
-                                      const isRegThisSlot = isRegistered && studentReg.group_slot === slot;
-                                      const isRegOtherSlot = isRegistered && studentReg.group_slot !== slot;
-                                      const slotCount = registrations.filter(r => r.event_id === comp.id && r.team === teamName && r.group_slot === slot).length;
-                                      const isFull = slotCount >= (comp.max_participants || 2);
-                                      const isAddingSlot = adding === `${student.id}-${comp.id}-${slot}`;
-                                      const isRemoving = adding === `remove-${student.id}-${comp.id}` && isRegThisSlot;
-
-                                      if (isRegThisSlot) {
-                                        return (
-                                          <button
-                                            key={slot}
-                                            onClick={() => handleRemove(student.id, comp.id)}
-                                            disabled={!isOpen || isLoadingAny}
-                                            className="flex items-center justify-center px-2 py-1 text-[10px] font-bold bg-emerald-100 text-emerald-800 hover:bg-red-100 hover:text-red-700 rounded transition-colors disabled:opacity-50"
-                                            title="Remove from group"
-                                          >
-                                            {isRemoving ? <Loader2 className="w-3 h-3 animate-spin" /> : `Group ${slot} (✓)`}
-                                          </button>
-                                        );
-                                      }
-
-                                      return (
-                                        <button
-                                          key={slot}
-                                          onClick={() => handleRegister(student.id, comp.id, slot)}
-                                          disabled={!isOpen || isLoadingAny || isRegOtherSlot || isFull}
-                                          className="flex items-center justify-center px-2 py-1 text-[10px] font-bold bg-slate-100 text-slate-600 hover:bg-blue-100 hover:text-blue-700 rounded transition-colors disabled:opacity-50"
-                                          title={isFull ? `Group ${slot} is full` : isRegOtherSlot ? "Already in another group" : `Add to Group ${slot}`}
-                                        >
-                                          {isAddingSlot ? <Loader2 className="w-3 h-3 animate-spin" /> : `+ G${slot} (${slotCount}/${comp.max_participants || 2})`}
-                                        </button>
-                                      );
-                                    })}
-                                  </div>
-                                ) : (
-                                  <>
-                                    {isRegistered ? (
-                                      <button
-                                        onClick={() => handleRemove(student.id, comp.id)}
-                                        disabled={!isOpen || isLoadingAny}
-                                        className="flex-shrink-0 p-2 text-emerald-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50 group"
-                                        title="Remove registration"
-                                      >
-                                        {isLoadingAny ? <Loader2 className="h-5 w-5 animate-spin" /> : (
-                                          <>
-                                            <Check className="h-5 w-5 block group-hover:hidden" />
-                                            <Trash2 className="h-5 w-5 hidden group-hover:block" />
-                                          </>
-                                        )}
-                                      </button>
-                                    ) : (
-                                      <button
-                                        onClick={() => handleRegister(student.id, comp.id, 1)}
-                                        disabled={!isOpen || isLoadingAny || (comp.category !== "General Zone" && isMaxedOut)}
-                                        className="flex-shrink-0 p-2 text-slate-300 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors disabled:opacity-50"
-                                        title={comp.category !== "General Zone" && isMaxedOut ? "Max individual events reached" : "Add registration"}
-                                      >
-                                        {isLoadingAny ? <Loader2 className="h-5 w-5 animate-spin" /> : <Plus className="h-5 w-5" />}
-                                      </button>
-                                    )}
-                                  </>
-                                )}
+                                <button
+                                  onClick={() => handleRemove(student.id, comp.id)}
+                                  disabled={!isOpen || isLoadingAny}
+                                  className="flex-shrink-0 p-2 text-emerald-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50 group"
+                                  title="Remove registration"
+                                >
+                                  {isLoadingAny ? <Loader2 className="h-5 w-5 animate-spin" /> : (
+                                    <>
+                                      <Check className="h-5 w-5 block group-hover:hidden" />
+                                      <Trash2 className="h-5 w-5 hidden group-hover:block" />
+                                    </>
+                                  )}
+                                </button>
                               </div>
                             );
                           })}
+
+                          <button
+                            onClick={() => {
+                              setModalStudent(student);
+                              setEventSearchQuery("");
+                            }}
+                            className="flex items-center justify-center p-4 rounded-xl border-2 border-dashed border-slate-300 hover:border-fuchsia-400 hover:bg-fuchsia-50 transition-all text-slate-500 hover:text-fuchsia-600 font-bold text-sm min-h-[76px]"
+                          >
+                            <Plus className="w-5 h-5 mr-2" /> Add Event
+                          </button>
                         </div>
                       </div>
                     );
@@ -599,6 +553,157 @@ export default function TeamDashboard() {
           })}
         </div>
       )}
+
+      {/* MODAL */}
+      <AnimatePresence>
+        {modalStudent && (
+          <motion.div 
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm"
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-white w-full max-w-4xl max-h-[90vh] rounded-[2rem] shadow-2xl flex flex-col overflow-hidden"
+            >
+              <div className="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                <div>
+                  <h3 className="text-xl font-black text-slate-900">Assign Events</h3>
+                  <p className="text-sm font-semibold text-slate-500 mt-1">
+                    Student: <span className="text-slate-700">{modalStudent.name}</span> • ID: {modalStudent.id}
+                  </p>
+                </div>
+                <button onClick={() => setModalStudent(null)} className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors">
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+              
+              <div className="p-6 border-b border-slate-100">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
+                  <input
+                    type="text"
+                    placeholder="Search events by name..."
+                    value={eventSearchQuery}
+                    onChange={(e) => setEventSearchQuery(e.target.value)}
+                    className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:bg-white transition-all font-medium text-slate-700"
+                  />
+                </div>
+              </div>
+              
+              <div className="flex-1 overflow-y-auto p-6 bg-slate-50/30">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {(() => {
+                    const studentRegs = registrations.filter(r => r.student_id === modalStudent.id);
+                    const indCount = getStudentIndividualEventCount(modalStudent.id);
+                    const isMaxedOut = indCount >= (settings?.max_individual_items || 4);
+                    const eligibleComps = competitions.filter(c => 
+                      c.category?.toLowerCase().trim() === modalStudent.category?.toLowerCase().trim() || 
+                      c.category?.toLowerCase().trim() === "general zone"
+                    ).filter(c => c.name.toLowerCase().includes(eventSearchQuery.toLowerCase()));
+
+                    if (eligibleComps.length === 0) {
+                      return <div className="col-span-full py-8 text-center text-slate-500 font-medium">No events found.</div>;
+                    }
+
+                    return eligibleComps.map(comp => {
+                      const studentReg = studentRegs.find(r => r.event_id === comp.id);
+                      const isRegistered = !!studentReg;
+                      const isGrp = comp.type === "Group";
+                      const isLoadingAny = adding?.startsWith(`${modalStudent.id}-${comp.id}`) || adding === `remove-${modalStudent.id}-${comp.id}`;
+                      
+                      return (
+                        <div key={comp.id} className={cn(
+                          "relative flex items-center justify-between p-4 rounded-xl border-2 transition-all bg-white",
+                          isRegistered ? "border-emerald-200 shadow-sm" : "border-slate-100 hover:border-blue-200 hover:shadow-sm"
+                        )}>
+                          <div className="pr-2 flex-1 min-w-0">
+                            <p className={cn(
+                              "text-sm font-bold truncate mb-1",
+                              isRegistered ? "text-emerald-900" : "text-slate-800"
+                            )} title={comp.name}>{comp.name}</p>
+                            <span className={cn(
+                              "inline-block px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider",
+                              isGrp ? "bg-purple-100 text-purple-700" : "bg-slate-100 text-slate-500"
+                            )}>
+                              {isGrp ? "Group" : "Individual"}
+                            </span>
+                          </div>
+                          
+                          {isGrp ? (
+                            <div className="flex flex-col gap-1.5 flex-shrink-0">
+                              {Array.from({ length: comp.max_groups_per_team || 1 }, (_, i) => i + 1).map(slot => {
+                                const isRegThisSlot = isRegistered && studentReg.group_slot === slot;
+                                const isRegOtherSlot = isRegistered && studentReg.group_slot !== slot;
+                                const slotCount = registrations.filter(r => r.event_id === comp.id && r.team === teamName && r.group_slot === slot).length;
+                                const isFull = slotCount >= (comp.max_participants || 2);
+                                const isAddingSlot = adding === `${modalStudent.id}-${comp.id}-${slot}`;
+                                const isRemoving = adding === `remove-${modalStudent.id}-${comp.id}` && isRegThisSlot;
+
+                                if (isRegThisSlot) {
+                                  return (
+                                    <button
+                                      key={slot}
+                                      onClick={() => handleRemove(modalStudent.id, comp.id)}
+                                      disabled={!isOpen || isLoadingAny}
+                                      className="flex items-center justify-center px-2 py-1 text-[10px] font-bold bg-emerald-100 text-emerald-800 hover:bg-red-100 hover:text-red-700 rounded transition-colors disabled:opacity-50"
+                                      title="Remove from group"
+                                    >
+                                      {isRemoving ? <Loader2 className="w-3 h-3 animate-spin" /> : `Group ${slot} (✓)`}
+                                    </button>
+                                  );
+                                }
+
+                                return (
+                                  <button
+                                    key={slot}
+                                    onClick={() => handleRegister(modalStudent.id, comp.id, slot)}
+                                    disabled={!isOpen || isLoadingAny || isRegOtherSlot || isFull}
+                                    className="flex items-center justify-center px-2 py-1 text-[10px] font-bold bg-slate-100 text-slate-600 hover:bg-blue-100 hover:text-blue-700 rounded transition-colors disabled:opacity-50"
+                                    title={isFull ? `Group ${slot} is full` : isRegOtherSlot ? "Already in another group" : `Add to Group ${slot}`}
+                                  >
+                                    {isAddingSlot ? <Loader2 className="w-3 h-3 animate-spin" /> : `+ G${slot} (${slotCount}/${comp.max_participants || 2})`}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          ) : (
+                            <>
+                              {isRegistered ? (
+                                <button
+                                  onClick={() => handleRemove(modalStudent.id, comp.id)}
+                                  disabled={!isOpen || isLoadingAny}
+                                  className="flex-shrink-0 p-2 text-emerald-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50 group"
+                                  title="Remove registration"
+                                >
+                                  {isLoadingAny ? <Loader2 className="h-5 w-5 animate-spin" /> : (
+                                    <>
+                                      <Check className="h-5 w-5 block group-hover:hidden" />
+                                      <Trash2 className="h-5 w-5 hidden group-hover:block" />
+                                    </>
+                                  )}
+                                </button>
+                              ) : (
+                                <button
+                                  onClick={() => handleRegister(modalStudent.id, comp.id, 1)}
+                                  disabled={!isOpen || isLoadingAny || (comp.category !== "General Zone" && isMaxedOut)}
+                                  className="flex-shrink-0 p-2 text-slate-300 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors disabled:opacity-50"
+                                  title={comp.category !== "General Zone" && isMaxedOut ? "Max individual events reached" : "Add registration"}
+                                >
+                                  {isLoadingAny ? <Loader2 className="h-5 w-5 animate-spin" /> : <Plus className="h-5 w-5" />}
+                                </button>
+                              )}
+                            </>
+                          )}
+                        </div>
+                      );
+                    });
+                  })()}
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }
