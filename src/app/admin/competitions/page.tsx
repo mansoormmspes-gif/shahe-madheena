@@ -80,7 +80,7 @@ export default function CompetitionsPage() {
           startY += 6;
 
           const tableData = compRegs.map(r => {
-            const student = r.students || { name: 'Unknown', class: 'Unknown' };
+            const student: any = (Array.isArray(r.students) ? r.students[0] : r.students) || { name: 'Unknown', class: 'Unknown' };
             return [
               student.name,
               r.team,
