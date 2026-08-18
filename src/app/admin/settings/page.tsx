@@ -15,6 +15,7 @@ export default function SettingsPage() {
     registration_end_time: "",
     show_leaderboard: false,
     poster_template_url: "",
+    zone_config: null as any,
   });
 
   useEffect(() => {
@@ -43,6 +44,7 @@ export default function SettingsPage() {
         registration_end_time: formatTime(data.registration_end_time),
         show_leaderboard: data.show_leaderboard || false,
         poster_template_url: data.poster_template_url || "",
+        zone_config: data.zone_config || null,
       });
     }
     setLoading(false);
@@ -219,6 +221,41 @@ export default function SettingsPage() {
                   className="block w-full px-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 sm:text-sm transition-all text-slate-900 outline-none"
                 />
                 <p className="mt-2 text-xs font-medium text-slate-500">Provide a URL for the background image used in the Custom Result Poster generator.</p>
+              </div>
+            </div>
+
+            {/* Zone Settings */}
+            <div className="lg:col-span-2 space-y-6 pt-4 border-t border-slate-100">
+              <h3 className="text-lg font-bold text-slate-900 flex items-center mb-4">
+                <Users className="w-5 h-5 mr-2 text-indigo-500" />
+                Zone Classification (Classes)
+              </h3>
+              <p className="text-sm font-medium text-slate-500 mb-4">
+                Enter classes separated by commas (e.g., 1, 2, 3) for each zone. These will be used to automatically assign students to their correct zone when added.
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {["Minor Zone", "Mid Zone", "Premier Zone"].map((zone) => (
+                  <div key={zone}>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">
+                      {zone}
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="e.g. 1, 2, 3"
+                      value={
+                        (settings.zone_config && settings.zone_config[zone]) 
+                        ? settings.zone_config[zone].join(", ") 
+                        : (zone === "Minor Zone" ? "1, 2, 3" : zone === "Mid Zone" ? "4, 5, 6, 7" : "8, 9, 10, 11, 12")
+                      }
+                      onChange={(e) => {
+                        const newConfig = { ...settings.zone_config };
+                        newConfig[zone] = e.target.value.split(",").map(c => c.trim()).filter(Boolean);
+                        setSettings({ ...settings, zone_config: newConfig });
+                      }}
+                      className="block w-full px-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 sm:text-sm transition-all text-slate-900 outline-none"
+                    />
+                  </div>
+                ))}
               </div>
             </div>
           </div>
