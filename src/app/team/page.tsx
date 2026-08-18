@@ -68,7 +68,7 @@ export default function TeamDashboard() {
     return registrations.filter(r => {
       if (r.student_id !== studentId) return false;
       const comp = competitions.find(c => c.id === r.event_id);
-      return comp?.type === "Individual" && comp?.category !== "General Zone";
+      return comp?.type === "Individual" && comp?.category?.toLowerCase().trim() !== "general zone";
     }).length;
   };
 
@@ -84,7 +84,7 @@ export default function TeamDashboard() {
     const comp = competitions.find(c => c.id === eventId);
     if (!comp) return;
 
-    if (comp.type === "Individual" && comp.category !== "General Zone") {
+    if (comp.type === "Individual" && comp.category?.toLowerCase().trim() !== "general zone") {
       const count = getStudentIndividualEventCount(studentId);
       if (count >= (settings?.max_individual_items || 4)) {
         setError(`This student has already reached the maximum limit of ${settings?.max_individual_items || 4} individual competitions.`);
@@ -532,7 +532,7 @@ export default function TeamDashboard() {
                                     ) : (
                                       <button
                                         onClick={() => handleRegister(student.id, comp.id, 1)}
-                                        disabled={!isOpen || isLoadingAny || (comp.category !== "General Zone" && isMaxedOut)}
+                                        disabled={!isOpen || isLoadingAny || (comp.category?.toLowerCase().trim() !== "general zone" && isMaxedOut)}
                                         className="flex-shrink-0 p-2 text-slate-300 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors disabled:opacity-50"
                                       >
                                         {isLoadingAny ? <Loader2 className="h-5 w-5 animate-spin" /> : <Plus className="h-5 w-5" />}
@@ -685,9 +685,9 @@ export default function TeamDashboard() {
                               ) : (
                                 <button
                                   onClick={() => handleRegister(modalStudent.id, comp.id, 1)}
-                                  disabled={!isOpen || isLoadingAny || (comp.category !== "General Zone" && isMaxedOut)}
+                                  disabled={!isOpen || isLoadingAny || (comp.category?.toLowerCase().trim() !== "general zone" && isMaxedOut)}
                                   className="flex-shrink-0 p-2 text-slate-300 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors disabled:opacity-50"
-                                  title={comp.category !== "General Zone" && isMaxedOut ? "Max individual events reached" : "Add registration"}
+                                  title={comp.category?.toLowerCase().trim() !== "general zone" && isMaxedOut ? "Max individual events reached" : "Add registration"}
                                 >
                                   {isLoadingAny ? <Loader2 className="h-5 w-5 animate-spin" /> : <Plus className="h-5 w-5" />}
                                 </button>

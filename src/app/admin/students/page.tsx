@@ -444,10 +444,9 @@ export default function StudentsPage() {
                     className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm"
                   >
                     <option value="" disabled>Select Zone</option>
-                    <option value="Sub Junior">Sub Junior</option>
-                    <option value="Junior">Junior</option>
-                    <option value="Senior">Senior</option>
-                    <option value="Super Senior">Super Senior</option>
+                    <option value="Minor Zone">Minor Zone</option>
+                    <option value="Mid Zone">Mid Zone</option>
+                    <option value="Premier Zone">Premier Zone</option>
                   </select>
                 </div>
                 <div className="pt-4 border-t border-slate-100 mt-6">
