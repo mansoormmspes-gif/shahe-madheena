@@ -37,9 +37,12 @@ export async function proxy(request: NextRequest) {
     }
   )
 
-  // Do not run code that assumes `supabase` is authenticated here.
   // We just call getSession to refresh the auth token if needed.
-  await supabase.auth.getSession()
+  try {
+    await supabase.auth.getSession()
+  } catch (error) {
+    console.error('Middleware Supabase Error:', error)
+  }
 
   return supabaseResponse
 }
