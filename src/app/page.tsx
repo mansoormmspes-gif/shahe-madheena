@@ -203,7 +203,18 @@ export default function PublicPage() {
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
+              className="flex items-center gap-3"
             >
+              <Link href="/leaderboard">
+                <motion.button 
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="hidden md:flex items-center text-sm font-bold text-amber-600 hover:text-amber-700 bg-amber-50 hover:bg-amber-100 px-5 py-2.5 rounded-full transition-all border border-amber-100 group"
+                >
+                  <Trophy className="w-4 h-4 mr-2" />
+                  Live Leaderboard
+                </motion.button>
+              </Link>
               <Link href="/login">
                 <motion.button 
                   whileHover={{ scale: 1.05 }}
