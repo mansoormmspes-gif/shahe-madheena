@@ -39,13 +39,15 @@ export default function TeamDashboard() {
     const { data: settingsData } = await supabase.from("settings").select("*").eq("id", 1).single();
     setSettings(settingsData);
 
-    const { data: studentsData } = await supabase.from("students").select("*").eq("team", profile.team_name);
+    const { data: studentsData, error: studentsError } = await supabase.from("students").select("*").ilike("team", profile.team_name);
+    console.log("Fetched students:", studentsData, "Error:", studentsError);
     if (studentsData) setStudents(studentsData);
 
     const { data: compsData } = await supabase.from("competitions").select("*").order("name");
     if (compsData) setCompetitions(compsData);
 
-    const { data: regsData } = await supabase.from("registrations").select("*").eq("team", profile.team_name);
+    const { data: regsData, error: regsError } = await supabase.from("registrations").select("*").ilike("team", profile.team_name);
+    console.log("Fetched registrations:", regsData, "Error:", regsError);
     if (regsData) setRegistrations(regsData);
 
     setLoading(false);
