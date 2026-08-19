@@ -195,7 +195,7 @@ export default function PublicPage() {
               animate={{ opacity: 1, x: 0 }}
               className="flex items-center gap-4"
             >
-              <div className="relative w-32 h-12 flex items-center justify-center">
+              <div className="relative w-16 h-16 flex items-center justify-center">
                 <Image src="/logo.png" alt="Logo" fill className="object-contain" priority />
               </div>
               <div className="flex flex-col">
@@ -245,7 +245,7 @@ export default function PublicPage() {
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.2, type: "spring" as const, stiffness: 200, damping: 20 }}
-            className="relative w-64 h-32 md:w-96 md:h-48 mx-auto mb-10"
+            className="relative w-48 h-48 md:w-64 md:h-64 mx-auto mb-10"
           >
             <div className="absolute inset-0 p-4 flex items-center justify-center">
               <Image 
@@ -501,7 +501,7 @@ export default function PublicPage() {
 
             {/* Top Logo & Title */}
             <div className="absolute top-24 w-full text-center z-20">
-              <div className="relative w-64 h-32 md:w-80 md:h-40 mx-auto mb-8 flex items-center justify-center p-4">
+              <div className="relative w-48 h-48 md:w-56 md:h-56 mx-auto mb-8 flex items-center justify-center p-4">
                 <img src="/logo.png" alt="Logo" className="w-full h-full object-contain drop-shadow-2xl" crossOrigin="anonymous" />
               </div>
               <h2 className="text-white text-4xl md:text-5xl font-black tracking-[0.2em] uppercase drop-shadow-2xl">

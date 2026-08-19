@@ -80,8 +80,8 @@ export default function LoginPage() {
         className="sm:mx-auto sm:w-full sm:max-w-md z-10"
       >
         <div className="flex justify-center mb-6">
-          <div className="relative w-40 h-20 flex items-center justify-center">
-            <Image src="/logo.png" alt="Logo" fill className="object-contain" priority />
+          <div className="relative w-32 h-32 flex items-center justify-center">
+            <Image src="/logo.png" alt="Logo" fill className="object-contain drop-shadow-md" priority />
           </div>
         </div>
         <h2 className="mt-2 text-center text-3xl font-extrabold text-slate-900 tracking-tight">

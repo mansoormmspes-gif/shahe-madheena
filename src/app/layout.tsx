@@ -17,6 +17,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Meelad Fest 2k26 - Irshadu swibiyan madrasa",
   description: "Event registration and management for Meelad Fest 2k26",
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
