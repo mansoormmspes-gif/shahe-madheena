@@ -208,44 +208,123 @@ export default function TeamDashboard() {
     doc.setTextColor(100, 100, 100);
     doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 30);
 
-    const categories = Array.from(new Set(students.map(s => s.category)));
     let startY = 40;
 
-    categories.forEach(category => {
+    // --- SECTION 1: Event-wise Summary (Grouped by Competition Category) ---
+    doc.setFontSize(18);
+    doc.setTextColor(15, 23, 42);
+    doc.text("Event-wise Summary", 14, startY);
+    startY += 10;
+
+    const compCategories = Array.from(new Set(competitions.map(c => c.category)));
+    
+    compCategories.forEach(category => {
+      const catComps = competitions.filter(c => c.category === category);
+      const tableData: any[] = [];
+      
+      catComps.forEach(comp => {
+        const compRegs = registrations.filter(r => r.event_id === comp.id && r.team === teamName);
+        if (compRegs.length === 0) return;
+        
+        if (comp.type === "Group") {
+          const slots = Array.from(new Set(compRegs.map(r => r.group_slot || 1)));
+          slots.sort((a, b) => a - b).forEach(slot => {
+            const slotRegs = compRegs.filter(r => (r.group_slot || 1) === slot);
+            const studentNames = slotRegs.map(r => {
+              const student = students.find(s => s.id === r.student_id);
+              return student ? `${student.name} (${student.class})` : r.student_id;
+            }).join(", ");
+            tableData.push([comp.name, `Group ${slot}`, studentNames]);
+          });
+        } else {
+          const studentNames = compRegs.map(r => {
+            const student = students.find(s => s.id === r.student_id);
+            return student ? `${student.name} (${student.class})` : r.student_id;
+          }).join(", ");
+          tableData.push([comp.name, "Individual", studentNames]);
+        }
+      });
+
+      if (tableData.length > 0) {
+        if (startY > 250) { doc.addPage(); startY = 20; }
+        doc.setFontSize(14);
+        doc.setTextColor(0, 0, 0);
+        doc.text(`${category}`, 14, startY);
+        startY += 6;
+
+        autoTable(doc, {
+          startY: startY,
+          head: [['Event Name', 'Type', 'Registered Students']],
+          body: tableData,
+          theme: 'grid',
+          headStyles: { fillColor: [71, 85, 105] },
+          styles: { fontSize: 9 }
+        });
+        startY = (doc as any).lastAutoTable.finalY + 15;
+      }
+    });
+
+    // --- SECTION 2: Student-wise Summary ---
+    if (startY > 230) { doc.addPage(); startY = 20; }
+    
+    doc.setFontSize(18);
+    doc.setTextColor(15, 23, 42);
+    doc.text("Student-wise Summary", 14, startY);
+    startY += 10;
+
+    const studentCategories = Array.from(new Set(students.map(s => s.category)));
+
+    studentCategories.forEach(category => {
       const catStudents = students.filter(s => s.category === category);
       
-      doc.setFontSize(16);
-      doc.setTextColor(0, 0, 0);
-      doc.text(category as string, 14, startY);
-      startY += 6;
-
       const tableData: any[] = [];
       catStudents.forEach(student => {
         const studentRegs = registrations.filter(r => r.student_id === student.id);
-        const eventNames = studentRegs.map(r => {
-          const comp = competitions.find(c => c.id === r.event_id);
-          const name = comp ? comp.name : r.event_id;
-          return comp?.type === "Group" ? `${name} (G${r.group_slot || 1})` : name;
+        
+        const zoneEvents = studentRegs.filter(r => {
+          const c = competitions.find(comp => comp.id === r.event_id);
+          return c && c.category !== "General Zone";
+        }).map(r => {
+          const c = competitions.find(comp => comp.id === r.event_id);
+          const n = c ? c.name : r.event_id;
+          return c?.type === "Group" ? `${n} (G${r.group_slot || 1})` : n;
+        }).join(", ");
+
+        const generalEvents = studentRegs.filter(r => {
+          const c = competitions.find(comp => comp.id === r.event_id);
+          return c && c.category === "General Zone";
+        }).map(r => {
+          const c = competitions.find(comp => comp.id === r.event_id);
+          const n = c ? c.name : r.event_id;
+          return c?.type === "Group" ? `${n} (G${r.group_slot || 1})` : n;
         }).join(", ");
         
         tableData.push([
           student.id,
           student.name,
           student.class,
-          eventNames || "None"
+          zoneEvents || "-",
+          generalEvents || "-"
         ]);
       });
 
-      autoTable(doc, {
-        startY: startY,
-        head: [['ID', 'Name', 'Class', 'Registered Events']],
-        body: tableData,
-        theme: 'grid',
-        headStyles: { fillColor: [15, 23, 42] },
-        styles: { fontSize: 10 }
-      });
+      if (tableData.length > 0) {
+        if (startY > 250) { doc.addPage(); startY = 20; }
+        doc.setFontSize(14);
+        doc.setTextColor(0, 0, 0);
+        doc.text(`${category} Students`, 14, startY);
+        startY += 6;
 
-      startY = (doc as any).lastAutoTable.finalY + 15;
+        autoTable(doc, {
+          startY: startY,
+          head: [['ID', 'Name', 'Class', 'Zone Events', 'General Zone Events']],
+          body: tableData,
+          theme: 'grid',
+          headStyles: { fillColor: [15, 23, 42] },
+          styles: { fontSize: 9 }
+        });
+        startY = (doc as any).lastAutoTable.finalY + 15;
+      }
     });
 
     doc.save(`Team_${teamName}_Registrations.pdf`);
