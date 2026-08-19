@@ -112,7 +112,7 @@ export default function SettingsPage() {
           <Settings2 className="h-6 w-6" />
         </div>
         <div>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight">Fest Settings</h1>
+          <h1 className="text-3xl font-black text-white tracking-tight">Fest Settings</h1>
           <p className="text-slate-500 font-medium">Configure global rules and appearance for Meelad Fest 2k26.</p>
         </div>
       </motion.div>
@@ -132,7 +132,7 @@ export default function SettingsPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-10 gap-y-8">
             {/* Registration Settings */}
             <div className="space-y-6">
-              <h3 className="text-lg font-bold text-slate-900 flex items-center border-b border-slate-100 pb-4">
+              <h3 className="text-lg font-bold text-white flex items-center border-b border-slate-100 pb-4">
                 <Clock className="w-5 h-5 mr-2 text-indigo-500" />
                 Registration Window
               </h3>
@@ -146,7 +146,7 @@ export default function SettingsPage() {
                     type="datetime-local"
                     value={settings.registration_start_time}
                     onChange={(e) => setSettings({ ...settings, registration_start_time: e.target.value })}
-                    className="block w-full px-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 sm:text-sm transition-all text-slate-900 outline-none"
+                    className="block w-full px-4 py-3 bg-slate-950/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 sm:text-sm transition-all text-white outline-none"
                   />
                 </div>
                 <div>
@@ -157,7 +157,7 @@ export default function SettingsPage() {
                     type="datetime-local"
                     value={settings.registration_end_time}
                     onChange={(e) => setSettings({ ...settings, registration_end_time: e.target.value })}
-                    className="block w-full px-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 sm:text-sm transition-all text-slate-900 outline-none"
+                    className="block w-full px-4 py-3 bg-slate-950/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 sm:text-sm transition-all text-white outline-none"
                   />
                 </div>
               </div>
@@ -165,7 +165,7 @@ export default function SettingsPage() {
 
             {/* Rules & Display Settings */}
             <div className="space-y-6">
-              <h3 className="text-lg font-bold text-slate-900 flex items-center border-b border-slate-100 pb-4">
+              <h3 className="text-lg font-bold text-white flex items-center border-b border-slate-100 pb-4">
                 <Users className="w-5 h-5 mr-2 text-indigo-500" />
                 Rules & Display
               </h3>
@@ -181,21 +181,21 @@ export default function SettingsPage() {
                     required
                     value={settings.max_individual_items}
                     onChange={(e) => setSettings({ ...settings, max_individual_items: parseInt(e.target.value) })}
-                    className="block w-full px-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 sm:text-sm transition-all text-slate-900 outline-none"
+                    className="block w-full px-4 py-3 bg-slate-950/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 sm:text-sm transition-all text-white outline-none"
                   />
                 </div>
 
                 <div className="pt-2">
-                  <label className="relative flex items-center cursor-pointer p-4 bg-slate-50/50 border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors">
+                  <label className="relative flex items-center cursor-pointer p-4 bg-slate-950/50 border border-slate-200 rounded-xl hover:bg-slate-950 transition-colors">
                     <input
                       type="checkbox"
                       className="sr-only peer"
                       checked={settings.show_leaderboard}
                       onChange={(e) => setSettings({ ...settings, show_leaderboard: e.target.checked })}
                     />
-                    <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-100 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[18px] after:left-[18px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                    <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-100 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[18px] after:left-[18px] after:bg-slate-900 after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
                     <div className="ml-4 flex flex-col">
-                      <span className="text-sm font-bold text-slate-900">Show Leaderboard Publicly</span>
+                      <span className="text-sm font-bold text-white">Show Leaderboard Publicly</span>
                       <span className="text-xs font-medium text-slate-500">Toggle live points on the public page</span>
                     </div>
                   </label>
@@ -205,7 +205,7 @@ export default function SettingsPage() {
 
             {/* Poster Template */}
             <div className="lg:col-span-2 space-y-6 pt-4 border-t border-slate-100">
-              <h3 className="text-lg font-bold text-slate-900 flex items-center mb-4">
+              <h3 className="text-lg font-bold text-white flex items-center mb-4">
                 <ImageIcon className="w-5 h-5 mr-2 text-indigo-500" />
                 Custom Assets
               </h3>
@@ -218,7 +218,7 @@ export default function SettingsPage() {
                   placeholder="https://example.com/poster-bg.png"
                   value={settings.poster_template_url}
                   onChange={(e) => setSettings({ ...settings, poster_template_url: e.target.value })}
-                  className="block w-full px-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 sm:text-sm transition-all text-slate-900 outline-none"
+                  className="block w-full px-4 py-3 bg-slate-950/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 sm:text-sm transition-all text-white outline-none"
                 />
                 <p className="mt-2 text-xs font-medium text-slate-500">Provide a URL for the background image used in the Custom Result Poster generator.</p>
               </div>
@@ -226,7 +226,7 @@ export default function SettingsPage() {
 
             {/* Zone Settings */}
             <div className="lg:col-span-2 space-y-6 pt-4 border-t border-slate-100">
-              <h3 className="text-lg font-bold text-slate-900 flex items-center mb-4">
+              <h3 className="text-lg font-bold text-white flex items-center mb-4">
                 <Users className="w-5 h-5 mr-2 text-indigo-500" />
                 Zone Classification (Classes)
               </h3>
@@ -252,7 +252,7 @@ export default function SettingsPage() {
                         newConfig[zone] = e.target.value.split(",").map(c => c.trim()).filter(Boolean);
                         setSettings({ ...settings, zone_config: newConfig });
                       }}
-                      className="block w-full px-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 sm:text-sm transition-all text-slate-900 outline-none"
+                      className="block w-full px-4 py-3 bg-slate-950/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 sm:text-sm transition-all text-white outline-none"
                     />
                   </div>
                 ))}

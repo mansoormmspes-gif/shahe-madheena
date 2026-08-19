@@ -306,7 +306,7 @@ export default function CompetitionsPage() {
           <ClipboardList className="h-6 w-6" />
         </div>
         <div>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight">Competitions</h1>
+          <h1 className="text-3xl font-black text-white tracking-tight">Competitions</h1>
           <p className="text-slate-500 font-medium">Manage events, categories, and competition rules.</p>
         </div>
       </motion.div>
@@ -314,7 +314,7 @@ export default function CompetitionsPage() {
       <motion.div variants={itemVariants} className="glass-card rounded-[2rem] overflow-hidden p-8 sm:p-10 mb-8">
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 pb-6 border-b border-slate-100 gap-4">
           <div>
-            <h2 className="text-xl font-bold text-slate-900 mb-1">Add Competitions</h2>
+            <h2 className="text-xl font-bold text-white mb-1">Add Competitions</h2>
             <p className="text-sm text-slate-500 font-medium">
               Upload a CSV file or add a competition manually.
             </p>
@@ -376,7 +376,7 @@ export default function CompetitionsPage() {
         </AnimatePresence>
 
         <div className="flex items-center justify-center w-full">
-          <label className={`flex flex-col items-center justify-center w-full h-40 border-2 border-dashed rounded-[2rem] cursor-pointer bg-slate-50/50 border-slate-300 hover:bg-slate-50 hover:border-fuchsia-400 transition-all ${loading ? "opacity-50 cursor-not-allowed" : "group"}`}>
+          <label className={`flex flex-col items-center justify-center w-full h-40 border-2 border-dashed rounded-[2rem] cursor-pointer bg-slate-950/50 border-slate-300 hover:bg-slate-950 hover:border-fuchsia-400 transition-all ${loading ? "opacity-50 cursor-not-allowed" : "group"}`}>
             <div className="flex flex-col items-center justify-center pt-5 pb-6">
               {loading ? (
                 <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}>
@@ -385,7 +385,7 @@ export default function CompetitionsPage() {
               ) : (
                 <motion.div
                   whileHover={{ y: -5 }}
-                  className="p-3 bg-white rounded-full shadow-sm mb-3 group-hover:shadow-md transition-shadow"
+                  className="p-3 bg-slate-900 rounded-full shadow-sm mb-3 group-hover:shadow-md transition-shadow"
                 >
                   <Upload className="w-6 h-6 text-fuchsia-500" />
                 </motion.div>
@@ -406,8 +406,8 @@ export default function CompetitionsPage() {
       </motion.div>
 
       <motion.div variants={itemVariants} className="glass-card rounded-[2rem] overflow-hidden">
-        <div className="px-8 py-6 border-b border-slate-100 bg-white/50">
-          <h2 className="text-xl font-bold text-slate-900">Event Registry</h2>
+        <div className="px-8 py-6 border-b border-slate-100 bg-slate-900/50">
+          <h2 className="text-xl font-bold text-white">Event Registry</h2>
         </div>
         
         {fetching ? (
@@ -423,7 +423,7 @@ export default function CompetitionsPage() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm text-left">
-              <thead className="bg-slate-50 text-slate-500 border-b border-slate-100">
+              <thead className="bg-slate-950 text-slate-500 border-b border-slate-100">
                 <tr>
                   <th className="px-8 py-4 font-bold uppercase tracking-wider text-xs">Name</th>
                   <th className="px-8 py-4 font-bold uppercase tracking-wider text-xs">Category</th>
@@ -439,9 +439,9 @@ export default function CompetitionsPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: idx * 0.05 }}
                     key={c.id} 
-                    className="hover:bg-slate-50/50 transition-colors group"
+                    className="hover:bg-slate-950/50 transition-colors group"
                   >
-                    <td className="px-8 py-5 text-slate-900 font-bold">{c.name}</td>
+                    <td className="px-8 py-5 text-white font-bold">{c.name}</td>
                     <td className="px-8 py-5">
                       <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-fuchsia-100 text-fuchsia-800 border border-fuchsia-200">
                         {c.category}
@@ -512,10 +512,10 @@ export default function CompetitionsPage() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white rounded-3xl shadow-2xl z-50 overflow-hidden border border-slate-100"
+              className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-slate-900 rounded-3xl shadow-2xl z-50 overflow-hidden border border-slate-100"
             >
-              <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-                <h3 className="text-lg font-bold text-slate-900">Edit Competition</h3>
+              <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-950/50">
+                <h3 className="text-lg font-bold text-white">Edit Competition</h3>
                 <button onClick={() => setEditingComp(null)} className="p-2 text-slate-400 hover:bg-slate-200 hover:text-slate-700 rounded-full transition-colors">
                   <X className="w-5 h-5" />
                 </button>
@@ -537,7 +537,7 @@ export default function CompetitionsPage() {
                     <select
                       value={editingComp.type}
                       onChange={(e) => setEditingComp({ ...editingComp, type: e.target.value })}
-                      className="block w-full px-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-slate-900 outline-none"
+                      className="block w-full px-4 py-3 bg-slate-950/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-white outline-none"
                     >
                       <option value="Individual">Individual</option>
                       <option value="Group">Group</option>
@@ -552,7 +552,7 @@ export default function CompetitionsPage() {
                           min="2"
                           value={editingComp.max_participants || 2}
                           onChange={(e) => setEditingComp({ ...editingComp, max_participants: parseInt(e.target.value) })}
-                          className="block w-full px-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-slate-900 outline-none"
+                          className="block w-full px-4 py-3 bg-slate-950/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-white outline-none"
                         />
                       </div>
                       <div>
@@ -562,7 +562,7 @@ export default function CompetitionsPage() {
                           min="1"
                           value={editingComp.max_groups_per_team || 1}
                           onChange={(e) => setEditingComp({ ...editingComp, max_groups_per_team: parseInt(e.target.value) })}
-                          className="block w-full px-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-slate-900 outline-none"
+                          className="block w-full px-4 py-3 bg-slate-950/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-white outline-none"
                         />
                       </div>
                     </motion.div>
@@ -575,7 +575,7 @@ export default function CompetitionsPage() {
                     rows={4}
                     value={editingComp.rules || ""}
                     onChange={(e) => setEditingComp({ ...editingComp, rules: e.target.value })}
-                    className="block w-full px-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-slate-900 outline-none resize-none"
+                    className="block w-full px-4 py-3 bg-slate-950/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-white outline-none resize-none"
                     placeholder="Enter competition rules here..."
                   />
                 </div>
@@ -584,7 +584,7 @@ export default function CompetitionsPage() {
                   <p className="text-sm font-bold text-red-600 bg-red-50 p-3 rounded-lg border border-red-100">{error}</p>
                 )}
               </div>
-              <div className="px-6 py-4 border-t border-slate-100 bg-slate-50/50 flex justify-end">
+              <div className="px-6 py-4 border-t border-slate-100 bg-slate-950/50 flex justify-end">
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
@@ -616,10 +616,10 @@ export default function CompetitionsPage() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white rounded-3xl shadow-2xl z-50 overflow-hidden border border-slate-100"
+              className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-slate-900 rounded-3xl shadow-2xl z-50 overflow-hidden border border-slate-100"
             >
-              <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-                <h3 className="text-lg font-bold text-slate-900">Add New Competition</h3>
+              <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-950/50">
+                <h3 className="text-lg font-bold text-white">Add New Competition</h3>
                 <button onClick={() => setIsAddingNew(false)} className="p-2 text-slate-400 hover:bg-slate-200 hover:text-slate-700 rounded-full transition-colors">
                   <X className="w-5 h-5" />
                 </button>
@@ -632,7 +632,7 @@ export default function CompetitionsPage() {
                     value={newComp.name}
                     onChange={(e) => setNewComp({...newComp, name: e.target.value})}
                     placeholder="e.g. Essay Writing"
-                    className="block w-full px-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-slate-900 outline-none"
+                    className="block w-full px-4 py-3 bg-slate-950/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-white outline-none"
                   />
                 </div>
                 
@@ -642,7 +642,7 @@ export default function CompetitionsPage() {
                     <select
                       value={newComp.category}
                       onChange={(e) => setNewComp({ ...newComp, category: e.target.value })}
-                      className="block w-full px-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-slate-900 outline-none"
+                      className="block w-full px-4 py-3 bg-slate-950/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-white outline-none"
                     >
                       {zones.map(z => (
                         <option key={z} value={z}>{z}</option>
@@ -654,7 +654,7 @@ export default function CompetitionsPage() {
                     <select
                       value={newComp.type}
                       onChange={(e) => setNewComp({ ...newComp, type: e.target.value })}
-                      className="block w-full px-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-slate-900 outline-none"
+                      className="block w-full px-4 py-3 bg-slate-950/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-white outline-none"
                     >
                       <option value="Individual">Individual</option>
                       <option value="Group">Group</option>
@@ -670,7 +670,7 @@ export default function CompetitionsPage() {
                           min="2"
                           value={newComp.max_participants || 2}
                           onChange={(e) => setNewComp({ ...newComp, max_participants: parseInt(e.target.value) })}
-                          className="block w-full px-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-slate-900 outline-none"
+                          className="block w-full px-4 py-3 bg-slate-950/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-white outline-none"
                         />
                       </div>
                       <div>
@@ -680,7 +680,7 @@ export default function CompetitionsPage() {
                           min="1"
                           value={newComp.max_groups_per_team || 1}
                           onChange={(e) => setNewComp({ ...newComp, max_groups_per_team: parseInt(e.target.value) })}
-                          className="block w-full px-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-slate-900 outline-none"
+                          className="block w-full px-4 py-3 bg-slate-950/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-white outline-none"
                         />
                       </div>
                     </motion.div>
@@ -693,7 +693,7 @@ export default function CompetitionsPage() {
                     rows={4}
                     value={newComp.rules || ""}
                     onChange={(e) => setNewComp({ ...newComp, rules: e.target.value })}
-                    className="block w-full px-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-slate-900 outline-none resize-none"
+                    className="block w-full px-4 py-3 bg-slate-950/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-white outline-none resize-none"
                     placeholder="Enter competition rules here..."
                   />
                 </div>
@@ -702,7 +702,7 @@ export default function CompetitionsPage() {
                   <p className="text-sm font-bold text-red-600 bg-red-50 p-3 rounded-lg border border-red-100">{error}</p>
                 )}
               </div>
-              <div className="px-6 py-4 border-t border-slate-100 bg-slate-50/50 flex justify-end">
+              <div className="px-6 py-4 border-t border-slate-100 bg-slate-950/50 flex justify-end">
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}

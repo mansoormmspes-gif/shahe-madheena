@@ -160,9 +160,9 @@ export default function PublicPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+      <div className="min-h-screen flex items-center justify-center bg-slate-950">
         <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}>
-          <Loader2 className="h-12 w-12 text-slate-300" />
+          <Loader2 className="h-12 w-12 text-slate-600" />
         </motion.div>
       </div>
     );
@@ -179,7 +179,7 @@ export default function PublicPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans selection:bg-slate-200 relative overflow-hidden">
+    <div className="min-h-screen bg-slate-950 font-sans selection:bg-slate-700 relative overflow-hidden">
       {/* Dynamic Animated Background Gradients */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden -z-10">
         <div className="absolute top-[-10%] right-[-5%] w-[40%] h-[40%] rounded-full bg-blue-100/40 blur-[100px] animate-float" />
@@ -199,8 +199,8 @@ export default function PublicPage() {
                 <Image src="/logo.png" alt="Logo" fill className="object-contain" priority />
               </div>
               <div className="flex flex-col">
-                <span className="font-black text-xl md:text-2xl tracking-tighter text-slate-900 leading-tight">Meelad Fest 2k26</span>
-                <span className="font-bold text-[10px] md:text-xs tracking-widest uppercase text-slate-500">Irshadu swibiyan madrasa</span>
+                <span className="font-black text-xl md:text-2xl tracking-tighter text-white leading-tight">Meelad Fest 2k26</span>
+                <span className="font-bold text-[10px] md:text-xs tracking-widest uppercase text-slate-400">Irshadu swibiyan madrasa</span>
               </div>
             </motion.div>
             <motion.div
@@ -222,7 +222,7 @@ export default function PublicPage() {
                 <motion.button 
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="flex items-center text-sm font-bold text-slate-700 hover:text-slate-900 bg-white shadow-sm hover:shadow-md px-6 py-2.5 rounded-full transition-all border border-slate-100 group"
+                  className="flex items-center text-sm font-bold text-slate-700 hover:text-white bg-slate-900 shadow-sm hover:shadow-md px-6 py-2.5 rounded-full transition-all border border-slate-100 group"
                 >
                   Portal Login
                   <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
@@ -258,13 +258,13 @@ export default function PublicPage() {
             </div>
           </motion.div>
           
-          <h2 className="text-xl md:text-3xl font-bold text-slate-500 tracking-widest uppercase mb-4">
+          <h2 className="text-xl md:text-3xl font-bold text-slate-400 tracking-widest uppercase mb-4">
             Irshadu swibiyan madrasa
           </h2>
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-slate-900 via-slate-700 to-slate-900 tracking-tighter mb-6 leading-tight pb-2">
             Meelad Fest 2k26
           </h1>
-          <p className="text-lg md:text-2xl text-slate-500 max-w-3xl mx-auto font-medium leading-relaxed">
+          <p className="text-lg md:text-2xl text-slate-400 max-w-3xl mx-auto font-medium leading-relaxed">
             Celebrating creativity, culture, and spectacular talent at the grand Meelad Fest 2k26.
           </p>
         </motion.div>
@@ -291,8 +291,8 @@ export default function PublicPage() {
               <div className={`mx-auto w-14 h-14 ${stat.bg} ${stat.color} rounded-2xl flex items-center justify-center mb-5 shadow-inner`}>
                 <stat.icon className="h-7 w-7" />
               </div>
-              <p className="text-4xl md:text-5xl font-black text-slate-900 tracking-tighter mb-1">{stat.value}</p>
-              <p className="text-xs md:text-sm font-bold text-slate-500 uppercase tracking-widest">{stat.label}</p>
+              <p className="text-4xl md:text-5xl font-black text-white tracking-tighter mb-1">{stat.value}</p>
+              <p className="text-xs md:text-sm font-bold text-slate-400 uppercase tracking-widest">{stat.label}</p>
             </motion.div>
           ))}
         </motion.div>
@@ -306,7 +306,7 @@ export default function PublicPage() {
             className="mb-32"
           >
             <div className="text-center mb-12">
-              <h2 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tighter">Live Leaderboard</h2>
+              <h2 className="text-4xl md:text-5xl font-black text-white tracking-tighter">Live Leaderboard</h2>
               <div className="w-24 h-1.5 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto mt-6 rounded-full" />
             </div>
             
@@ -334,15 +334,15 @@ export default function PublicPage() {
                     <p className={cn("text-xs font-black uppercase tracking-widest mb-2", index === 0 ? "text-amber-100" : "text-slate-400")}>
                       Rank 0{index + 1}
                     </p>
-                    <h3 className={cn("text-4xl font-black tracking-tight", index === 0 ? "text-white" : "text-slate-900")}>
+                    <h3 className={cn("text-4xl font-black tracking-tight", index === 0 ? "text-white" : "text-white")}>
                       Team {team.team}
                     </h3>
                   </div>
                   <div className="text-right relative z-10">
-                    <p className={cn("text-6xl font-black tracking-tighter", index === 0 ? "text-white" : "text-slate-900")}>
+                    <p className={cn("text-6xl font-black tracking-tighter", index === 0 ? "text-white" : "text-white")}>
                       {team.points}
                     </p>
-                    <p className={cn("text-sm font-bold uppercase tracking-widest mt-1", index === 0 ? "text-amber-100" : "text-slate-500")}>
+                    <p className={cn("text-sm font-bold uppercase tracking-widest mt-1", index === 0 ? "text-amber-100" : "text-slate-400")}>
                       Points
                     </p>
                   </div>
@@ -385,14 +385,14 @@ export default function PublicPage() {
                   placeholder="Enter student name or class..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-8 pr-16 py-6 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl text-white placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/50 transition-all text-xl font-medium shadow-inner"
+                  className="w-full pl-8 pr-16 py-6 bg-slate-900/10 backdrop-blur-md border border-white/20 rounded-2xl text-white placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/50 transition-all text-xl font-medium shadow-inner"
                 />
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   type="submit"
                   disabled={searching}
-                  className="absolute right-3 top-3 bottom-3 bg-white hover:bg-slate-100 text-slate-900 px-6 rounded-xl font-bold transition-colors disabled:opacity-50 flex items-center justify-center shadow-lg"
+                  className="absolute right-3 top-3 bottom-3 bg-slate-900 hover:bg-slate-100 text-white px-6 rounded-xl font-bold transition-colors disabled:opacity-50 flex items-center justify-center shadow-lg"
                 >
                   {searching ? <Loader2 className="w-6 h-6 animate-spin" /> : <Search className="w-6 h-6" />}
                 </motion.button>
@@ -404,7 +404,7 @@ export default function PublicPage() {
                 <motion.div 
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
-                  className="bg-white p-8 md:p-12 relative z-10"
+                  className="bg-slate-900 p-8 md:p-12 relative z-10"
                 >
                   {searchResults.length > 0 ? (
                     <motion.div 
@@ -417,25 +417,25 @@ export default function PublicPage() {
                         <motion.div 
                           variants={itemVariants}
                           key={idx} 
-                          className="bg-slate-50 p-8 rounded-3xl border border-slate-200 flex flex-col justify-between hover:shadow-lg hover:border-blue-200 transition-all group"
+                          className="bg-slate-950 p-8 rounded-3xl border border-slate-200 flex flex-col justify-between hover:shadow-lg hover:border-blue-200 transition-all group"
                         >
                           <div>
                             <div className="flex justify-between items-start mb-6">
-                              <div className="flex items-center space-x-3 bg-white px-4 py-2 rounded-2xl shadow-sm border border-slate-100">
+                              <div className="flex items-center space-x-3 bg-slate-900 px-4 py-2 rounded-2xl shadow-sm border border-slate-100">
                                 <Medal className={cn("w-6 h-6", result.position === 1 ? 'text-amber-400' : result.position === 2 ? 'text-slate-400' : 'text-amber-700')} />
-                                <span className="font-black text-slate-900 text-sm tracking-widest uppercase">{getPositionText(result.position)}</span>
+                                <span className="font-black text-white text-sm tracking-widest uppercase">{getPositionText(result.position)}</span>
                               </div>
                               <span className="bg-slate-900 text-white px-4 py-2 rounded-2xl text-xs font-black uppercase tracking-widest shadow-sm">
                                 {result.points} PTS
                               </span>
                             </div>
-                            <h3 className="text-2xl font-black text-slate-900 mb-2">{result.student.name}</h3>
-                            <p className="text-sm font-bold text-slate-500 mb-6 tracking-wide">CLASS {result.student.class} &bull; TEAM {result.student.team}</p>
+                            <h3 className="text-2xl font-black text-white mb-2">{result.student.name}</h3>
+                            <p className="text-sm font-bold text-slate-400 mb-6 tracking-wide">CLASS {result.student.class} &bull; TEAM {result.student.team}</p>
                             
-                            <div className="bg-white rounded-2xl p-5 mb-8 border border-slate-100 shadow-sm">
+                            <div className="bg-slate-900 rounded-2xl p-5 mb-8 border border-slate-100 shadow-sm">
                               <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Event Details</p>
-                              <p className="text-lg font-bold text-slate-900 leading-tight mb-1">{result.competitions.name}</p>
-                              <p className="text-sm font-medium text-slate-500">{result.competitions.category}</p>
+                              <p className="text-lg font-bold text-white leading-tight mb-1">{result.competitions.name}</p>
+                              <p className="text-sm font-medium text-slate-400">{result.competitions.category}</p>
                             </div>
                           </div>
                           
@@ -461,11 +461,11 @@ export default function PublicPage() {
                       animate={{ opacity: 1 }}
                       className="text-center py-16"
                     >
-                      <div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
+                      <div className="w-24 h-24 bg-slate-950 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
                         <Award className="w-12 h-12 text-slate-300" />
                       </div>
-                      <h3 className="text-2xl font-black text-slate-900 mb-2">No Results Found</h3>
-                      <p className="text-slate-500 font-medium">Double check the name or class and try searching again.</p>
+                      <h3 className="text-2xl font-black text-white mb-2">No Results Found</h3>
+                      <p className="text-slate-400 font-medium">Double check the name or class and try searching again.</p>
                     </motion.div>
                   )}
                 </motion.div>
@@ -512,7 +512,7 @@ export default function PublicPage() {
 
             {/* Center Content: Result Info */}
             <div className="absolute inset-0 flex flex-col items-center justify-center z-20 pt-48">
-              <div className="bg-white/10 backdrop-blur-2xl rounded-[4rem] border border-white/20 p-16 w-4/5 text-center shadow-[0_30px_60px_rgba(0,0,0,0.4)] relative overflow-hidden">
+              <div className="bg-slate-900/10 backdrop-blur-2xl rounded-[4rem] border border-white/20 p-16 w-4/5 text-center shadow-[0_30px_60px_rgba(0,0,0,0.4)] relative overflow-hidden">
                 {/* Shine effect across the card */}
                 <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-white/10 to-transparent pointer-events-none"></div>
 
@@ -546,7 +546,7 @@ export default function PublicPage() {
               <p className="text-white/40 text-xl font-bold tracking-[0.3em] uppercase">
                 Congratulations on your outstanding performance
               </p>
-              <div className="w-24 h-1 bg-white/20 mx-auto mt-6 rounded-full"></div>
+              <div className="w-24 h-1 bg-slate-900/20 mx-auto mt-6 rounded-full"></div>
             </div>
           </div>
         </div>

@@ -44,7 +44,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+      <div className="min-h-screen flex items-center justify-center bg-slate-950">
         <motion.div 
           animate={{ rotate: 360 }} 
           transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
@@ -88,7 +88,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                       "flex items-center px-4 py-3 rounded-xl text-sm font-semibold transition-all relative z-10",
                       isActive
                         ? "text-white"
-                        : "text-slate-600 hover:text-slate-900"
+                        : "text-slate-600 hover:text-white"
                     )}
                   >
                     {isActive && (
@@ -122,7 +122,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   );
 
   return (
-    <div className="min-h-screen bg-slate-50 flex overflow-hidden font-sans">
+    <div className="min-h-screen bg-slate-950 flex overflow-hidden font-sans">
       {/* Animated Background */}
       <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
         <div className="absolute -top-[20%] -right-[10%] w-[50%] h-[50%] rounded-full bg-indigo-50/50 blur-3xl animate-float" />
@@ -131,14 +131,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
       {/* Desktop Sidebar */}
       <aside className="hidden lg:flex w-72 flex-col fixed inset-y-0 z-50">
-        <div className="flex-1 flex flex-col min-h-0 bg-white/60 backdrop-blur-2xl border-r border-slate-200/50 m-4 rounded-[2.5rem] shadow-sm overflow-hidden relative">
+        <div className="flex-1 flex flex-col min-h-0 bg-slate-900/60 backdrop-blur-2xl border-r border-slate-200/50 m-4 rounded-[2.5rem] shadow-sm overflow-hidden relative">
           <SidebarContent />
         </div>
       </aside>
 
       {/* Mobile Header & Sidebar */}
-      <div className="lg:hidden fixed top-0 inset-x-0 h-16 bg-white/80 backdrop-blur-md border-b border-slate-200/50 z-40 flex items-center justify-between px-4">
-        <h1 className="text-lg font-bold text-slate-900">Admin Portal</h1>
+      <div className="lg:hidden fixed top-0 inset-x-0 h-16 bg-slate-900/80 backdrop-blur-md border-b border-slate-200/50 z-40 flex items-center justify-between px-4">
+        <h1 className="text-lg font-bold text-white">Admin Portal</h1>
         <button onClick={() => setMobileMenuOpen(true)} className="p-2 -mr-2 text-slate-600">
           <Menu className="h-6 w-6" />
         </button>
@@ -159,7 +159,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ type: "spring" as const, bounce: 0, duration: 0.4 }}
-              className="lg:hidden fixed inset-y-0 left-0 w-72 bg-white shadow-2xl z-50 flex flex-col"
+              className="lg:hidden fixed inset-y-0 left-0 w-72 bg-slate-900 shadow-2xl z-50 flex flex-col"
             >
               <div className="absolute top-4 right-4">
                 <button onClick={() => setMobileMenuOpen(false)} className="p-2 text-slate-400 hover:text-slate-600 bg-slate-100 rounded-full">

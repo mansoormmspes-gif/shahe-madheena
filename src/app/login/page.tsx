@@ -58,7 +58,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
+    <div className="min-h-screen bg-slate-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
       {/* Animated Background Elements */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
         <motion.div 
@@ -84,7 +84,7 @@ export default function LoginPage() {
             <Image src="/logo.png" alt="Logo" fill className="object-contain" priority />
           </div>
         </div>
-        <h2 className="mt-2 text-center text-3xl font-extrabold text-slate-900 tracking-tight">
+        <h2 className="mt-2 text-center text-3xl font-extrabold text-white tracking-tight">
           Welcome back
         </h2>
         <p className="mt-2 text-center text-sm text-slate-500">
@@ -121,7 +121,7 @@ export default function LoginPage() {
                   required
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  className="block w-full pl-11 pr-4 py-3 border border-slate-200 rounded-xl focus:ring-4 focus:ring-slate-100 focus:border-slate-400 sm:text-sm transition-all bg-white/50 backdrop-blur-sm hover:bg-white focus:bg-white text-slate-900 placeholder:text-slate-400 font-medium outline-none"
+                  className="block w-full pl-11 pr-4 py-3 border border-slate-200 rounded-xl focus:ring-4 focus:ring-slate-100 focus:border-slate-400 sm:text-sm transition-all bg-slate-900/50 backdrop-blur-sm hover:bg-slate-900 focus:bg-slate-900 text-white placeholder:text-slate-400 font-medium outline-none"
                   placeholder="admin or team_name"
                 />
               </div>
@@ -145,7 +145,7 @@ export default function LoginPage() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full pl-11 pr-4 py-3 border border-slate-200 rounded-xl focus:ring-4 focus:ring-slate-100 focus:border-slate-400 sm:text-sm transition-all bg-white/50 backdrop-blur-sm hover:bg-white focus:bg-white text-slate-900 placeholder:text-slate-400 font-medium outline-none"
+                  className="block w-full pl-11 pr-4 py-3 border border-slate-200 rounded-xl focus:ring-4 focus:ring-slate-100 focus:border-slate-400 sm:text-sm transition-all bg-slate-900/50 backdrop-blur-sm hover:bg-slate-900 focus:bg-slate-900 text-white placeholder:text-slate-400 font-medium outline-none"
                   placeholder="••••••••"
                 />
               </div>

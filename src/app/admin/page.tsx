@@ -29,8 +29,8 @@ export default function AdminDashboard() {
           <LayoutDashboard className="h-6 w-6" />
         </div>
         <div>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight">Welcome, Admin</h1>
-          <p className="text-slate-500 font-medium">Here's your control center for Meelad Fest 2k26.</p>
+          <h1 className="text-3xl font-black text-white tracking-tight">Welcome, Admin</h1>
+          <p className="text-slate-400 font-medium">Here's your control center for Meelad Fest 2k26.</p>
         </div>
       </motion.div>
 
@@ -46,7 +46,7 @@ export default function AdminDashboard() {
               <div className={`p-4 rounded-full ${link.bg} mb-4 group-hover:scale-110 transition-transform`}>
                 <link.icon className={`h-8 w-8 ${link.color}`} />
               </div>
-              <h2 className="text-lg font-bold text-slate-800 group-hover:text-slate-900">{link.label}</h2>
+              <h2 className="text-lg font-bold text-slate-800 group-hover:text-white">{link.label}</h2>
             </motion.div>
           </Link>
         ))}
