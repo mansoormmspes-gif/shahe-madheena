@@ -64,3 +64,8 @@ body {
 input, select, textarea {
   @apply bg-white text-slate-900 border-slate-200 placeholder:text-slate-400;
 }
+
+.bg-dot-pattern {
+  background-image: radial-gradient(rgba(13, 148, 136, 0.15) 1px, transparent 1px);
+  background-size: 24px 24px;
+}

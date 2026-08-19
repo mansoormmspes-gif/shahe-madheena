@@ -146,7 +146,7 @@ export default function SettingsPage() {
                     type="datetime-local"
                     value={settings.registration_start_time}
                     onChange={(e) => setSettings({ ...settings, registration_start_time: e.target.value })}
-                    className="block w-full px-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 sm:text-sm transition-all text-slate-900 outline-none"
+                    className="block w-full px-4 py-3 bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 sm:text-sm transition-all text-slate-900 outline-none"
                   />
                 </div>
                 <div>
@@ -157,7 +157,7 @@ export default function SettingsPage() {
                     type="datetime-local"
                     value={settings.registration_end_time}
                     onChange={(e) => setSettings({ ...settings, registration_end_time: e.target.value })}
-                    className="block w-full px-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 sm:text-sm transition-all text-slate-900 outline-none"
+                    className="block w-full px-4 py-3 bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 sm:text-sm transition-all text-slate-900 outline-none"
                   />
                 </div>
               </div>
@@ -181,12 +181,12 @@ export default function SettingsPage() {
                     required
                     value={settings.max_individual_items}
                     onChange={(e) => setSettings({ ...settings, max_individual_items: parseInt(e.target.value) })}
-                    className="block w-full px-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 sm:text-sm transition-all text-slate-900 outline-none"
+                    className="block w-full px-4 py-3 bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 sm:text-sm transition-all text-slate-900 outline-none"
                   />
                 </div>
 
                 <div className="pt-2">
-                  <label className="relative flex items-center cursor-pointer p-4 bg-slate-50/50 border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors">
+                  <label className="relative flex items-center cursor-pointer p-4 bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative/50 border border-slate-200 rounded-xl hover:bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative transition-colors">
                     <input
                       type="checkbox"
                       className="sr-only peer"
@@ -218,7 +218,7 @@ export default function SettingsPage() {
                   placeholder="https://example.com/poster-bg.png"
                   value={settings.poster_template_url}
                   onChange={(e) => setSettings({ ...settings, poster_template_url: e.target.value })}
-                  className="block w-full px-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 sm:text-sm transition-all text-slate-900 outline-none"
+                  className="block w-full px-4 py-3 bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 sm:text-sm transition-all text-slate-900 outline-none"
                 />
                 <p className="mt-2 text-xs font-medium text-slate-500">Provide a URL for the background image used in the Custom Result Poster generator.</p>
               </div>
@@ -252,7 +252,7 @@ export default function SettingsPage() {
                         newConfig[zone] = e.target.value.split(",").map(c => c.trim()).filter(Boolean);
                         setSettings({ ...settings, zone_config: newConfig });
                       }}
-                      className="block w-full px-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 sm:text-sm transition-all text-slate-900 outline-none"
+                      className="block w-full px-4 py-3 bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 sm:text-sm transition-all text-slate-900 outline-none"
                     />
                   </div>
                 ))}

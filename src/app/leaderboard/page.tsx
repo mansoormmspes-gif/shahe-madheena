@@ -81,7 +81,7 @@ export default function LeaderboardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative flex items-center justify-center">
         <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}>
           <Loader2 className="h-12 w-12 text-indigo-600" />
         </motion.div>
@@ -112,11 +112,11 @@ export default function LeaderboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative flex flex-col font-sans relative overflow-hidden">
       {/* Background blobs */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <div className="absolute -top-[20%] -right-[10%] w-[50%] h-[50%] rounded-full bg-indigo-200/40 blur-3xl animate-float" />
-        <div className="absolute top-[60%] -left-[10%] w-[40%] h-[40%] rounded-full bg-emerald-200/40 blur-3xl animate-float" style={{ animationDelay: '2s' }} />
+        <div className="absolute -top-[20%] -right-[10%] w-[50%] h-[50%] rounded-full bg-emerald-300/30 blur-[120px] animate-float" />
+        <div className="absolute top-[60%] -left-[10%] w-[40%] h-[40%] rounded-full bg-amber-300/20 blur-[120px] animate-float" style={{ animationDelay: '2s' }} />
       </div>
 
       <main className="flex-1 max-w-5xl w-full mx-auto p-4 sm:p-6 md:p-12 relative z-10">

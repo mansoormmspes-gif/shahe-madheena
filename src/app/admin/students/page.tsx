@@ -293,11 +293,11 @@ export default function StudentsPage() {
       </motion.div>
 
       {/* Data Table */}
-      <motion.div variants={itemVariants} className="glass-card rounded-[1rem] md:rounded-[2rem] overflow-hidden w-full">
+      <motion.div variants={itemVariants} className="glass-card rounded-[1rem] md:rounded-[2rem] overflow-hidden shadow-lg shadow-teal-900/5 border border-white/60 backdrop-blur-xl bg-white/60 w-full">
         <div className="w-full overflow-x-auto block">
           <table className="w-full min-w-[800px] text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50 border-b border-slate-200">
+              <tr className="bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative border-b border-slate-200">
                 <th className="whitespace-nowrap px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">ID</th>
                 <th className="whitespace-nowrap px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Name</th>
                 <th className="whitespace-nowrap px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Class</th>
@@ -326,7 +326,7 @@ export default function StudentsPage() {
                 </tr>
               ) : (
                 filteredStudents.map((student) => (
-                  <tr key={student.id} className="hover:bg-slate-50 transition-colors group">
+                  <tr key={student.id} className="hover:bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative transition-colors group">
                     <td className="whitespace-nowrap px-6 py-4 whitespace-nowrap text-sm font-bold text-slate-900">{student.id}</td>
                     <td className="whitespace-nowrap px-6 py-4 whitespace-nowrap text-sm font-semibold text-slate-700">{student.name}</td>
                     <td className="whitespace-nowrap px-6 py-4 whitespace-nowrap text-sm text-slate-600">{student.class}</td>

@@ -160,7 +160,7 @@ export default function PublicPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative">
         <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}>
           <Loader2 className="h-12 w-12 text-slate-600" />
         </motion.div>
@@ -179,11 +179,11 @@ export default function PublicPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans selection:bg-slate-200 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative font-sans selection:bg-slate-200 relative overflow-hidden">
       {/* Dynamic Animated Background Gradients */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden -z-10">
-        <div className="absolute top-[-10%] right-[-5%] w-[40%] h-[40%] rounded-full bg-blue-100/40 blur-[100px] animate-float" />
-        <div className="absolute bottom-[20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-purple-100/40 blur-[120px] animate-float" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-[-10%] right-[-5%] w-[40%] h-[40%] rounded-full bg-emerald-300/30 blur-[120px] animate-float" />
+        <div className="absolute bottom-[20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-amber-300/20 blur-[120px] animate-float" style={{ animationDelay: '2s' }} />
       </div>
 
       {/* Navigation */}
@@ -422,7 +422,7 @@ export default function PublicPage() {
                         >
                           <div>
                             <div className="flex justify-between items-start mb-6">
-                              <div className="flex items-center space-x-3 bg-slate-50 px-4 py-2 rounded-2xl shadow-sm border border-slate-100">
+                              <div className="flex items-center space-x-3 bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative px-4 py-2 rounded-2xl shadow-sm border border-slate-100">
                                 <Medal className={cn("w-6 h-6", result.position === 1 ? 'text-amber-400' : result.position === 2 ? 'text-slate-400' : 'text-amber-700')} />
                                 <span className="font-black text-slate-900 text-sm tracking-widest uppercase">{getPositionText(result.position)}</span>
                               </div>
@@ -433,7 +433,7 @@ export default function PublicPage() {
                             <h3 className="text-2xl font-black text-slate-900 mb-2">{result.student.name}</h3>
                             <p className="text-sm font-bold text-slate-400 mb-6 tracking-wide">CLASS {result.student.class} &bull; TEAM {result.student.team}</p>
                             
-                            <div className="bg-slate-50 rounded-2xl p-5 mb-8 border border-slate-100 shadow-sm">
+                            <div className="bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative rounded-2xl p-5 mb-8 border border-slate-100 shadow-sm">
                               <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Event Details</p>
                               <p className="text-lg font-bold text-slate-900 leading-tight mb-1">{result.competitions.name}</p>
                               <p className="text-sm font-medium text-slate-400">{result.competitions.category}</p>
@@ -462,7 +462,7 @@ export default function PublicPage() {
                       animate={{ opacity: 1 }}
                       className="text-center py-16"
                     >
-                      <div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
+                      <div className="w-24 h-24 bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
                         <Award className="w-12 h-12 text-slate-300" />
                       </div>
                       <h3 className="text-2xl font-black text-slate-900 mb-2">No Results Found</h3>

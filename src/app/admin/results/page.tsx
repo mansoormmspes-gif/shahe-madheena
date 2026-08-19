@@ -139,7 +139,7 @@ export default function ResultsPage() {
         </div>
       </motion.div>
 
-      <motion.div variants={itemVariants} className="glass-card rounded-[1rem] md:rounded-[2rem] overflow-hidden p-3 sm:p-6 md:p-8">
+      <motion.div variants={itemVariants} className="glass-card rounded-[1rem] md:rounded-[2rem] overflow-hidden shadow-lg shadow-teal-900/5 border border-white/60 backdrop-blur-xl bg-white/60 p-3 sm:p-6 md:p-8">
         <div className="mb-8">
           <label className="block text-sm font-bold text-slate-700 mb-2">
             Select Competition
@@ -148,7 +148,7 @@ export default function ResultsPage() {
             <select
               value={selectedEventId}
               onChange={(e) => setSelectedEventId(e.target.value)}
-              className="block w-full pl-4 pr-10 py-4 bg-slate-50/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-amber-100 focus:border-amber-400 sm:text-base font-medium text-slate-900 transition-all appearance-none cursor-pointer outline-none shadow-sm"
+              className="block w-full pl-4 pr-10 py-4 bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-amber-100 focus:border-amber-400 sm:text-base font-medium text-slate-900 transition-all appearance-none cursor-pointer outline-none shadow-sm"
             >
               <option value="">-- Choose an event --</option>
               {competitions.map(c => (
