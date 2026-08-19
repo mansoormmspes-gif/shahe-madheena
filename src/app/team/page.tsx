@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
-import { Loader2, Download, AlertCircle, Users, ClipboardList, Plus, Trash2, Check, Lock, Unlock, Search, X } from "lucide-react";
+import { Loader2, Download, AlertCircle, Users, ClipboardList, Plus, Trash2, Check, Lock, Unlock, Search, X, Info } from "lucide-react";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { motion, AnimatePresence } from "framer-motion";
@@ -22,6 +22,7 @@ export default function TeamDashboard() {
   const [adding, setAdding] = useState<string | null>(null);
   
   const [modalStudent, setModalStudent] = useState<any | null>(null);
+  const [ruleModal, setRuleModal] = useState<{name: string, rules: string} | null>(null);
   const [eventSearchQuery, setEventSearchQuery] = useState("");
   const [eventTypeFilter, setEventTypeFilter] = useState("All");
 
@@ -774,12 +775,23 @@ export default function TeamDashboard() {
                               "text-sm font-bold truncate mb-1",
                               isRegistered ? "text-emerald-900" : "text-slate-800"
                             )} title={comp.name}>{comp.name}</p>
-                            <span className={cn(
-                              "inline-block px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider",
-                              isGrp ? "bg-purple-100 text-purple-700" : "bg-slate-100 text-slate-400"
-                            )}>
-                              {isGrp ? "Group" : "Individual"}
-                            </span>
+                            <div className="flex items-center gap-2">
+                              <span className={cn(
+                                "inline-block px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider",
+                                isGrp ? "bg-purple-100 text-purple-700" : "bg-slate-100 text-slate-400"
+                              )}>
+                                {isGrp ? "Group" : "Individual"}
+                              </span>
+                              {comp.rules && (
+                                <button 
+                                  onClick={(e) => { e.stopPropagation(); setRuleModal({ name: comp.name, rules: comp.rules }); }} 
+                                  className="text-blue-500 hover:text-blue-600 hover:bg-blue-50 p-1 rounded-full transition-colors flex items-center justify-center" 
+                                  title="View Rules"
+                                >
+                                  <Info className="w-3.5 h-3.5" />
+                                </button>
+                              )}
+                            </div>
                           </div>
                           
                           {isGrp ? (
@@ -878,6 +890,49 @@ export default function TeamDashboard() {
                     );
                   })()}
                 </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {ruleModal && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/20 backdrop-blur-sm"
+            onClick={() => setRuleModal(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.95, y: 20 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden border border-slate-200"
+            >
+              <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <h3 className="text-lg font-bold text-slate-900 flex items-center">
+                  <Info className="w-5 h-5 mr-2 text-blue-500" />
+                  {ruleModal.name} - Rules
+                </h3>
+                <button onClick={() => setRuleModal(null)} className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-200 rounded-full transition-colors">
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+              <div className="p-6 max-h-[60vh] overflow-y-auto">
+                <p className="text-slate-700 whitespace-pre-wrap leading-relaxed font-medium">
+                  {ruleModal.rules}
+                </p>
+              </div>
+              <div className="px-6 py-4 border-t border-slate-100 bg-slate-50 flex justify-end">
+                <button 
+                  onClick={() => setRuleModal(null)}
+                  className="px-6 py-2.5 bg-blue-600 text-white font-bold rounded-xl shadow-sm hover:bg-blue-700 transition-colors"
+                >
+                  Understood
+                </button>
               </div>
             </motion.div>
           </motion.div>

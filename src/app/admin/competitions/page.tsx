@@ -219,6 +219,8 @@ export default function CompetitionsPage() {
     const { error: updateError } = await supabase
       .from("competitions")
       .update({ 
+        name: editingComp.name,
+        category: editingComp.category,
         type: editingComp.type,
         max_participants: finalMax,
         max_groups_per_team: finalMaxGroups,
@@ -229,6 +231,8 @@ export default function CompetitionsPage() {
     if (!updateError) {
       setCompetitions(competitions.map(c => c.id === editingComp.id ? { 
         ...c, 
+        name: editingComp.name,
+        category: editingComp.category,
         type: editingComp.type, 
         max_participants: finalMax, 
         max_groups_per_team: finalMaxGroups,
@@ -237,8 +241,8 @@ export default function CompetitionsPage() {
       setEditingComp(null);
     } else {
       setError("Failed to update competition: " + updateError.message);
-      setTimeout(() => setError(""), 3000);
     }
+    setTimeout(() => setError(""), 3000);
     setSavingComp(false);
   };
 
@@ -472,7 +476,7 @@ export default function CompetitionsPage() {
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.9 }}
                           onClick={() => setEditingComp({...c})}
-                          className="p-2 text-slate-400 hover:text-fuchsia-600 hover:bg-fuchsia-50 rounded-lg transition-colors"
+                          className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                           title="Edit Competition"
                         >
                           <Edit3 className="h-4 w-4" />
@@ -525,13 +529,25 @@ export default function CompetitionsPage() {
                   <label className="block text-sm font-semibold text-slate-700 mb-2">Event Name</label>
                   <input
                     type="text"
-                    disabled
                     value={editingComp.name}
-                    className="block w-full px-4 py-3 bg-slate-100 border border-slate-200 rounded-xl text-slate-500 font-medium cursor-not-allowed outline-none"
+                    onChange={(e) => setEditingComp({ ...editingComp, name: e.target.value })}
+                    className="block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-slate-900 outline-none"
                   />
                 </div>
                 
                 <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">Zone / Category</label>
+                    <select
+                      value={editingComp.category}
+                      onChange={(e) => setEditingComp({ ...editingComp, category: e.target.value })}
+                      className="block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-slate-900 outline-none"
+                    >
+                      {zones.map(z => (
+                        <option key={z} value={z}>{z}</option>
+                      ))}
+                    </select>
+                  </div>
                   <div>
                     <label className="block text-sm font-semibold text-slate-700 mb-2">Type</label>
                     <select
