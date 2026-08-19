@@ -36,14 +36,21 @@ export default function TeamDashboard() {
   }, []);
 
   useEffect(() => {
-    if (!settings?.registration_end_time) return;
+    if (!settings?.registration_start_time || !settings?.registration_end_time) return;
 
     const interval = setInterval(() => {
       const now = new Date().getTime();
+      const startTime = new Date(settings.registration_start_time).getTime();
       const endTime = new Date(settings.registration_end_time).getTime();
-      const distance = endTime - now;
+      
+      let targetTime = endTime;
+      if (now < startTime) {
+        targetTime = startTime; // Count down to opening
+      }
 
-      if (distance < 0) {
+      const distance = targetTime - now;
+
+      if (now > endTime) {
         clearInterval(interval);
         setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
       } else {
@@ -57,7 +64,7 @@ export default function TeamDashboard() {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [settings?.registration_end_time]);
+  }, [settings?.registration_start_time, settings?.registration_end_time]);
 
   const fetchData = async () => {
     setLoading(true);
@@ -87,13 +94,17 @@ export default function TeamDashboard() {
     setLoading(false);
   };
 
-  const isRegistrationOpen = () => {
-    if (!settings?.registration_start_time || !settings?.registration_end_time) return false;
+  const getRegistrationStatus = () => {
+    if (!settings?.registration_start_time || !settings?.registration_end_time) return "CLOSED";
     const now = new Date();
     const start = new Date(settings.registration_start_time);
     const end = new Date(settings.registration_end_time);
-    return now >= start && now <= end;
+    if (now < start) return "UPCOMING";
+    if (now > end) return "CLOSED";
+    return "OPEN";
   };
+
+  const isRegistrationOpen = () => getRegistrationStatus() === "OPEN";
 
   const getStudentIndividualEventCount = (studentId: string) => {
     return registrations.filter(r => {
@@ -271,20 +282,28 @@ export default function TeamDashboard() {
           <div className="mt-3 flex items-center gap-4 flex-wrap">
             <div className="flex items-center">
               <span className="text-slate-400 font-bold uppercase tracking-widest text-xs mr-3">Status</span>
-              {isOpen ? (
+              {getRegistrationStatus() === "OPEN" && (
                 <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700 border border-emerald-200">
                   <Unlock className="w-3 h-3 mr-1.5" /> OPEN
                 </span>
-              ) : (
+              )}
+              {getRegistrationStatus() === "UPCOMING" && (
+                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-700 border border-amber-200">
+                  <Lock className="w-3 h-3 mr-1.5" /> UPCOMING
+                </span>
+              )}
+              {getRegistrationStatus() === "CLOSED" && (
                 <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700 border border-red-200">
                   <Lock className="w-3 h-3 mr-1.5" /> CLOSED
                 </span>
               )}
             </div>
             
-            {isOpen && (
+            {(getRegistrationStatus() === "OPEN" || getRegistrationStatus() === "UPCOMING") && (
               <div className="flex items-center gap-2 text-white border-l border-slate-700 pl-4">
-                <span className="text-slate-400 text-xs font-bold uppercase tracking-widest mr-1">Time Left:</span>
+                <span className="text-slate-400 text-xs font-bold uppercase tracking-widest mr-1">
+                  {getRegistrationStatus() === "OPEN" ? "Closes in:" : "Opens in:"}
+                </span>
                 <div className="flex items-center gap-1">
                   <div className="bg-slate-800 px-2 py-1 rounded-md min-w-[2.5rem] text-center border border-slate-700">
                     <span className="font-black">{timeLeft.days}</span><span className="text-[10px] text-slate-400 ml-0.5">d</span>
