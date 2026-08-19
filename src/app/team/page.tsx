@@ -694,7 +694,7 @@ export default function TeamDashboard() {
           >
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-white w-full max-w-4xl max-h-[90vh] rounded-[2rem] shadow-2xl flex flex-col overflow-hidden"
+              className="bg-white w-[95%] max-w-4xl max-h-[90vh] rounded-[2rem] shadow-2xl flex flex-col overflow-hidden"
             >
               <div className="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-white/50">
                 <div>
@@ -910,7 +910,7 @@ export default function TeamDashboard() {
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.95, y: 20 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden border border-slate-200"
+              className="bg-white w-[95%] max-w-lg max-h-[90vh] rounded-3xl shadow-2xl overflow-hidden border border-slate-200"
             >
               <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
                 <h3 className="text-lg font-bold text-slate-900 flex items-center">

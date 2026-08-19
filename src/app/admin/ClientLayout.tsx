@@ -130,14 +130,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </div>
 
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex w-72 flex-col fixed inset-y-0 z-50">
+      <aside className="hidden md:flex w-72 flex-col fixed inset-y-0 z-50">
         <div className="flex-1 flex flex-col min-h-0 bg-white/60 backdrop-blur-2xl border-r border-slate-200/50 m-4 rounded-[2.5rem] shadow-sm overflow-hidden relative">
           <SidebarContent />
         </div>
       </aside>
 
       {/* Mobile Header & Sidebar */}
-      <div className="lg:hidden fixed top-0 inset-x-0 h-16 bg-white/80 backdrop-blur-md border-b border-slate-200/50 z-40 flex items-center justify-between px-4">
+      <div className="md:hidden fixed top-0 inset-x-0 h-16 bg-white/80 backdrop-blur-md border-b border-slate-200/50 z-40 flex items-center justify-between px-4">
         <h1 className="text-lg font-bold text-slate-900">Admin Portal</h1>
         <button onClick={() => setMobileMenuOpen(true)} className="p-2 -mr-2 text-slate-600">
           <Menu className="h-6 w-6" />
@@ -152,14 +152,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setMobileMenuOpen(false)}
-              className="lg:hidden fixed inset-0 bg-white/20 backdrop-blur-sm z-50"
+              className="md:hidden fixed inset-0 bg-white/20 backdrop-blur-sm z-50"
             />
             <motion.aside
               initial={{ x: "-100%" }}
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ type: "spring" as const, bounce: 0, duration: 0.4 }}
-              className="lg:hidden fixed inset-y-0 left-0 w-72 bg-white shadow-2xl z-50 flex flex-col"
+              className="md:hidden fixed inset-y-0 left-0 w-72 bg-white shadow-2xl z-50 flex flex-col"
             >
               <div className="absolute top-4 right-4">
                 <button onClick={() => setMobileMenuOpen(false)} className="p-2 text-slate-400 hover:text-slate-600 bg-slate-100 rounded-full">
@@ -173,8 +173,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </AnimatePresence>
 
       {/* Main Content */}
-      <main className="flex-1 lg:pl-72 flex flex-col min-h-screen relative z-10 pt-16 lg:pt-0">
-        <div className="flex-1 overflow-y-auto p-4 sm:p-8 lg:p-12 scroll-smooth">
+      <main className="flex-1 md:pl-72 flex flex-col min-h-screen relative z-10 pt-16 md:pt-0">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-8 md:p-12 scroll-smooth">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

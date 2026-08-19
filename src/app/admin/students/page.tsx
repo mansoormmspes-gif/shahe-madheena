@@ -385,7 +385,7 @@ export default function StudentsPage() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white rounded-[2rem] shadow-2xl z-50 overflow-hidden"
+              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-lg max-h-[90vh] overflow-y-auto bg-white rounded-[2rem] shadow-2xl z-50"
             >
               <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200">
                 <h2 className="text-xl font-bold text-slate-900">{isEditMode ? "Edit Student" : "Add New Student"}</h2>

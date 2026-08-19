@@ -77,7 +77,7 @@ export default function LoginPage() {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        className="sm:mx-auto sm:w-full sm:max-w-md z-10"
+        className="w-full max-w-md mx-auto px-4 z-10"
       >
         <div className="flex justify-center mb-6">
           <div className="relative w-32 h-32 flex items-center justify-center">
@@ -96,9 +96,9 @@ export default function LoginPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-        className="mt-8 sm:mx-auto sm:w-full sm:max-w-md z-10"
+        className="mt-8 w-full max-w-md mx-auto px-4 z-10"
       >
-        <div className="glass-panel py-8 px-4 sm:rounded-[2rem] sm:px-10 relative overflow-hidden">
+        <div className="glass-panel py-8 px-6 sm:rounded-[2rem] sm:px-10 relative overflow-hidden rounded-[2rem]">
           {/* Subtle gradient overlay on the card */}
           <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent pointer-events-none" />
           
