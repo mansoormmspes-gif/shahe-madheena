@@ -195,10 +195,13 @@ export default function PublicPage() {
               animate={{ opacity: 1, x: 0 }}
               className="flex items-center gap-4"
             >
-              <div className="relative w-12 h-12 bg-white rounded-xl shadow-sm p-1.5 flex items-center justify-center">
-                <Image src="/logo.png" alt="Logo" fill className="object-contain p-1" />
+              <div className="relative w-32 h-12 flex items-center justify-center">
+                <Image src="/logo.png" alt="Logo" fill className="object-contain" priority />
               </div>
-              <span className="font-black text-xl md:text-2xl tracking-tighter text-slate-900">Shahe Madeena</span>
+              <div className="flex flex-col">
+                <span className="font-black text-xl md:text-2xl tracking-tighter text-slate-900 leading-tight">Meelad Fest 2k26</span>
+                <span className="font-bold text-[10px] md:text-xs tracking-widest uppercase text-slate-500">Irshadu swibiyan madrasa</span>
+              </div>
             </motion.div>
             <motion.div
               initial={{ opacity: 0, x: 20 }}
@@ -233,8 +236,8 @@ export default function PublicPage() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 relative z-10">
         {/* Hero Section */}
         <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="text-center mb-24 mt-4"
         >
@@ -242,26 +245,27 @@ export default function PublicPage() {
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.2, type: "spring" as const, stiffness: 200, damping: 20 }}
-            className="relative w-48 h-48 md:w-64 md:h-64 mx-auto mb-10"
+            className="relative w-64 h-32 md:w-96 md:h-48 mx-auto mb-10"
           >
-            <div className="absolute inset-0 bg-white rounded-[3rem] shadow-2xl rotate-3 scale-105 opacity-50 blur-sm pointer-events-none" />
-            <div className="absolute inset-0 bg-white rounded-[3rem] shadow-xl -rotate-2 scale-100 pointer-events-none" />
-            <div className="absolute inset-0 p-6 flex items-center justify-center">
+            <div className="absolute inset-0 p-4 flex items-center justify-center">
               <Image 
                 src="/logo.png" 
-                alt="Shahe Madeena Arts Fest Logo" 
+                alt="Meelad Fest 2k26 Logo" 
                 fill
                 priority
-                className="object-contain drop-shadow-xl p-8"
+                className="object-contain drop-shadow-xl"
               />
             </div>
           </motion.div>
           
+          <h2 className="text-xl md:text-3xl font-bold text-slate-500 tracking-widest uppercase mb-4">
+            Irshadu swibiyan madrasa
+          </h2>
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-slate-900 via-slate-700 to-slate-900 tracking-tighter mb-6 leading-tight pb-2">
-            Nabi Dinam Arts Fest
+            Meelad Fest 2k26
           </h1>
           <p className="text-lg md:text-2xl text-slate-500 max-w-3xl mx-auto font-medium leading-relaxed">
-            Celebrating creativity, culture, and spectacular talent at the grand Shahe Madeena Arts Festival.
+            Celebrating creativity, culture, and spectacular talent at the grand Meelad Fest 2k26.
           </p>
         </motion.div>
 
@@ -497,13 +501,13 @@ export default function PublicPage() {
 
             {/* Top Logo & Title */}
             <div className="absolute top-24 w-full text-center z-20">
-              <div className="relative w-48 h-48 mx-auto mb-8 bg-white/10 backdrop-blur-xl rounded-[3rem] p-6 shadow-2xl border border-white/20">
+              <div className="relative w-64 h-32 md:w-80 md:h-40 mx-auto mb-8 flex items-center justify-center p-4">
                 <img src="/logo.png" alt="Logo" className="w-full h-full object-contain drop-shadow-2xl" crossOrigin="anonymous" />
               </div>
-              <h2 className="text-white text-5xl font-black tracking-[0.2em] uppercase drop-shadow-2xl">
-                Shahe Madeena
+              <h2 className="text-white text-4xl md:text-5xl font-black tracking-[0.2em] uppercase drop-shadow-2xl">
+                Meelad Fest 2k26
               </h2>
-              <p className="text-blue-200/80 text-2xl font-bold tracking-[0.3em] uppercase mt-4">Arts Fest 2026</p>
+              <p className="text-blue-200/80 text-xl md:text-2xl font-bold tracking-[0.3em] uppercase mt-4">Irshadu swibiyan madrasa</p>
             </div>
 
             {/* Center Content: Result Info */}

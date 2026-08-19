@@ -113,7 +113,7 @@ export default function SettingsPage() {
         </div>
         <div>
           <h1 className="text-3xl font-black text-slate-900 tracking-tight">Fest Settings</h1>
-          <p className="text-slate-500 font-medium">Configure global rules and appearance for Shahe Madeena.</p>
+          <p className="text-slate-500 font-medium">Configure global rules and appearance for Meelad Fest 2k26.</p>
         </div>
       </motion.div>
 
