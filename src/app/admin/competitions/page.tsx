@@ -409,7 +409,7 @@ export default function CompetitionsPage() {
         </div>
       </motion.div>
 
-      <motion.div variants={itemVariants} className="glass-card rounded-[2rem] overflow-hidden">
+      <motion.div variants={itemVariants} className="glass-card rounded-[1rem] md:rounded-[2rem] overflow-hidden w-full">
         <div className="px-8 py-6 border-b border-slate-200 bg-white">
           <h2 className="text-xl font-bold text-slate-900">Event Registry</h2>
         </div>
@@ -425,15 +425,15 @@ export default function CompetitionsPage() {
             No competitions found. Please upload a CSV or manually add one first.
           </div>
         ) : (
-          <div className="overflow-x-auto w-full">
+          <div className="w-full overflow-x-auto block">
             <table className="w-full min-w-[800px] text-sm text-left">
               <thead className="bg-slate-50 text-slate-500 border-b border-slate-200">
                 <tr>
-                  <th className="px-8 py-4 font-bold uppercase tracking-wider text-xs">Name</th>
-                  <th className="px-8 py-4 font-bold uppercase tracking-wider text-xs">Category</th>
-                  <th className="px-8 py-4 font-bold uppercase tracking-wider text-xs">Type & Max</th>
-                  <th className="px-8 py-4 font-bold uppercase tracking-wider text-xs">Rules</th>
-                  <th className="px-8 py-4 font-bold uppercase tracking-wider text-xs text-right">Actions</th>
+                  <th className="whitespace-nowrap px-8 py-4 font-bold uppercase tracking-wider text-xs">Name</th>
+                  <th className="whitespace-nowrap px-8 py-4 font-bold uppercase tracking-wider text-xs">Category</th>
+                  <th className="whitespace-nowrap px-8 py-4 font-bold uppercase tracking-wider text-xs">Type & Max</th>
+                  <th className="whitespace-nowrap px-8 py-4 font-bold uppercase tracking-wider text-xs">Rules</th>
+                  <th className="whitespace-nowrap px-8 py-4 font-bold uppercase tracking-wider text-xs text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -445,13 +445,13 @@ export default function CompetitionsPage() {
                     key={c.id} 
                     className="hover:bg-slate-50 transition-colors group"
                   >
-                    <td className="px-8 py-5 text-slate-900 font-bold">{c.name}</td>
-                    <td className="px-8 py-5">
+                    <td className="whitespace-nowrap px-8 py-5 text-slate-900 font-bold">{c.name}</td>
+                    <td className="whitespace-nowrap px-8 py-5">
                       <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-fuchsia-100 text-fuchsia-800 border border-fuchsia-200">
                         {c.category}
                       </span>
                     </td>
-                    <td className="px-8 py-5">
+                    <td className="whitespace-nowrap px-8 py-5">
                       <div className="flex flex-col items-start space-y-1">
                         <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border ${c.type === 'Group' ? 'bg-purple-100 text-purple-700 border-purple-200' : 'bg-slate-100 text-slate-700 border-slate-200'}`}>
                           {c.type === 'Group' ? <Users className="w-3 h-3 mr-1" /> : null}
@@ -467,10 +467,10 @@ export default function CompetitionsPage() {
                         )}
                       </div>
                     </td>
-                    <td className="px-8 py-5">
+                    <td className="whitespace-nowrap px-8 py-5">
                       <p className="text-slate-600 line-clamp-2 leading-relaxed text-xs max-w-xs">{c.rules || <span className="text-slate-400 italic">No rules specified</span>}</p>
                     </td>
-                    <td className="px-8 py-5 text-right">
+                    <td className="whitespace-nowrap px-8 py-5 text-right">
                       <div className="flex justify-end space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
                         <motion.button 
                           whileHover={{ scale: 1.1 }}
@@ -535,7 +535,7 @@ export default function CompetitionsPage() {
                   />
                 </div>
                 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-semibold text-slate-700 mb-2">Zone / Category</label>
                     <select
@@ -560,7 +560,7 @@ export default function CompetitionsPage() {
                     </select>
                   </div>
                   {editingComp.type === "Group" && (
-                    <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="col-span-2 grid grid-cols-2 gap-4">
+                    <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="col-span-1 sm:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-semibold text-slate-700 mb-2">Max Participants (Per Group)</label>
                         <input
@@ -652,7 +652,7 @@ export default function CompetitionsPage() {
                   />
                 </div>
                 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-semibold text-slate-700 mb-2">Zone / Category</label>
                     <select
@@ -678,7 +678,7 @@ export default function CompetitionsPage() {
                   </div>
 
                   {newComp.type === "Group" && (
-                    <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="col-span-2 grid grid-cols-2 gap-4">
+                    <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="col-span-1 sm:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-semibold text-slate-700 mb-2">Max Participants (Per Group)</label>
                         <input

@@ -293,17 +293,17 @@ export default function StudentsPage() {
       </motion.div>
 
       {/* Data Table */}
-      <motion.div variants={itemVariants} className="glass-card rounded-[2rem] overflow-hidden">
-        <div className="overflow-x-auto w-full">
+      <motion.div variants={itemVariants} className="glass-card rounded-[1rem] md:rounded-[2rem] overflow-hidden w-full">
+        <div className="w-full overflow-x-auto block">
           <table className="w-full min-w-[800px] text-left border-collapse">
             <thead>
               <tr className="bg-slate-50 border-b border-slate-200">
-                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">ID</th>
-                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Name</th>
-                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Class</th>
-                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Team</th>
-                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Zone</th>
-                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Actions</th>
+                <th className="whitespace-nowrap px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">ID</th>
+                <th className="whitespace-nowrap px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Name</th>
+                <th className="whitespace-nowrap px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Class</th>
+                <th className="whitespace-nowrap px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Team</th>
+                <th className="whitespace-nowrap px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Zone</th>
+                <th className="whitespace-nowrap px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 bg-white">
@@ -327,10 +327,10 @@ export default function StudentsPage() {
               ) : (
                 filteredStudents.map((student) => (
                   <tr key={student.id} className="hover:bg-slate-50 transition-colors group">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-slate-900">{student.id}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-slate-700">{student.name}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-600">{student.class}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="whitespace-nowrap px-6 py-4 whitespace-nowrap text-sm font-bold text-slate-900">{student.id}</td>
+                    <td className="whitespace-nowrap px-6 py-4 whitespace-nowrap text-sm font-semibold text-slate-700">{student.name}</td>
+                    <td className="whitespace-nowrap px-6 py-4 whitespace-nowrap text-sm text-slate-600">{student.class}</td>
+                    <td className="whitespace-nowrap px-6 py-4 whitespace-nowrap">
                       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold ${
                         student.team === 'ZAMAAN' ? 'bg-indigo-100 text-indigo-800' : 
                         student.team === 'ZAMEEN' ? 'bg-emerald-100 text-emerald-800' : 
@@ -339,10 +339,10 @@ export default function StudentsPage() {
                         {student.team}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-600">
+                    <td className="whitespace-nowrap px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-600">
                       {student.category || "-"}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <td className="whitespace-nowrap px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
                         <button
                           onClick={() => {

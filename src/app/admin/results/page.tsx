@@ -139,7 +139,7 @@ export default function ResultsPage() {
         </div>
       </motion.div>
 
-      <motion.div variants={itemVariants} className="glass-card rounded-[2rem] overflow-hidden p-4 md:p-8 sm:p-10">
+      <motion.div variants={itemVariants} className="glass-card rounded-[1rem] md:rounded-[2rem] overflow-hidden p-3 sm:p-6 md:p-8">
         <div className="mb-8">
           <label className="block text-sm font-bold text-slate-700 mb-2">
             Select Competition
@@ -207,7 +207,7 @@ export default function ResultsPage() {
                     <motion.div 
                       key={pos} 
                       whileHover={{ scale: 1.01 }}
-                      className={`p-6 rounded-2xl border ${border} flex flex-col md:flex-row md:items-center gap-6 ${bg} shadow-sm transition-all`}
+                      className={`p-6 rounded-2xl border ${border} flex flex-col md:flex-row md:items-center gap-4 md:gap-6 ${bg} shadow-sm transition-all`}
                     >
                       <div className="flex items-center w-40 flex-shrink-0">
                         <div className={`p-2 rounded-xl bg-white/60 shadow-sm mr-4 ${color}`}>

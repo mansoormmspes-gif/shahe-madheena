@@ -173,8 +173,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </AnimatePresence>
 
       {/* Main Content */}
-      <main className="flex-1 md:pl-72 flex flex-col min-h-screen relative z-10 pt-16 md:pt-0">
-        <div className="flex-1 overflow-y-auto p-4 sm:p-8 md:p-12 scroll-smooth">
+      <main className="flex-1 md:pl-72 flex flex-col min-h-screen relative z-10 pt-16 md:pt-0 w-full max-w-[100vw] overflow-x-hidden">
+        <div className="flex-1 overflow-y-auto p-2 sm:p-4 md:p-8 scroll-smooth w-full">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
