@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f8fafc; /* Slate 50 */
-  --foreground: #0f172a; /* Slate 900 */
+  --background: #0B0F19; /* Deep Dark */
+  --foreground: #ffffff;
 }
 
 @theme inline {
@@ -77,23 +77,27 @@ body {
 
 /* Glassmorphism utility classes */
 .glass-panel {
-  @apply bg-white/80 backdrop-blur-xl border border-white/50 shadow-[0_8px_30px_rgb(0,0,0,0.05)];
+  @apply bg-white/[0.03] backdrop-blur-2xl border border-white/[0.08] shadow-2xl;
 }
 
 .glass-card {
-  @apply bg-white/60 backdrop-blur-md border border-white shadow-sm transition-all duration-300;
+  @apply bg-white/[0.03] backdrop-blur-2xl border border-white/[0.08] shadow-2xl transition-all duration-300;
 }
 
 .glass-card:hover {
-  @apply shadow-[0_20px_40px_rgb(0,0,0,0.1)] -translate-y-1;
+  @apply shadow-[0_20px_40px_rgba(0,0,0,0.5)] -translate-y-1 border-white/[0.15];
 }
 
 /* Base Form Inputs */
 input, select, textarea {
-  @apply bg-white text-slate-900 border-slate-200 placeholder:text-slate-400;
+  @apply bg-white/[0.05] text-white border border-white/10 placeholder:text-slate-500 backdrop-blur-md focus:border-violet-500 focus:ring-violet-500/50;
+  /* Override default select styling slightly for dark mode */
+}
+select option {
+  @apply bg-[#0B0F19] text-white;
 }
 
 .bg-dot-pattern {
-  background-image: radial-gradient(rgba(13, 148, 136, 0.15) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
   background-size: 24px 24px;
 }

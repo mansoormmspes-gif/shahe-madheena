@@ -81,7 +81,7 @@ export default function LeaderboardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative flex items-center justify-center">
+      <div className="min-h-screen bg-transparent relative flex items-center justify-center">
         <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}>
           <Loader2 className="h-12 w-12 text-indigo-600" />
         </motion.div>
@@ -98,7 +98,7 @@ export default function LeaderboardPage() {
   const getTeamBadge = (team: string) => {
     if (team === 'ZAMAAN') return 'bg-indigo-100 text-indigo-800 border-indigo-200';
     if (team === 'ZAMEEN') return 'bg-emerald-100 text-emerald-800 border-emerald-200';
-    return 'bg-slate-100 text-slate-800 border-slate-200';
+    return 'bg-white/[0.05] text-white border-white/[0.08]';
   };
 
   const containerVariants = {
@@ -112,7 +112,7 @@ export default function LeaderboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative flex flex-col font-sans relative overflow-hidden">
+    <div className="min-h-screen bg-transparent relative flex flex-col font-sans relative overflow-hidden">
       {/* Background blobs */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
         <div className="absolute -top-[20%] -right-[10%] w-[50%] h-[50%] rounded-full bg-emerald-300/30 blur-[120px] animate-float" />
@@ -126,7 +126,7 @@ export default function LeaderboardPage() {
           transition={{ duration: 0.6 }}
           className="text-center mb-8 md:mb-16"
         >
-          <div className="inline-flex items-center justify-center p-4 bg-white rounded-3xl shadow-xl shadow-slate-200/50 mb-4 md:mb-6 border border-slate-100">
+          <div className="inline-flex items-center justify-center p-4 bg-white/[0.05] rounded-3xl shadow-xl shadow-slate-200/50 mb-4 md:mb-6 border border-white/[0.08]">
             <Trophy className="h-10 w-10 text-amber-500 mr-3" />
             <h1 className="text-2xl md:text-5xl font-black bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent tracking-tighter">
               Live Leaderboard
@@ -149,14 +149,14 @@ export default function LeaderboardPage() {
               <motion.div 
                 key={teamData.team}
                 variants={itemVariants}
-                className={`relative bg-white rounded-[2rem] p-4 md:p-8 flex flex-col md:flex-row md:items-center text-center md:text-left gap-4 md:gap-0 shadow-lg border-2 ${isFirst ? 'border-amber-400' : 'border-white'} transition-all`}
+                className={`relative bg-white/[0.05] rounded-[2rem] p-4 md:p-8 flex flex-col md:flex-row md:items-center text-center md:text-left gap-4 md:gap-0 shadow-lg border-2 ${isFirst ? 'border-amber-400' : 'border-white'} transition-all`}
               >
                 {/* Rank Badge */}
                 <div className={`w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-md ${
                   index === 0 ? 'bg-gradient-to-br from-amber-300 to-amber-500 text-white shadow-amber-500/30' :
                   index === 1 ? 'bg-gradient-to-br from-slate-300 to-slate-400 text-white shadow-slate-400/30' :
                   index === 2 ? 'bg-gradient-to-br from-orange-300 to-orange-500 text-white shadow-orange-500/30' :
-                  'bg-slate-100 text-slate-500'
+                  'bg-white/[0.05] text-slate-400'
                 }`}>
                   {index === 0 ? <Crown className="w-7 h-7" /> : 
                    index === 1 ? <Medal className="w-7 h-7" /> : 
@@ -166,7 +166,7 @@ export default function LeaderboardPage() {
 
                 {/* Team Info */}
                 <div className="ml-0 md:ml-6 flex-1">
-                  <h2 className="text-2xl md:text-3xl font-black text-slate-800 tracking-tight mb-1">
+                  <h2 className="text-2xl md:text-3xl font-black text-white tracking-tight mb-1">
                     Team {teamData.team}
                   </h2>
                   <span className={`inline-flex px-3 py-1 text-xs font-bold uppercase tracking-wider rounded-full border ${getTeamBadge(teamData.team)}`}>
@@ -202,7 +202,7 @@ export default function LeaderboardPage() {
           })}
 
           {leaderboard.length === 0 && (
-            <div className="text-center py-20 bg-white rounded-[3rem] border border-slate-100 shadow-sm">
+            <div className="text-center py-20 bg-white/[0.05] rounded-[3rem] border border-white/[0.08] shadow-sm">
               <Trophy className="w-16 h-16 text-slate-200 mx-auto mb-4" />
               <h3 className="text-xl font-bold text-slate-400">No results recorded yet</h3>
             </div>

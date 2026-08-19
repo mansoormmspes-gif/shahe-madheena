@@ -93,7 +93,7 @@ export default function ResultsPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-transparent">
         <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}>
-          <Loader2 className="h-12 w-12 text-blue-600" />
+          <Loader2 className="h-12 w-12 text-violet-500" />
         </motion.div>
       </div>
     );
@@ -122,13 +122,13 @@ export default function ResultsPage() {
   const totalPoints = studentResults.reduce((acc, curr) => acc + curr.points, 0);
 
   return (
-    <div className="min-h-screen relative z-10 py-12 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
+    <div className="min-h-screen relative z-10 py-12 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto font-sans selection:bg-violet-500/30">
       <div className="mb-8 flex items-center gap-4">
         <Link href="/">
           <motion.button 
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="flex items-center text-sm font-bold text-slate-700 hover:text-slate-900 bg-white shadow-sm hover:shadow-md px-4 py-2 rounded-full transition-all border border-slate-200"
+            className="flex items-center text-sm font-extrabold text-white bg-white/5 hover:bg-white/10 shadow-sm hover:shadow-md px-4 py-2 rounded-full transition-all border border-white/10"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Home
@@ -137,208 +137,213 @@ export default function ResultsPage() {
       </div>
 
       <div className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-black text-slate-900 mb-4 tracking-tight">Result Portal</h1>
-        <p className="text-slate-500 text-lg font-medium max-w-2xl mx-auto">
+        <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-4 tracking-tight">Result Portal</h1>
+        <p className="text-slate-400 text-lg font-medium max-w-2xl mx-auto">
           View official competition results or check a comprehensive report card for any participant.
         </p>
       </div>
 
-      <div className="bg-white/60 backdrop-blur-xl rounded-[2.5rem] shadow-[0_8px_30px_rgb(0,0,0,0.08)] overflow-hidden border border-white p-6 md:p-10">
-        
-        {/* Tabs */}
-        <div className="flex bg-slate-100/80 p-1.5 rounded-2xl shadow-inner mb-8 max-w-md mx-auto">
-          <button
-            onClick={() => setActiveTab("competition")}
-            className={cn(
-              "flex-1 flex items-center justify-center py-3 rounded-xl text-sm font-bold transition-all",
-              activeTab === "competition" ? "bg-white text-blue-600 shadow-sm" : "text-slate-500 hover:text-slate-700"
-            )}
-          >
-            <Trophy className="w-4 h-4 mr-2" /> By Competition
-          </button>
-          <button
-            onClick={() => setActiveTab("student")}
-            className={cn(
-              "flex-1 flex items-center justify-center py-3 rounded-xl text-sm font-bold transition-all",
-              activeTab === "student" ? "bg-white text-blue-600 shadow-sm" : "text-slate-500 hover:text-slate-700"
-            )}
-          >
-            <User className="w-4 h-4 mr-2" /> By Student
-          </button>
-        </div>
+      <div className="glass-panel overflow-hidden border border-white/[0.08] p-6 md:p-10 relative">
+        {/* Decorative inner background glow */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-violet-500/10 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-fuchsia-500/10 rounded-full blur-[100px] pointer-events-none" />
 
-        <AnimatePresence mode="wait">
-          {activeTab === "competition" ? (
-            <motion.div 
-              key="competition"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              className="space-y-8"
-            >
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-bold text-slate-700 mb-2">Category (Optional)</label>
-                  <select 
-                    value={selectedCategory} 
-                    onChange={e => { setSelectedCategory(e.target.value); setSelectedCompetition(""); }}
-                    className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-900 focus:ring-2 focus:ring-blue-500 outline-none shadow-sm font-medium"
-                  >
-                    <option value="">All Categories</option>
-                    {categories.map(c => <option key={c} value={c}>{c}</option>)}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-bold text-slate-700 mb-2">Competition</label>
-                  <select 
-                    value={selectedCompetition} 
-                    onChange={e => setSelectedCompetition(e.target.value)}
-                    className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-900 focus:ring-2 focus:ring-blue-500 outline-none shadow-sm font-medium"
-                  >
-                    <option value="">Choose a competition...</option>
-                    {filteredComps.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-                  </select>
-                </div>
-              </div>
-
-              {selectedCompetition && (
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-8">
-                  {compResults.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                      {compResults.map(res => (
-                        <div key={res.id} className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm relative overflow-hidden group hover:shadow-md transition-all">
-                          <div className={cn(
-                            "absolute top-0 left-0 w-full h-1", 
-                            res.position === 1 ? "bg-amber-400" : res.position === 2 ? "bg-slate-300" : "bg-amber-700"
-                          )} />
-                          <div className="flex justify-between items-start mb-4">
-                            <div className="flex items-center space-x-2">
-                              <Medal className={cn("w-6 h-6", res.position === 1 ? 'text-amber-400' : res.position === 2 ? 'text-slate-400' : 'text-amber-700')} />
-                              <span className="font-black text-slate-900 text-sm">{getPositionText(res.position)}</span>
-                            </div>
-                            <span className="bg-blue-50 text-blue-700 px-3 py-1 rounded-lg text-xs font-bold">{res.points} PTS</span>
-                          </div>
-                          <h3 className="text-xl font-bold text-slate-900 mb-1">{res.student?.name}</h3>
-                          <p className="text-sm font-medium text-slate-500">Class {res.student?.class} • {res.student?.team}</p>
-                          
-                          <motion.button 
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                            onClick={() => generatePoster(res, competitions.find(c => c.id === selectedCompetition)?.name || "", res.student)}
-                            disabled={generatingPoster === res.student?.id + selectedCompetition}
-                            className="mt-6 w-full flex items-center justify-center px-4 py-2.5 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-xl font-bold transition-all disabled:opacity-50 text-sm"
-                          >
-                            {generatingPoster === res.student?.id + selectedCompetition ? (
-                              <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Generating...</>
-                            ) : (
-                              <><Download className="w-4 h-4 mr-2" /> Poster</>
-                            )}
-                          </motion.button>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="text-center py-12 bg-white/50 rounded-3xl border border-slate-100">
-                      <Award className="w-10 h-10 text-slate-300 mx-auto mb-3" />
-                      <p className="text-slate-500 font-medium">No results published for this competition yet.</p>
-                    </div>
-                  )}
-                </motion.div>
+        <div className="relative z-10">
+          {/* Tabs */}
+          <div className="flex bg-[#0B0F19]/50 p-1.5 rounded-2xl shadow-inner mb-8 max-w-md mx-auto border border-white/5">
+            <button
+              onClick={() => setActiveTab("competition")}
+              className={cn(
+                "flex-1 flex items-center justify-center py-3 rounded-xl text-sm font-extrabold transition-all",
+                activeTab === "competition" ? "bg-white/10 text-white shadow-sm border border-white/10" : "text-slate-400 hover:text-white"
               )}
-            </motion.div>
-          ) : (
-            <motion.div 
-              key="student"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              className="space-y-8"
             >
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-bold text-slate-700 mb-2">Class (Optional)</label>
-                  <select 
-                    value={selectedClass} 
-                    onChange={e => { setSelectedClass(e.target.value); setSelectedStudent(""); }}
-                    className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-900 focus:ring-2 focus:ring-blue-500 outline-none shadow-sm font-medium"
-                  >
-                    <option value="">All Classes</option>
-                    {classes.map(c => <option key={c} value={c}>{c}</option>)}
-                  </select>
+              <Trophy className="w-4 h-4 mr-2" /> By Competition
+            </button>
+            <button
+              onClick={() => setActiveTab("student")}
+              className={cn(
+                "flex-1 flex items-center justify-center py-3 rounded-xl text-sm font-extrabold transition-all",
+                activeTab === "student" ? "bg-white/10 text-white shadow-sm border border-white/10" : "text-slate-400 hover:text-white"
+              )}
+            >
+              <User className="w-4 h-4 mr-2" /> By Student
+            </button>
+          </div>
+
+          <AnimatePresence mode="wait">
+            {activeTab === "competition" ? (
+              <motion.div 
+                key="competition"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                className="space-y-8"
+              >
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-bold text-slate-400 mb-2">Category (Optional)</label>
+                    <select 
+                      value={selectedCategory} 
+                      onChange={e => { setSelectedCategory(e.target.value); setSelectedCompetition(""); }}
+                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/10 rounded-xl text-white focus:ring-2 focus:ring-violet-500 outline-none shadow-sm font-medium"
+                    >
+                      <option value="">All Categories</option>
+                      {categories.map(c => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-slate-400 mb-2">Competition</label>
+                    <select 
+                      value={selectedCompetition} 
+                      onChange={e => setSelectedCompetition(e.target.value)}
+                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/10 rounded-xl text-white focus:ring-2 focus:ring-violet-500 outline-none shadow-sm font-medium"
+                    >
+                      <option value="">Choose a competition...</option>
+                      {filteredComps.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                    </select>
+                  </div>
                 </div>
-                <div>
-                  <label className="block text-sm font-bold text-slate-700 mb-2">Student</label>
-                  <select 
-                    value={selectedStudent} 
-                    onChange={e => setSelectedStudent(e.target.value)}
-                    className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-900 focus:ring-2 focus:ring-blue-500 outline-none shadow-sm font-medium"
-                  >
-                    <option value="">Choose a student...</option>
-                    {filteredStudents.map(s => <option key={s.id} value={s.id}>{s.name} ({s.team})</option>)}
-                  </select>
-                </div>
-              </div>
 
-              {selectedStudent && studentData && (
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-8">
-                  <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-md">
-                    <div className="flex flex-col md:flex-row justify-between md:items-center gap-6 mb-8 border-b border-slate-100 pb-8">
-                      <div>
-                        <h2 className="text-3xl font-black text-slate-900 mb-2">{studentData.name}</h2>
-                        <p className="text-slate-500 font-medium">Class {studentData.class} • {studentData.category} • Team {studentData.team}</p>
-                      </div>
-                      <div className="bg-gradient-to-br from-blue-50 to-blue-100 px-6 py-4 rounded-2xl border border-blue-200 text-center shadow-sm">
-                        <p className="text-xs font-bold text-blue-600 uppercase tracking-widest mb-1">Total Points</p>
-                        <p className="text-4xl font-black text-blue-700">{totalPoints}</p>
-                      </div>
-                    </div>
-
-                    <h3 className="text-xl font-bold text-slate-800 mb-6 flex items-center">
-                      <Medal className="w-5 h-5 mr-2 text-amber-500" />
-                      Achievements
-                    </h3>
-
-                    {studentResults.length > 0 ? (
-                      <div className="space-y-4">
-                        {studentResults.map(res => (
-                          <div key={res.id} className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100 group">
-                            <div className="flex items-center gap-4">
-                              <div className={cn(
-                                "w-10 h-10 rounded-full flex items-center justify-center font-black text-white shadow-sm",
-                                res.position === 1 ? "bg-amber-400" : res.position === 2 ? "bg-slate-400" : "bg-amber-600"
-                              )}>
-                                {res.position}
+                {selectedCompetition && (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-8">
+                    {compResults.length > 0 ? (
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        {compResults.map(res => (
+                          <div key={res.id} className="glass-card p-6 border border-white/[0.08] shadow-sm relative overflow-hidden group hover:shadow-md transition-all">
+                            <div className={cn(
+                              "absolute top-0 left-0 w-full h-1", 
+                              res.position === 1 ? "bg-amber-400 shadow-[0_0_10px_#fbbf24]" : res.position === 2 ? "bg-slate-300 shadow-[0_0_10px_#cbd5e1]" : "bg-amber-700 shadow-[0_0_10px_#b45309]"
+                            )} />
+                            <div className="flex justify-between items-start mb-4">
+                              <div className="flex items-center space-x-2">
+                                <Medal className={cn("w-6 h-6", res.position === 1 ? 'text-amber-400' : res.position === 2 ? 'text-slate-300' : 'text-amber-700')} />
+                                <span className="font-extrabold text-white text-sm">{getPositionText(res.position)}</span>
                               </div>
-                              <div>
-                                <p className="font-bold text-slate-900">{res.competition?.name}</p>
-                                <p className="text-xs font-medium text-slate-500">{res.competition?.category}</p>
-                              </div>
+                              <span className="bg-violet-500/20 text-violet-300 border border-violet-500/30 px-3 py-1 rounded-lg text-xs font-bold">{res.points} PTS</span>
                             </div>
-                            <div className="flex items-center gap-4">
-                              <span className="font-bold text-slate-700 bg-white px-3 py-1 rounded-lg border border-slate-200 shadow-sm">{res.points} pts</span>
-                              <button 
-                                onClick={() => generatePoster(res, res.competition?.name, studentData)}
-                                disabled={generatingPoster === studentData.id + res.competition?.name}
-                                className="text-blue-600 bg-blue-50 p-2 rounded-xl hover:bg-blue-100 transition-colors disabled:opacity-50"
-                                title="Download Poster"
-                              >
-                                {generatingPoster === studentData.id + res.competition?.name ? <Loader2 className="w-5 h-5 animate-spin" /> : <Download className="w-5 h-5" />}
-                              </button>
-                            </div>
+                            <h3 className="text-xl font-extrabold text-white mb-1">{res.student?.name}</h3>
+                            <p className="text-sm font-medium text-slate-400">Class {res.student?.class} • {res.student?.team}</p>
+                            
+                            <motion.button 
+                              whileHover={{ scale: 1.02 }}
+                              whileTap={{ scale: 0.98 }}
+                              onClick={() => generatePoster(res, competitions.find(c => c.id === selectedCompetition)?.name || "", res.student)}
+                              disabled={generatingPoster === res.student?.id + selectedCompetition}
+                              className="mt-6 w-full flex items-center justify-center px-4 py-2.5 bg-gradient-to-r from-violet-600 to-fuchsia-500 hover:shadow-[0_0_20px_rgba(168,85,247,0.4)] text-white rounded-xl font-bold transition-all disabled:opacity-50 text-sm border border-white/10"
+                            >
+                              {generatingPoster === res.student?.id + selectedCompetition ? (
+                                <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Generating...</>
+                              ) : (
+                                <><Download className="w-4 h-4 mr-2" /> Poster</>
+                              )}
+                            </motion.button>
                           </div>
                         ))}
                       </div>
                     ) : (
-                      <div className="text-center py-8">
-                        <p className="text-slate-500 font-medium">No winning results recorded yet.</p>
+                      <div className="text-center py-12 bg-white/5 rounded-3xl border border-white/5">
+                        <Award className="w-10 h-10 text-slate-500 mx-auto mb-3" />
+                        <p className="text-slate-400 font-medium">No results published for this competition yet.</p>
                       </div>
                     )}
+                  </motion.div>
+                )}
+              </motion.div>
+            ) : (
+              <motion.div 
+                key="student"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                className="space-y-8"
+              >
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-bold text-slate-400 mb-2">Class (Optional)</label>
+                    <select 
+                      value={selectedClass} 
+                      onChange={e => { setSelectedClass(e.target.value); setSelectedStudent(""); }}
+                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/10 rounded-xl text-white focus:ring-2 focus:ring-violet-500 outline-none shadow-sm font-medium"
+                    >
+                      <option value="">All Classes</option>
+                      {classes.map(c => <option key={c} value={c}>{c}</option>)}
+                    </select>
                   </div>
-                </motion.div>
-              )}
-            </motion.div>
-          )}
-        </AnimatePresence>
+                  <div>
+                    <label className="block text-sm font-bold text-slate-400 mb-2">Student</label>
+                    <select 
+                      value={selectedStudent} 
+                      onChange={e => setSelectedStudent(e.target.value)}
+                      className="w-full px-4 py-3 bg-white/[0.05] border border-white/10 rounded-xl text-white focus:ring-2 focus:ring-violet-500 outline-none shadow-sm font-medium"
+                    >
+                      <option value="">Choose a student...</option>
+                      {filteredStudents.map(s => <option key={s.id} value={s.id}>{s.name} ({s.team})</option>)}
+                    </select>
+                  </div>
+                </div>
+
+                {selectedStudent && studentData && (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-8">
+                    <div className="glass-panel p-8 border border-white/[0.08] shadow-md">
+                      <div className="flex flex-col md:flex-row justify-between md:items-center gap-6 mb-8 border-b border-white/10 pb-8">
+                        <div>
+                          <h2 className="text-3xl font-extrabold text-white mb-2">{studentData.name}</h2>
+                          <p className="text-slate-400 font-medium">Class {studentData.class} • {studentData.category} • Team {studentData.team}</p>
+                        </div>
+                        <div className="bg-violet-900/40 px-6 py-4 rounded-2xl border border-violet-500/30 text-center shadow-[0_0_30px_rgba(139,92,246,0.1)]">
+                          <p className="text-xs font-bold text-violet-300 uppercase tracking-widest mb-1">Total Points</p>
+                          <p className="text-4xl font-black text-white">{totalPoints}</p>
+                        </div>
+                      </div>
+
+                      <h3 className="text-xl font-extrabold text-white mb-6 flex items-center">
+                        <Medal className="w-5 h-5 mr-2 text-amber-400" />
+                        Achievements
+                      </h3>
+
+                      {studentResults.length > 0 ? (
+                        <div className="space-y-4">
+                          {studentResults.map(res => (
+                            <div key={res.id} className="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/10 group">
+                              <div className="flex items-center gap-4">
+                                <div className={cn(
+                                  "w-10 h-10 rounded-full flex items-center justify-center font-black text-white shadow-sm border border-white/20",
+                                  res.position === 1 ? "bg-amber-400 text-amber-900 shadow-[0_0_15px_rgba(251,191,36,0.4)]" : res.position === 2 ? "bg-slate-300 text-slate-900" : "bg-amber-700 text-amber-100"
+                                )}>
+                                  {res.position}
+                                </div>
+                                <div>
+                                  <p className="font-extrabold text-white">{res.competition?.name}</p>
+                                  <p className="text-xs font-medium text-slate-400">{res.competition?.category}</p>
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-4">
+                                <span className="font-bold text-white bg-white/10 px-3 py-1 rounded-lg border border-white/10 shadow-sm">{res.points} pts</span>
+                                <button 
+                                  onClick={() => generatePoster(res, res.competition?.name, studentData)}
+                                  disabled={generatingPoster === studentData.id + res.competition?.name}
+                                  className="text-white bg-gradient-to-r from-violet-600 to-fuchsia-500 p-2 rounded-xl hover:shadow-[0_0_15px_rgba(168,85,247,0.5)] transition-all disabled:opacity-50"
+                                  title="Download Poster"
+                                >
+                                  {generatingPoster === studentData.id + res.competition?.name ? <Loader2 className="w-5 h-5 animate-spin" /> : <Download className="w-5 h-5" />}
+                                </button>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="text-center py-8">
+                          <p className="text-slate-500 font-medium">No winning results recorded yet.</p>
+                        </div>
+                      )}
+                    </div>
+                  </motion.div>
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
 
       {/* Hidden Poster Template */}
@@ -348,7 +353,7 @@ export default function ResultsPage() {
             ref={posterRef} 
             className="relative w-[1080px] h-[1080px] bg-slate-900 overflow-hidden"
             style={{
-              backgroundImage: settings?.poster_template_url ? `url(${settings.poster_template_url})` : 'linear-gradient(135deg, #0f172a 0%, #020617 100%)',
+              backgroundImage: settings?.poster_template_url ? `url(${settings.poster_template_url})` : 'linear-gradient(135deg, #0B0F19 0%, #1c1236 100%)',
               backgroundSize: 'cover',
               backgroundPosition: 'center',
             }}
@@ -356,8 +361,8 @@ export default function ResultsPage() {
             {/* If no background URL provided, show beautiful placeholder graphics */}
             {!settings?.poster_template_url && (
               <div className="absolute inset-0 opacity-20 mix-blend-screen">
-                <div className="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] bg-blue-500 rounded-full blur-[150px]"></div>
-                <div className="absolute bottom-[-20%] left-[-10%] w-[800px] h-[800px] bg-purple-500 rounded-full blur-[150px]"></div>
+                <div className="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] bg-violet-500 rounded-full blur-[150px]"></div>
+                <div className="absolute bottom-[-20%] left-[-10%] w-[800px] h-[800px] bg-fuchsia-500 rounded-full blur-[150px]"></div>
               </div>
             )}
             
@@ -373,16 +378,16 @@ export default function ResultsPage() {
               <h2 className="text-white text-3xl md:text-5xl font-black tracking-[0.2em] uppercase drop-shadow-2xl">
                 Meelad Fest 2k26
               </h2>
-              <p className="text-blue-200/80 text-xl md:text-2xl font-bold tracking-[0.3em] uppercase mt-4">Irshadu swibiyan madrasa</p>
+              <p className="text-violet-200/80 text-xl md:text-2xl font-bold tracking-[0.3em] uppercase mt-4">Irshadu swibiyan madrasa</p>
             </div>
 
             {/* Center Content: Result Info */}
             <div className="absolute inset-0 flex flex-col items-center justify-center z-20 pt-48">
-              <div className="bg-slate-900/10 backdrop-blur-2xl rounded-[4rem] border border-white/20 p-16 w-11/12 md:w-4/5 text-center shadow-[0_30px_60px_rgba(0,0,0,0.4)] relative overflow-hidden">
+              <div className="bg-[#0B0F19]/40 backdrop-blur-3xl rounded-[4rem] border border-white/20 p-16 w-11/12 md:w-4/5 text-center shadow-[0_30px_60px_rgba(0,0,0,0.6)] relative overflow-hidden">
                 {/* Shine effect across the card */}
                 <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-white/10 to-transparent pointer-events-none"></div>
 
-                <div className="mb-10 inline-flex items-center justify-center bg-gradient-to-r from-amber-400 to-orange-500 text-white px-10 py-3 rounded-full text-2xl font-black uppercase tracking-widest shadow-xl border border-amber-300/50">
+                <div className="mb-10 inline-flex items-center justify-center bg-gradient-to-r from-amber-400 to-orange-500 text-white px-10 py-3 rounded-full text-2xl font-black uppercase tracking-widest shadow-[0_0_30px_rgba(251,191,36,0.4)] border border-amber-300/50">
                   <Trophy className="w-8 h-8 mr-4" />
                   {getPositionText(activePosterData.position)}
                 </div>
@@ -391,16 +396,16 @@ export default function ResultsPage() {
                   {activePosterData.student.name}
                 </h1>
                 
-                <p className="text-2xl text-blue-100 font-bold mb-14 uppercase tracking-[0.2em] bg-black/20 inline-block px-8 py-3 rounded-full border border-white/10">
+                <p className="text-2xl text-violet-100 font-bold mb-14 uppercase tracking-[0.2em] bg-black/40 inline-block px-8 py-3 rounded-full border border-white/10">
                   Class {activePosterData.student.class} <span className="mx-4 text-white/30">|</span> Team {activePosterData.student.team}
                 </p>
                 
                 <div className="inline-block relative w-full max-w-2xl">
-                  <div className="absolute inset-0 bg-blue-500/20 blur-[50px] rounded-full"></div>
-                  <h3 className="relative text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-200 via-white to-blue-200 drop-shadow-sm mb-4 leading-tight">
+                  <div className="absolute inset-0 bg-violet-500/20 blur-[50px] rounded-full"></div>
+                  <h3 className="relative text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-violet-200 via-white to-violet-200 drop-shadow-sm mb-4 leading-tight">
                     {activePosterData.competitions.name}
                   </h3>
-                  <p className="relative text-xl text-blue-200 uppercase tracking-[0.3em] font-bold">
+                  <p className="relative text-xl text-violet-200 uppercase tracking-[0.3em] font-bold">
                     {activePosterData.competitions.category}
                   </p>
                 </div>
@@ -412,7 +417,7 @@ export default function ResultsPage() {
               <p className="text-white/40 text-xl font-bold tracking-[0.3em] uppercase">
                 Congratulations on your outstanding performance
               </p>
-              <div className="w-24 h-1 bg-slate-900/20 mx-auto mt-6 rounded-full"></div>
+              <div className="w-24 h-1 bg-white/20 mx-auto mt-6 rounded-full"></div>
             </div>
           </div>
         </div>
