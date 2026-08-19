@@ -310,15 +310,15 @@ export default function CompetitionsPage() {
           <ClipboardList className="h-6 w-6" />
         </div>
         <div>
-          <h1 className="text-3xl font-black text-white tracking-tight">Competitions</h1>
+          <h1 className="text-3xl font-black text-slate-900 tracking-tight">Competitions</h1>
           <p className="text-slate-500 font-medium">Manage events, categories, and competition rules.</p>
         </div>
       </motion.div>
 
       <motion.div variants={itemVariants} className="glass-card rounded-[2rem] overflow-hidden p-4 md:p-8 sm:p-10 mb-8">
-        <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 pb-6 border-b border-white/[0.08] gap-4">
+        <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 pb-6 border-b border-slate-200 gap-4">
           <div>
-            <h2 className="text-xl font-bold text-white mb-1">Add Competitions</h2>
+            <h2 className="text-xl font-bold text-slate-900 mb-1">Add Competitions</h2>
             <p className="text-sm text-slate-500 font-medium">
               Upload a CSV file or add a competition manually.
             </p>
@@ -329,7 +329,7 @@ export default function CompetitionsPage() {
               whileTap={{ scale: 0.95 }}
               onClick={exportParticipantsPDF}
               disabled={isExporting}
-              className="inline-flex items-center px-4 py-2 bg-white/[0.05] text-slate-300 text-sm font-semibold rounded-xl hover:bg-white/[0.05] transition-colors shadow-sm disabled:opacity-50"
+              className="inline-flex items-center px-4 py-2 bg-white text-slate-700 text-sm font-semibold rounded-xl hover:bg-slate-100 transition-colors shadow-sm disabled:opacity-50"
             >
               {isExporting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <FileText className="w-4 h-4 mr-2" />}
               Export PDF
@@ -338,7 +338,7 @@ export default function CompetitionsPage() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               href="#" 
-              className="inline-flex items-center px-4 py-2 bg-white/[0.05] hover:bg-white/[0.08] text-slate-300 text-sm font-semibold rounded-xl transition-colors"
+              className="inline-flex items-center px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold rounded-xl transition-colors"
             >
               <Download className="w-4 h-4 mr-2" /> Template
             </motion.a>
@@ -359,7 +359,7 @@ export default function CompetitionsPage() {
               initial={{ opacity: 0, height: 0, marginBottom: 0 }}
               animate={{ opacity: 1, height: 'auto', marginBottom: 24 }}
               exit={{ opacity: 0, height: 0, marginBottom: 0 }}
-              className="flex items-center bg-red-500/10 text-red-400 p-4 rounded-xl border border-red-500/20"
+              className="flex items-center bg-red-50 text-red-600 p-4 rounded-xl border border-red-100"
             >
               <AlertCircle className="h-5 w-5 mr-3 flex-shrink-0" />
               <p className="text-sm font-semibold">{error}</p>
@@ -371,7 +371,7 @@ export default function CompetitionsPage() {
               initial={{ opacity: 0, height: 0, marginBottom: 0 }}
               animate={{ opacity: 1, height: 'auto', marginBottom: 24 }}
               exit={{ opacity: 0, height: 0, marginBottom: 0 }}
-              className="flex items-center bg-emerald-500/10 text-emerald-400 p-4 rounded-xl border border-emerald-100"
+              className="flex items-center bg-emerald-50 text-emerald-700 p-4 rounded-xl border border-emerald-100"
             >
               <CheckCircle2 className="h-5 w-5 mr-3 flex-shrink-0" />
               <p className="text-sm font-semibold">{success}</p>
@@ -380,7 +380,7 @@ export default function CompetitionsPage() {
         </AnimatePresence>
 
         <div className="flex items-center justify-center w-full">
-          <label className={`flex flex-col items-center justify-center w-full h-40 border-2 border-dashed rounded-[2rem] cursor-pointer bg-transparent relative border-slate-300 hover:bg-transparent relative hover:border-fuchsia-400 transition-all ${loading ? "opacity-50 cursor-not-allowed" : "group"}`}>
+          <label className={`flex flex-col items-center justify-center w-full h-40 border-2 border-dashed rounded-[2rem] cursor-pointer bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative border-slate-300 hover:bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative hover:border-fuchsia-400 transition-all ${loading ? "opacity-50 cursor-not-allowed" : "group"}`}>
             <div className="flex flex-col items-center justify-center pt-5 pb-6">
               {loading ? (
                 <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}>
@@ -389,12 +389,12 @@ export default function CompetitionsPage() {
               ) : (
                 <motion.div
                   whileHover={{ y: -5 }}
-                  className="p-3 bg-white/[0.05] rounded-full shadow-sm mb-3 group-hover:shadow-md transition-shadow"
+                  className="p-3 bg-white rounded-full shadow-sm mb-3 group-hover:shadow-md transition-shadow"
                 >
                   <Upload className="w-6 h-6 text-fuchsia-500" />
                 </motion.div>
               )}
-              <p className="text-sm font-bold text-slate-300">
+              <p className="text-sm font-bold text-slate-700">
                 {loading ? "Processing CSV..." : "Click to upload CSV"}
               </p>
             </div>
@@ -409,9 +409,9 @@ export default function CompetitionsPage() {
         </div>
       </motion.div>
 
-      <motion.div variants={itemVariants} className="glass-card rounded-[1rem] md:rounded-[2rem] overflow-hidden shadow-lg shadow-teal-900/5 border border-white/60 backdrop-blur-xl bg-white/[0.03] w-full">
-        <div className="px-8 py-6 border-b border-white/[0.08] bg-white/[0.05]">
-          <h2 className="text-xl font-bold text-white">Event Registry</h2>
+      <motion.div variants={itemVariants} className="glass-card rounded-[1rem] md:rounded-[2rem] overflow-hidden shadow-lg shadow-teal-900/5 border border-white/60 backdrop-blur-xl bg-white/60 w-full">
+        <div className="px-8 py-6 border-b border-slate-200 bg-white">
+          <h2 className="text-xl font-bold text-slate-900">Event Registry</h2>
         </div>
         
         {fetching ? (
@@ -427,7 +427,7 @@ export default function CompetitionsPage() {
         ) : (
           <div className="w-full overflow-x-auto block">
             <table className="w-full min-w-[800px] text-sm text-left">
-              <thead className="bg-transparent relative text-slate-400 border-b border-white/[0.08]">
+              <thead className="bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative text-slate-500 border-b border-slate-200">
                 <tr>
                   <th className="whitespace-nowrap px-8 py-4 font-bold uppercase tracking-wider text-xs">Name</th>
                   <th className="whitespace-nowrap px-8 py-4 font-bold uppercase tracking-wider text-xs">Category</th>
@@ -443,9 +443,9 @@ export default function CompetitionsPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: idx * 0.05 }}
                     key={c.id} 
-                    className="hover:bg-transparent relative transition-colors group"
+                    className="hover:bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative transition-colors group"
                   >
-                    <td className="whitespace-nowrap px-8 py-5 text-white font-bold">{c.name}</td>
+                    <td className="whitespace-nowrap px-8 py-5 text-slate-900 font-bold">{c.name}</td>
                     <td className="whitespace-nowrap px-8 py-5">
                       <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-fuchsia-100 text-fuchsia-800 border border-fuchsia-200">
                         {c.category}
@@ -453,22 +453,22 @@ export default function CompetitionsPage() {
                     </td>
                     <td className="whitespace-nowrap px-8 py-5">
                       <div className="flex flex-col items-start space-y-1">
-                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border ${c.type === 'Group' ? 'bg-purple-100 text-fuchsia-400 border-purple-200' : 'bg-white/[0.05] text-slate-300 border-white/[0.08]'}`}>
+                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border ${c.type === 'Group' ? 'bg-purple-100 text-purple-700 border-purple-200' : 'bg-slate-100 text-slate-700 border-slate-200'}`}>
                           {c.type === 'Group' ? <Users className="w-3 h-3 mr-1" /> : null}
                           {c.type}
                         </span>
-                        <span className="text-xs font-medium text-slate-400 ml-1">
+                        <span className="text-xs font-medium text-slate-500 ml-1">
                           Max size: {c.max_participants || 1}
                         </span>
                         {c.type === 'Group' && (
-                          <span className="text-xs font-medium text-slate-400 ml-1">
+                          <span className="text-xs font-medium text-slate-500 ml-1">
                             Max groups: {c.max_groups_per_team || 1}
                           </span>
                         )}
                       </div>
                     </td>
                     <td className="whitespace-nowrap px-8 py-5">
-                      <p className="text-slate-300 line-clamp-2 leading-relaxed text-xs max-w-xs">{c.rules || <span className="text-slate-400 italic">No rules specified</span>}</p>
+                      <p className="text-slate-600 line-clamp-2 leading-relaxed text-xs max-w-xs">{c.rules || <span className="text-slate-400 italic">No rules specified</span>}</p>
                     </td>
                     <td className="whitespace-nowrap px-8 py-5 text-right">
                       <div className="flex justify-end space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -476,7 +476,7 @@ export default function CompetitionsPage() {
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.9 }}
                           onClick={() => setEditingComp({...c})}
-                          className="p-2 text-slate-400 hover:text-violet-400 hover:bg-violet-500/10 rounded-lg transition-colors"
+                          className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                           title="Edit Competition"
                         >
                           <Edit3 className="h-4 w-4" />
@@ -486,10 +486,10 @@ export default function CompetitionsPage() {
                           whileTap={{ scale: 0.9 }}
                           onClick={() => handleDelete(c.id)}
                           disabled={deletingId === c.id}
-                          className="p-2 text-slate-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+                          className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                           title="Delete Competition"
                         >
-                          {deletingId === c.id ? <Loader2 className="h-4 w-4 animate-spin text-red-400" /> : <Trash2 className="h-4 w-4" />}
+                          {deletingId === c.id ? <Loader2 className="h-4 w-4 animate-spin text-red-600" /> : <Trash2 className="h-4 w-4" />}
                         </motion.button>
                       </div>
                     </td>
@@ -516,32 +516,32 @@ export default function CompetitionsPage() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-lg max-h-[90vh] overflow-y-auto bg-white/[0.05] rounded-3xl shadow-2xl z-50 border border-white/[0.08]"
+              className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-lg max-h-[90vh] overflow-y-auto bg-white rounded-3xl shadow-2xl z-50 border border-slate-200"
             >
-              <div className="px-6 py-4 border-b border-white/[0.08] flex justify-between items-center bg-transparent relative">
-                <h3 className="text-lg font-bold text-white">Edit Competition</h3>
-                <button onClick={() => setEditingComp(null)} className="p-2 text-slate-400 hover:bg-white/[0.08] hover:text-slate-300 rounded-full transition-colors">
+              <div className="px-6 py-4 border-b border-slate-200 flex justify-between items-center bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative">
+                <h3 className="text-lg font-bold text-slate-900">Edit Competition</h3>
+                <button onClick={() => setEditingComp(null)} className="p-2 text-slate-400 hover:bg-slate-200 hover:text-slate-700 rounded-full transition-colors">
                   <X className="w-5 h-5" />
                 </button>
               </div>
               <div className="p-6 space-y-5">
                 <div>
-                  <label className="block text-sm font-semibold text-slate-300 mb-2">Event Name</label>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">Event Name</label>
                   <input
                     type="text"
                     value={editingComp.name}
                     onChange={(e) => setEditingComp({ ...editingComp, name: e.target.value })}
-                    className="block w-full px-4 py-3 bg-transparent relative border border-white/[0.08] rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-white outline-none"
+                    className="block w-full px-4 py-3 bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative border border-slate-200 rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-slate-900 outline-none"
                   />
                 </div>
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-semibold text-slate-300 mb-2">Zone / Category</label>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">Zone / Category</label>
                     <select
                       value={editingComp.category}
                       onChange={(e) => setEditingComp({ ...editingComp, category: e.target.value })}
-                      className="block w-full px-4 py-3 bg-transparent relative border border-white/[0.08] rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-white outline-none"
+                      className="block w-full px-4 py-3 bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative border border-slate-200 rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-slate-900 outline-none"
                     >
                       {zones.map(z => (
                         <option key={z} value={z}>{z}</option>
@@ -549,11 +549,11 @@ export default function CompetitionsPage() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-slate-300 mb-2">Type</label>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">Type</label>
                     <select
                       value={editingComp.type}
                       onChange={(e) => setEditingComp({ ...editingComp, type: e.target.value })}
-                      className="block w-full px-4 py-3 bg-transparent relative border border-white/[0.08] rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-white outline-none"
+                      className="block w-full px-4 py-3 bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative border border-slate-200 rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-slate-900 outline-none"
                     >
                       <option value="Individual">Individual</option>
                       <option value="Group">Group</option>
@@ -562,23 +562,23 @@ export default function CompetitionsPage() {
                   {editingComp.type === "Group" && (
                     <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="col-span-1 sm:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-semibold text-slate-300 mb-2">Max Participants (Per Group)</label>
+                        <label className="block text-sm font-semibold text-slate-700 mb-2">Max Participants (Per Group)</label>
                         <input
                           type="number"
                           min="2"
                           value={editingComp.max_participants || 2}
                           onChange={(e) => setEditingComp({ ...editingComp, max_participants: parseInt(e.target.value) })}
-                          className="block w-full px-4 py-3 bg-transparent relative border border-white/[0.08] rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-white outline-none"
+                          className="block w-full px-4 py-3 bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative border border-slate-200 rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-slate-900 outline-none"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-semibold text-slate-300 mb-2">Max Groups (Per Team)</label>
+                        <label className="block text-sm font-semibold text-slate-700 mb-2">Max Groups (Per Team)</label>
                         <input
                           type="number"
                           min="1"
                           value={editingComp.max_groups_per_team || 1}
                           onChange={(e) => setEditingComp({ ...editingComp, max_groups_per_team: parseInt(e.target.value) })}
-                          className="block w-full px-4 py-3 bg-transparent relative border border-white/[0.08] rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-white outline-none"
+                          className="block w-full px-4 py-3 bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative border border-slate-200 rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-slate-900 outline-none"
                         />
                       </div>
                     </motion.div>
@@ -586,21 +586,21 @@ export default function CompetitionsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-slate-300 mb-2">Rules (Optional)</label>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">Rules (Optional)</label>
                   <textarea
                     rows={4}
                     value={editingComp.rules || ""}
                     onChange={(e) => setEditingComp({ ...editingComp, rules: e.target.value })}
-                    className="block w-full px-4 py-3 bg-transparent relative border border-white/[0.08] rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-white outline-none resize-none"
+                    className="block w-full px-4 py-3 bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative border border-slate-200 rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-slate-900 outline-none resize-none"
                     placeholder="Enter competition rules here..."
                   />
                 </div>
 
                 {error && (
-                  <p className="text-sm font-bold text-red-400 bg-red-500/10 p-3 rounded-lg border border-red-500/20">{error}</p>
+                  <p className="text-sm font-bold text-red-600 bg-red-50 p-3 rounded-lg border border-red-100">{error}</p>
                 )}
               </div>
-              <div className="px-6 py-4 border-t border-white/[0.08] bg-transparent relative flex justify-end">
+              <div className="px-6 py-4 border-t border-slate-200 bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative flex justify-end">
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
@@ -632,33 +632,33 @@ export default function CompetitionsPage() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-lg max-h-[90vh] overflow-y-auto bg-white/[0.05] rounded-3xl shadow-2xl z-50 border border-white/[0.08]"
+              className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-lg max-h-[90vh] overflow-y-auto bg-white rounded-3xl shadow-2xl z-50 border border-slate-200"
             >
-              <div className="px-6 py-4 border-b border-white/[0.08] flex justify-between items-center bg-transparent relative">
-                <h3 className="text-lg font-bold text-white">Add New Competition</h3>
-                <button onClick={() => setIsAddingNew(false)} className="p-2 text-slate-400 hover:bg-white/[0.08] hover:text-slate-300 rounded-full transition-colors">
+              <div className="px-6 py-4 border-b border-slate-200 flex justify-between items-center bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative">
+                <h3 className="text-lg font-bold text-slate-900">Add New Competition</h3>
+                <button onClick={() => setIsAddingNew(false)} className="p-2 text-slate-400 hover:bg-slate-200 hover:text-slate-700 rounded-full transition-colors">
                   <X className="w-5 h-5" />
                 </button>
               </div>
               <div className="p-6 space-y-5">
                 <div>
-                  <label className="block text-sm font-semibold text-slate-300 mb-2">Event Name</label>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">Event Name</label>
                   <input
                     type="text"
                     value={newComp.name}
                     onChange={(e) => setNewComp({...newComp, name: e.target.value})}
                     placeholder="e.g. Essay Writing"
-                    className="block w-full px-4 py-3 bg-transparent relative border border-white/[0.08] rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-white outline-none"
+                    className="block w-full px-4 py-3 bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative border border-slate-200 rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-slate-900 outline-none"
                   />
                 </div>
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-semibold text-slate-300 mb-2">Zone / Category</label>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">Zone / Category</label>
                     <select
                       value={newComp.category}
                       onChange={(e) => setNewComp({ ...newComp, category: e.target.value })}
-                      className="block w-full px-4 py-3 bg-transparent relative border border-white/[0.08] rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-white outline-none"
+                      className="block w-full px-4 py-3 bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative border border-slate-200 rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-slate-900 outline-none"
                     >
                       {zones.map(z => (
                         <option key={z} value={z}>{z}</option>
@@ -666,11 +666,11 @@ export default function CompetitionsPage() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-slate-300 mb-2">Type</label>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">Type</label>
                     <select
                       value={newComp.type}
                       onChange={(e) => setNewComp({ ...newComp, type: e.target.value })}
-                      className="block w-full px-4 py-3 bg-transparent relative border border-white/[0.08] rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-white outline-none"
+                      className="block w-full px-4 py-3 bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative border border-slate-200 rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-slate-900 outline-none"
                     >
                       <option value="Individual">Individual</option>
                       <option value="Group">Group</option>
@@ -680,23 +680,23 @@ export default function CompetitionsPage() {
                   {newComp.type === "Group" && (
                     <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="col-span-1 sm:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-semibold text-slate-300 mb-2">Max Participants (Per Group)</label>
+                        <label className="block text-sm font-semibold text-slate-700 mb-2">Max Participants (Per Group)</label>
                         <input
                           type="number"
                           min="2"
                           value={newComp.max_participants || 2}
                           onChange={(e) => setNewComp({ ...newComp, max_participants: parseInt(e.target.value) })}
-                          className="block w-full px-4 py-3 bg-transparent relative border border-white/[0.08] rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-white outline-none"
+                          className="block w-full px-4 py-3 bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative border border-slate-200 rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-slate-900 outline-none"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-semibold text-slate-300 mb-2">Max Groups (Per Team)</label>
+                        <label className="block text-sm font-semibold text-slate-700 mb-2">Max Groups (Per Team)</label>
                         <input
                           type="number"
                           min="1"
                           value={newComp.max_groups_per_team || 1}
                           onChange={(e) => setNewComp({ ...newComp, max_groups_per_team: parseInt(e.target.value) })}
-                          className="block w-full px-4 py-3 bg-transparent relative border border-white/[0.08] rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-white outline-none"
+                          className="block w-full px-4 py-3 bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative border border-slate-200 rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-slate-900 outline-none"
                         />
                       </div>
                     </motion.div>
@@ -704,21 +704,21 @@ export default function CompetitionsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-slate-300 mb-2">Rules (Optional)</label>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">Rules (Optional)</label>
                   <textarea
                     rows={4}
                     value={newComp.rules || ""}
                     onChange={(e) => setNewComp({ ...newComp, rules: e.target.value })}
-                    className="block w-full px-4 py-3 bg-transparent relative border border-white/[0.08] rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-white outline-none resize-none"
+                    className="block w-full px-4 py-3 bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative border border-slate-200 rounded-xl focus:ring-4 focus:ring-fuchsia-100 focus:border-fuchsia-400 sm:text-sm transition-all text-slate-900 outline-none resize-none"
                     placeholder="Enter competition rules here..."
                   />
                 </div>
 
                 {error && (
-                  <p className="text-sm font-bold text-red-400 bg-red-500/10 p-3 rounded-lg border border-red-500/20">{error}</p>
+                  <p className="text-sm font-bold text-red-600 bg-red-50 p-3 rounded-lg border border-red-100">{error}</p>
                 )}
               </div>
-              <div className="px-6 py-4 border-t border-white/[0.08] bg-transparent relative flex justify-end">
+              <div className="px-6 py-4 border-t border-slate-200 bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative flex justify-end">
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}

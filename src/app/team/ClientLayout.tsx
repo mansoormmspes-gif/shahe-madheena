@@ -42,16 +42,16 @@ export default function TeamLayout({ children }: { children: React.ReactNode }) 
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-transparent relative">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative">
         <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}>
-          <Loader2 className="h-10 w-10 text-violet-400" />
+          <Loader2 className="h-10 w-10 text-blue-500" />
         </motion.div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-transparent relative flex flex-col font-sans relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative flex flex-col font-sans relative overflow-hidden">
       {/* Animated Background */}
       <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-emerald-300/30 blur-[120px] animate-float" />
@@ -59,7 +59,7 @@ export default function TeamLayout({ children }: { children: React.ReactNode }) 
       </div>
 
       {/* Top Navbar */}
-      <header className="sticky top-0 z-40 glass-panel border-b border-white/[0.08]">
+      <header className="sticky top-0 z-40 glass-panel border-b border-white/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             <motion.div 
@@ -67,12 +67,12 @@ export default function TeamLayout({ children }: { children: React.ReactNode }) 
               animate={{ opacity: 1, x: 0 }}
               className="flex items-center"
             >
-              <div className="p-2.5 bg-violet-500/20 text-violet-400 rounded-xl shadow-sm mr-4">
+              <div className="p-2.5 bg-blue-100 text-blue-600 rounded-xl shadow-sm mr-4">
                 <ShieldCheck className="h-6 w-6" />
               </div>
               <div>
                 <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-0.5">Team Portal</p>
-                <h1 className="text-2xl font-black text-white tracking-tight leading-none">Team {teamName}</h1>
+                <h1 className="text-2xl font-black text-slate-900 tracking-tight leading-none">Team {teamName}</h1>
               </div>
             </motion.div>
             
@@ -85,7 +85,7 @@ export default function TeamLayout({ children }: { children: React.ReactNode }) 
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={handleLogout}
-                className="flex items-center px-5 py-2.5 text-sm font-bold text-red-400 bg-red-500/10 hover:bg-red-100 rounded-xl transition-all shadow-sm"
+                className="flex items-center px-5 py-2.5 text-sm font-bold text-red-600 bg-red-50 hover:bg-red-100 rounded-xl transition-all shadow-sm"
               >
                 <LogOut className="h-4 w-4 mr-2" />
                 Sign Out

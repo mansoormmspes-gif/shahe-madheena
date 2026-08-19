@@ -44,7 +44,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-transparent relative">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative">
         <motion.div 
           animate={{ rotate: 360 }} 
           transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
@@ -65,7 +65,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   const SidebarContent = () => (
     <>
-      <div className="h-20 flex items-center px-6 border-b border-white/[0.08]/50">
+      <div className="h-20 flex items-center px-6 border-b border-slate-200/50">
         <h1 className="text-2xl font-black bg-gradient-to-r from-slate-900 to-slate-600 bg-clip-text text-transparent tracking-tighter">
           Admin Portal
         </h1>
@@ -87,18 +87,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     className={cn(
                       "flex items-center px-4 py-3 rounded-xl text-sm font-semibold transition-all relative z-10",
                       isActive
-                        ? "text-white"
-                        : "text-slate-300 hover:text-white"
+                        ? "text-slate-900"
+                        : "text-slate-600 hover:text-slate-900"
                     )}
                   >
                     {isActive && (
                       <motion.div
                         layoutId="activeTab"
-                        className="absolute inset-0 bg-white/[0.05] rounded-xl -z-10 shadow-md shadow-slate-900/20"
+                        className="absolute inset-0 bg-white rounded-xl -z-10 shadow-md shadow-slate-900/20"
                         transition={{ type: "spring" as const, stiffness: 300, damping: 30 }}
                       />
                     )}
-                    <Icon className={cn("h-5 w-5 mr-3", isActive ? "text-white" : "text-slate-400")} />
+                    <Icon className={cn("h-5 w-5 mr-3", isActive ? "text-slate-900" : "text-slate-400")} />
                     {item.label}
                   </motion.div>
                 </Link>
@@ -107,12 +107,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           })}
         </ul>
       </nav>
-      <div className="p-6 border-t border-white/[0.08]/50">
+      <div className="p-6 border-t border-slate-200/50">
         <motion.button
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           onClick={handleLogout}
-          className="flex items-center w-full px-4 py-3 text-sm font-semibold text-red-400 rounded-xl bg-red-500/10 hover:bg-red-100 transition-colors"
+          className="flex items-center w-full px-4 py-3 text-sm font-semibold text-red-600 rounded-xl bg-red-50 hover:bg-red-100 transition-colors"
         >
           <LogOut className="h-5 w-5 mr-3 text-red-500" />
           Sign Out
@@ -122,7 +122,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   );
 
   return (
-    <div className="min-h-screen bg-transparent relative flex overflow-hidden font-sans">
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative flex overflow-hidden font-sans">
       {/* Animated Background */}
       <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
         <div className="absolute -top-[20%] -right-[10%] w-[50%] h-[50%] rounded-full bg-emerald-300/30 blur-[120px] animate-float" />
@@ -131,15 +131,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
       {/* Desktop Sidebar */}
       <aside className="hidden md:flex w-72 flex-col fixed inset-y-0 z-50">
-        <div className="flex-1 flex flex-col min-h-0 bg-white/[0.03] backdrop-blur-2xl border-r border-white/60 shadow-lg shadow-teal-900/5 m-4 rounded-[2.5rem] shadow-sm overflow-hidden relative">
+        <div className="flex-1 flex flex-col min-h-0 bg-white/60 backdrop-blur-2xl border-r border-white/60 shadow-lg shadow-teal-900/5 m-4 rounded-[2.5rem] shadow-sm overflow-hidden relative">
           <SidebarContent />
         </div>
       </aside>
 
       {/* Mobile Header & Sidebar */}
       <div className="md:hidden fixed top-0 inset-x-0 h-16 bg-white/80 backdrop-blur-lg border-b border-white/60 shadow-sm shadow-teal-900/5 z-40 flex items-center justify-between px-4">
-        <h1 className="text-lg font-bold text-white">Admin Portal</h1>
-        <button onClick={() => setMobileMenuOpen(true)} className="p-2 -mr-2 text-slate-300">
+        <h1 className="text-lg font-bold text-slate-900">Admin Portal</h1>
+        <button onClick={() => setMobileMenuOpen(true)} className="p-2 -mr-2 text-slate-600">
           <Menu className="h-6 w-6" />
         </button>
       </div>
@@ -159,10 +159,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ type: "spring" as const, bounce: 0, duration: 0.4 }}
-              className="md:hidden fixed inset-y-0 left-0 w-72 bg-white/[0.05] shadow-2xl z-50 flex flex-col"
+              className="md:hidden fixed inset-y-0 left-0 w-72 bg-white shadow-2xl z-50 flex flex-col"
             >
               <div className="absolute top-4 right-4">
-                <button onClick={() => setMobileMenuOpen(false)} className="p-2 text-slate-400 hover:text-slate-300 bg-white/[0.05] rounded-full">
+                <button onClick={() => setMobileMenuOpen(false)} className="p-2 text-slate-400 hover:text-slate-600 bg-slate-100 rounded-full">
                   <X className="h-5 w-5" />
                 </button>
               </div>

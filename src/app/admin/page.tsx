@@ -17,9 +17,9 @@ export default function AdminDashboard() {
 
   const quickLinks = [
     { href: "/admin/settings", label: "Fest Settings", icon: Settings, color: "text-indigo-500", bg: "bg-indigo-50" },
-    { href: "/admin/students", label: "Manage Students", icon: Users, color: "text-violet-400", bg: "bg-violet-500/10" },
+    { href: "/admin/students", label: "Manage Students", icon: Users, color: "text-blue-500", bg: "bg-blue-50" },
     { href: "/admin/competitions", label: "Competitions", icon: ClipboardList, color: "text-fuchsia-500", bg: "bg-fuchsia-50" },
-    { href: "/admin/results", label: "Enter Results", icon: Trophy, color: "text-amber-500", bg: "bg-amber-500/10" },
+    { href: "/admin/results", label: "Enter Results", icon: Trophy, color: "text-amber-500", bg: "bg-amber-50" },
   ];
 
   return (
@@ -30,7 +30,7 @@ export default function AdminDashboard() {
         </div>
         <div>
           <h1 className="text-3xl md:text-4xl font-black bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent tracking-tight mb-1">Welcome, Admin</h1>
-          <p className="text-slate-400 font-bold text-sm md:text-base">Here's your control center for Meelad Fest 2k26.</p>
+          <p className="text-slate-500 font-bold text-sm md:text-base">Here's your control center for Meelad Fest 2k26.</p>
         </div>
       </motion.div>
 
@@ -46,7 +46,7 @@ export default function AdminDashboard() {
               <div className={`p-4 rounded-full ${link.bg} mb-4 group-hover:scale-110 transition-transform`}>
                 <link.icon className={`h-8 w-8 ${link.color}`} />
               </div>
-              <h2 className="text-lg font-bold text-white group-hover:text-white">{link.label}</h2>
+              <h2 className="text-lg font-bold text-slate-800 group-hover:text-white">{link.label}</h2>
             </motion.div>
           </Link>
         ))}

@@ -28,15 +28,15 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col relative bg-[#0B0F19] text-white overflow-x-hidden">
+      <body className="min-h-full flex flex-col relative bg-slate-50 overflow-x-hidden">
         {/* Animated Background Container */}
         <div className="fixed inset-0 pointer-events-none -z-50 overflow-hidden">
-          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-violet-600 rounded-full mix-blend-screen filter blur-[120px] opacity-20 animate-blob"></div>
-          <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-fuchsia-600 rounded-full mix-blend-screen filter blur-[120px] opacity-15 animate-blob animation-delay-2000"></div>
-          <div className="absolute bottom-[-20%] left-[20%] w-[50%] h-[50%] bg-cyan-600 rounded-full mix-blend-screen filter blur-[120px] opacity-15 animate-blob animation-delay-4000"></div>
-          <div className="absolute -bottom-8 right-[-10%] w-[35%] h-[35%] bg-blue-600 rounded-full mix-blend-screen filter blur-[120px] opacity-20 animate-blob animation-delay-6000"></div>
+          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-emerald-300 rounded-full mix-blend-multiply filter blur-[120px] opacity-20 animate-blob"></div>
+          <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-amber-200 rounded-full mix-blend-multiply filter blur-[120px] opacity-30 animate-blob animation-delay-2000"></div>
+          <div className="absolute bottom-[-20%] left-[20%] w-[50%] h-[50%] bg-teal-300 rounded-full mix-blend-multiply filter blur-[120px] opacity-20 animate-blob animation-delay-4000"></div>
+          <div className="absolute -bottom-8 right-[-10%] w-[35%] h-[35%] bg-blue-300 rounded-full mix-blend-multiply filter blur-[120px] opacity-20 animate-blob animation-delay-6000"></div>
         </div>
-        <div className="fixed inset-0 bg-dot-pattern opacity-30 pointer-events-none -z-50" />
+        <div className="fixed inset-0 bg-dot-pattern opacity-40 pointer-events-none -z-50" />
         {children}
       </body>
     </html>

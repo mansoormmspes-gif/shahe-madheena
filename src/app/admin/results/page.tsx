@@ -134,21 +134,21 @@ export default function ResultsPage() {
           <Trophy className="h-6 w-6" />
         </div>
         <div>
-          <h1 className="text-3xl font-black text-white tracking-tight">Results Management</h1>
+          <h1 className="text-3xl font-black text-slate-900 tracking-tight">Results Management</h1>
           <p className="text-slate-500 font-medium">Assign winners and points for each competition.</p>
         </div>
       </motion.div>
 
-      <motion.div variants={itemVariants} className="glass-card rounded-[1rem] md:rounded-[2rem] overflow-hidden shadow-lg shadow-teal-900/5 border border-white/60 backdrop-blur-xl bg-white/[0.03] p-3 sm:p-6 md:p-8">
+      <motion.div variants={itemVariants} className="glass-card rounded-[1rem] md:rounded-[2rem] overflow-hidden shadow-lg shadow-teal-900/5 border border-white/60 backdrop-blur-xl bg-white/60 p-3 sm:p-6 md:p-8">
         <div className="mb-8">
-          <label className="block text-sm font-bold text-slate-300 mb-2">
+          <label className="block text-sm font-bold text-slate-700 mb-2">
             Select Competition
           </label>
           <div className="relative max-w-xl">
             <select
               value={selectedEventId}
               onChange={(e) => setSelectedEventId(e.target.value)}
-              className="block w-full pl-4 pr-10 py-4 bg-transparent relative/50 border border-white/[0.08] rounded-xl focus:ring-4 focus:ring-amber-100 focus:border-amber-400 sm:text-base font-medium text-white transition-all appearance-none cursor-pointer outline-none shadow-sm"
+              className="block w-full pl-4 pr-10 py-4 bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-amber-100 focus:border-amber-400 sm:text-base font-medium text-slate-900 transition-all appearance-none cursor-pointer outline-none shadow-sm"
             >
               <option value="">-- Choose an event --</option>
               {competitions.map(c => (
@@ -191,7 +191,7 @@ export default function ResultsPage() {
                       initial={{ opacity: 0, height: 0, marginBottom: 0 }}
                       animate={{ opacity: 1, height: 'auto', marginBottom: 24 }}
                       exit={{ opacity: 0, height: 0, marginBottom: 0 }}
-                      className={`p-4 rounded-xl text-sm font-bold border ${message.type === "error" ? "bg-red-500/10 text-red-400 border-red-500/20" : "bg-emerald-500/10 text-emerald-400 border-emerald-100"}`}
+                      className={`p-4 rounded-xl text-sm font-bold border ${message.type === "error" ? "bg-red-50 text-red-600 border-red-100" : "bg-emerald-50 text-emerald-700 border-emerald-100"}`}
                     >
                       {message.text}
                     </motion.div>
@@ -201,7 +201,7 @@ export default function ResultsPage() {
                 <div className="space-y-6">
                   {[
                     { pos: 1, label: "1st Place", color: "text-amber-500", bg: "bg-gradient-to-r from-amber-50 to-amber-100/30", border: "border-amber-200", icon: Trophy },
-                    { pos: 2, label: "2nd Place", color: "text-slate-400", bg: "bg-gradient-to-r from-slate-50 to-slate-100/30", border: "border-white/[0.08]", icon: Medal },
+                    { pos: 2, label: "2nd Place", color: "text-slate-500", bg: "bg-gradient-to-r from-slate-50 to-slate-100/30", border: "border-slate-200", icon: Medal },
                     { pos: 3, label: "3rd Place", color: "text-orange-700", bg: "bg-gradient-to-r from-orange-50 to-orange-100/30", border: "border-orange-200", icon: Award }
                   ].map(({ pos, label, color, bg, border, icon: Icon }) => (
                     <motion.div 
@@ -210,18 +210,18 @@ export default function ResultsPage() {
                       className={`p-6 rounded-2xl border ${border} flex flex-col md:flex-row md:items-center gap-4 md:gap-6 ${bg} shadow-sm transition-all`}
                     >
                       <div className="flex items-center w-40 flex-shrink-0">
-                        <div className={`p-2 rounded-xl bg-white/[0.03] shadow-sm mr-4 ${color}`}>
+                        <div className={`p-2 rounded-xl bg-white/60 shadow-sm mr-4 ${color}`}>
                           <Icon className="h-6 w-6" />
                         </div>
                         <span className={`font-black text-lg ${color}`}>{label}</span>
                       </div>
                       
                       <div className="flex-1">
-                        <label className="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-widest">Select Student</label>
+                        <label className="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-widest">Select Student</label>
                         <select
                           value={results[pos as 1|2|3].student_id}
                           onChange={(e) => setResults({...results, [pos]: { ...results[pos as 1|2|3], student_id: e.target.value }})}
-                          className="block w-full px-4 py-3 bg-white/80 border border-white/[0.08] rounded-xl focus:ring-4 focus:ring-amber-100 focus:border-amber-400 sm:text-sm text-white font-medium transition-all shadow-sm outline-none"
+                          className="block w-full px-4 py-3 bg-white/80 border border-white/50 rounded-xl focus:ring-4 focus:ring-amber-100 focus:border-amber-400 sm:text-sm text-slate-900 font-medium transition-all shadow-sm outline-none"
                         >
                           <option value="">-- None --</option>
                           {registrations.map(r => (
@@ -233,13 +233,13 @@ export default function ResultsPage() {
                       </div>
 
                       <div className="w-full md:w-32 flex-shrink-0">
-                        <label className="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-widest">Points</label>
+                        <label className="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-widest">Points</label>
                         <input
                           type="number"
                           min="0"
                           value={results[pos as 1|2|3].points}
                           onChange={(e) => setResults({...results, [pos]: { ...results[pos as 1|2|3], points: parseInt(e.target.value) || 0 }})}
-                          className="block w-full px-4 py-3 bg-white/80 border border-white/[0.08] rounded-xl focus:ring-4 focus:ring-amber-100 focus:border-amber-400 sm:text-sm text-white font-bold transition-all shadow-sm text-center outline-none"
+                          className="block w-full px-4 py-3 bg-white/80 border border-white/50 rounded-xl focus:ring-4 focus:ring-amber-100 focus:border-amber-400 sm:text-sm text-slate-900 font-bold transition-all shadow-sm text-center outline-none"
                         />
                       </div>
                     </motion.div>
