@@ -472,9 +472,9 @@ export default function TeamDashboard() {
             className="w-full sm:w-auto px-4 py-2 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-fuchsia-500 transition-all font-medium text-slate-700 text-sm cursor-pointer"
           >
             <option value="All">All Zones</option>
-            <option value="Minor Zone">Minor Zone</option>
-            <option value="Mid Zone">Mid Zone</option>
-            <option value="Premier Zone">Premier Zone</option>
+            {settings?.zone_config && Object.keys(settings.zone_config).map(zone => (
+              <option key={zone} value={zone}>{zone}</option>
+            ))}
             <option value="General Zone">General Zone</option>
           </select>
         </div>

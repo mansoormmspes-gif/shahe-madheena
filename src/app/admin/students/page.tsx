@@ -27,24 +27,49 @@ export default function StudentsPage() {
   const [manualLoading, setManualLoading] = useState(false);
   const [csvLoading, setCsvLoading] = useState(false);
 
+  const [zoneConfig, setZoneConfig] = useState<any>(null);
+
   useEffect(() => {
-    fetchStudents();
+    fetchData();
   }, []);
 
-  const fetchStudents = async () => {
+  const fetchData = async () => {
     setLoading(true);
-    const { data, error } = await supabase
-      .from("students")
-      .select("*")
-      .order("id", { ascending: true });
+    const [{ data: studentsData, error: studentsError }, { data: settingsData }] = await Promise.all([
+      supabase.from("students").select("*").order("id", { ascending: true }),
+      supabase.from("settings").select("zone_config").eq("id", 1).single()
+    ]);
     
-    if (error) {
-      setError(error.message);
+    if (studentsError) {
+      setError(studentsError.message);
     } else {
-      setStudents(data || []);
+      setStudents(studentsData || []);
+    }
+    
+    if (settingsData && settingsData.zone_config) {
+      setZoneConfig(settingsData.zone_config);
+    } else {
+      setZoneConfig({
+        "Minor Zone": ["1", "2", "3"],
+        "Mid Zone": ["4", "5", "6", "7"],
+        "Premier Zone": ["8", "9", "10", "11", "12"]
+      });
     }
     setLoading(false);
   };
+
+  const computeZone = (studentClass: string, config: any) => {
+    if (!config || !studentClass) return "";
+    const trimmedClass = studentClass.toString().trim();
+    for (const [zone, classes] of Object.entries(config)) {
+      if (Array.isArray(classes) && classes.includes(trimmedClass)) {
+        return zone;
+      }
+    }
+    return "";
+  };
+
+  const fetchStudents = fetchData;
 
   const handleDelete = async (id: string) => {
     if (!window.confirm("Are you sure you want to delete this student?")) return;
@@ -136,12 +161,15 @@ export default function StudentsPage() {
             for (const key in row) {
               cleanRow[key.toLowerCase().trim()] = row[key];
             }
+            const studentClass = cleanRow.class || "";
+            const computedZone = computeZone(studentClass, zoneConfig);
+            
             return {
               id: cleanRow.id,
               name: cleanRow.name,
-              class: cleanRow.class,
+              class: studentClass,
               team: cleanRow.team,
-              category: cleanRow.category || cleanRow.zone || "",
+              category: computedZone || cleanRow.category || cleanRow.zone || "",
             };
           });
 
@@ -283,10 +311,9 @@ export default function StudentsPage() {
               className="w-full sm:w-auto px-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm font-medium min-w-[120px]"
             >
               <option value="All">All Zones</option>
-              <option value="Sub Junior">Sub Junior</option>
-              <option value="Junior">Junior</option>
-              <option value="Senior">Senior</option>
-              <option value="Super Senior">Super Senior</option>
+              {zoneConfig && Object.keys(zoneConfig).map(zone => (
+                <option key={zone} value={zone}>{zone}</option>
+              ))}
             </select>
           </div>
         </div>
@@ -418,7 +445,15 @@ export default function StudentsPage() {
                     <label className="block text-sm font-semibold text-slate-700 mb-1.5">Class</label>
                     <input
                       type="text" required value={manualStudent.class}
-                      onChange={(e) => setManualStudent({...manualStudent, class: e.target.value})}
+                      onChange={(e) => {
+                        const newClass = e.target.value;
+                        const newZone = computeZone(newClass, zoneConfig);
+                        setManualStudent({
+                          ...manualStudent, 
+                          class: newClass, 
+                          zone: newZone || manualStudent.zone
+                        });
+                      }}
                       className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm"
                       placeholder="e.g. 5"
                     />
@@ -444,9 +479,9 @@ export default function StudentsPage() {
                     className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm"
                   >
                     <option value="" disabled>Select Zone</option>
-                    <option value="Minor Zone">Minor Zone</option>
-                    <option value="Mid Zone">Mid Zone</option>
-                    <option value="Premier Zone">Premier Zone</option>
+                    {zoneConfig && Object.keys(zoneConfig).map(zone => (
+                      <option key={zone} value={zone}>{zone}</option>
+                    ))}
                   </select>
                 </div>
                 <div className="pt-4 border-t border-slate-200 mt-6">

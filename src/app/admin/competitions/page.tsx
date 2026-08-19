@@ -19,7 +19,7 @@ export default function CompetitionsPage() {
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [newComp, setNewComp] = useState({
     name: "",
-    category: "Minor Zone",
+    category: "",
     type: "Individual",
     max_participants: 2,
     max_groups_per_team: 1,
@@ -30,7 +30,6 @@ export default function CompetitionsPage() {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [isExporting, setIsExporting] = useState(false);
 
-  const zones = ["Minor Zone", "Mid Zone", "Premier Zone", "General Zone"];
 
   const exportParticipantsPDF = async () => {
     setIsExporting(true);
@@ -127,19 +126,27 @@ export default function CompetitionsPage() {
     setDeletingId(null);
   };
 
+  const [zones, setZones] = useState<string[]>(["General Zone"]);
+
   useEffect(() => {
     fetchCompetitions();
   }, []);
 
   const fetchCompetitions = async () => {
     setFetching(true);
-    const { data, error } = await supabase
-      .from("competitions")
-      .select("*")
-      .order("category", { ascending: true })
-      .order("name", { ascending: true });
+    const [{ data }, { data: settingsData }] = await Promise.all([
+      supabase.from("competitions").select("*").order("category", { ascending: true }).order("name", { ascending: true }),
+      supabase.from("settings").select("zone_config").eq("id", 1).single()
+    ]);
     
     if (data) setCompetitions(data);
+    
+    if (settingsData?.zone_config) {
+      setZones([...Object.keys(settingsData.zone_config), "General Zone"]);
+    } else {
+      setZones(["Minor Zone", "Mid Zone", "Premier Zone", "General Zone"]);
+    }
+    
     setFetching(false);
   };
 
@@ -278,7 +285,7 @@ export default function CompetitionsPage() {
       setIsAddingNew(false);
       setNewComp({
         name: "",
-        category: "Minor Zone",
+        category: "",
         type: "Individual",
         max_participants: 2,
         max_groups_per_team: 1,
