@@ -160,7 +160,7 @@ export default function PublicPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-950">
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
         <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}>
           <Loader2 className="h-12 w-12 text-slate-600" />
         </motion.div>
@@ -179,7 +179,7 @@ export default function PublicPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 font-sans selection:bg-slate-700 relative overflow-hidden">
+    <div className="min-h-screen bg-slate-50 font-sans selection:bg-slate-200 relative overflow-hidden">
       {/* Dynamic Animated Background Gradients */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden -z-10">
         <div className="absolute top-[-10%] right-[-5%] w-[40%] h-[40%] rounded-full bg-blue-100/40 blur-[100px] animate-float" />
@@ -222,7 +222,7 @@ export default function PublicPage() {
                 <motion.button 
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="flex items-center text-sm font-bold text-slate-700 hover:text-white bg-slate-900 shadow-sm hover:shadow-md px-6 py-2.5 rounded-full transition-all border border-slate-100 group"
+                  className="flex items-center text-sm font-bold text-slate-700 hover:text-slate-900 bg-white shadow-sm hover:shadow-md px-6 py-2.5 rounded-full transition-all border border-slate-100 group"
                 >
                   Portal Login
                   <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
@@ -291,7 +291,7 @@ export default function PublicPage() {
               <div className={`mx-auto w-14 h-14 ${stat.bg} ${stat.color} rounded-2xl flex items-center justify-center mb-5 shadow-inner`}>
                 <stat.icon className="h-7 w-7" />
               </div>
-              <p className="text-4xl md:text-5xl font-black text-white tracking-tighter mb-1">{stat.value}</p>
+              <p className="text-4xl md:text-5xl font-black text-slate-900 tracking-tighter mb-1">{stat.value}</p>
               <p className="text-xs md:text-sm font-bold text-slate-400 uppercase tracking-widest">{stat.label}</p>
             </motion.div>
           ))}
@@ -306,7 +306,7 @@ export default function PublicPage() {
             className="mb-32"
           >
             <div className="text-center mb-12">
-              <h2 className="text-4xl md:text-5xl font-black text-white tracking-tighter">Live Leaderboard</h2>
+              <h2 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tighter">Live Leaderboard</h2>
               <div className="w-24 h-1.5 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto mt-6 rounded-full" />
             </div>
             
@@ -366,15 +366,15 @@ export default function PublicPage() {
           transition={{ duration: 0.6 }}
           className="max-w-5xl mx-auto"
         >
-          <div className="bg-slate-900 rounded-[3rem] shadow-2xl overflow-hidden relative border border-slate-800">
+          <div className="bg-white rounded-[3rem] shadow-2xl overflow-hidden relative border border-slate-800">
             {/* Background glowing effects inside the dark card */}
             <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/20 rounded-full blur-[100px] pointer-events-none" />
             <div className="absolute bottom-0 left-0 w-96 h-96 bg-purple-500/20 rounded-full blur-[100px] pointer-events-none" />
 
             <div className="p-8 md:p-16 relative z-10">
               <div className="text-center max-w-2xl mx-auto mb-12">
-                <h2 className="text-4xl md:text-5xl font-black text-white mb-6 tracking-tight">Check Your Results</h2>
-                <p className="text-slate-400 text-lg font-medium">
+                <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-6 tracking-tight">Check Your Results</h2>
+                <p className="text-slate-500 text-lg font-medium">
                   Search for a participant by name or class to view their winning positions and download a custom celebratory poster.
                 </p>
               </div>
@@ -385,14 +385,14 @@ export default function PublicPage() {
                   placeholder="Enter student name or class..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-8 pr-16 py-6 bg-slate-900/10 backdrop-blur-md border border-white/20 rounded-2xl text-white placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/50 transition-all text-xl font-medium shadow-inner"
+                  className="w-full pl-8 pr-16 py-6 bg-white/50 backdrop-blur-md border border-slate-200 rounded-2xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/50 transition-all text-xl font-medium shadow-inner"
                 />
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   type="submit"
                   disabled={searching}
-                  className="absolute right-3 top-3 bottom-3 bg-slate-900 hover:bg-slate-100 text-white px-6 rounded-xl font-bold transition-colors disabled:opacity-50 flex items-center justify-center shadow-lg"
+                  className="absolute right-3 top-3 bottom-3 bg-blue-600 hover:bg-blue-700 text-white px-6 rounded-xl font-bold transition-colors disabled:opacity-50 flex items-center justify-center shadow-lg"
                 >
                   {searching ? <Loader2 className="w-6 h-6 animate-spin" /> : <Search className="w-6 h-6" />}
                 </motion.button>
@@ -404,7 +404,7 @@ export default function PublicPage() {
                 <motion.div 
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
-                  className="bg-slate-900 p-8 md:p-12 relative z-10"
+                  className="bg-white p-8 md:p-12 relative z-10"
                 >
                   {searchResults.length > 0 ? (
                     <motion.div 
@@ -417,24 +417,24 @@ export default function PublicPage() {
                         <motion.div 
                           variants={itemVariants}
                           key={idx} 
-                          className="bg-slate-950 p-8 rounded-3xl border border-slate-200 flex flex-col justify-between hover:shadow-lg hover:border-blue-200 transition-all group"
+                          className="bg-white p-8 rounded-3xl border border-slate-200 flex flex-col justify-between hover:shadow-lg hover:border-blue-200 transition-all group"
                         >
                           <div>
                             <div className="flex justify-between items-start mb-6">
-                              <div className="flex items-center space-x-3 bg-slate-900 px-4 py-2 rounded-2xl shadow-sm border border-slate-100">
+                              <div className="flex items-center space-x-3 bg-slate-50 px-4 py-2 rounded-2xl shadow-sm border border-slate-100">
                                 <Medal className={cn("w-6 h-6", result.position === 1 ? 'text-amber-400' : result.position === 2 ? 'text-slate-400' : 'text-amber-700')} />
-                                <span className="font-black text-white text-sm tracking-widest uppercase">{getPositionText(result.position)}</span>
+                                <span className="font-black text-slate-900 text-sm tracking-widest uppercase">{getPositionText(result.position)}</span>
                               </div>
-                              <span className="bg-slate-900 text-white px-4 py-2 rounded-2xl text-xs font-black uppercase tracking-widest shadow-sm">
+                              <span className="bg-blue-100 text-blue-800 px-4 py-2 rounded-2xl text-xs font-black uppercase tracking-widest shadow-sm">
                                 {result.points} PTS
                               </span>
                             </div>
-                            <h3 className="text-2xl font-black text-white mb-2">{result.student.name}</h3>
+                            <h3 className="text-2xl font-black text-slate-900 mb-2">{result.student.name}</h3>
                             <p className="text-sm font-bold text-slate-400 mb-6 tracking-wide">CLASS {result.student.class} &bull; TEAM {result.student.team}</p>
                             
-                            <div className="bg-slate-900 rounded-2xl p-5 mb-8 border border-slate-100 shadow-sm">
+                            <div className="bg-slate-50 rounded-2xl p-5 mb-8 border border-slate-100 shadow-sm">
                               <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Event Details</p>
-                              <p className="text-lg font-bold text-white leading-tight mb-1">{result.competitions.name}</p>
+                              <p className="text-lg font-bold text-slate-900 leading-tight mb-1">{result.competitions.name}</p>
                               <p className="text-sm font-medium text-slate-400">{result.competitions.category}</p>
                             </div>
                           </div>
@@ -444,7 +444,7 @@ export default function PublicPage() {
                             whileTap={{ scale: 0.98 }}
                             onClick={() => generatePoster(result)}
                             disabled={generatingPoster === result.student.id + result.competitions.name}
-                            className="w-full flex items-center justify-center px-6 py-4 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl font-bold transition-all shadow-md group-hover:shadow-lg disabled:opacity-50"
+                            className="w-full flex items-center justify-center px-6 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-bold transition-all shadow-md group-hover:shadow-lg disabled:opacity-50"
                           >
                             {generatingPoster === result.student.id + result.competitions.name ? (
                               <><Loader2 className="w-5 h-5 mr-3 animate-spin" /> Generating Poster...</>
@@ -461,10 +461,10 @@ export default function PublicPage() {
                       animate={{ opacity: 1 }}
                       className="text-center py-16"
                     >
-                      <div className="w-24 h-24 bg-slate-950 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
+                      <div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
                         <Award className="w-12 h-12 text-slate-300" />
                       </div>
-                      <h3 className="text-2xl font-black text-white mb-2">No Results Found</h3>
+                      <h3 className="text-2xl font-black text-slate-900 mb-2">No Results Found</h3>
                       <p className="text-slate-400 font-medium">Double check the name or class and try searching again.</p>
                     </motion.div>
                   )}

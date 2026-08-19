@@ -196,7 +196,7 @@ export default function StudentsPage() {
             <Users className="h-6 w-6" />
           </div>
           <div>
-            <h1 className="text-3xl font-black text-white tracking-tight">Students</h1>
+            <h1 className="text-3xl font-black text-slate-900 tracking-tight">Students</h1>
             <p className="text-slate-500 font-medium">Manage all participants across all teams.</p>
           </div>
         </div>
@@ -209,7 +209,7 @@ export default function StudentsPage() {
             <Trash2 className="h-4 w-4 mr-2" />
             Delete All
           </button>
-          <label className="flex items-center px-4 py-2 bg-slate-900 border border-slate-200 rounded-xl shadow-sm cursor-pointer hover:bg-slate-950 transition-colors text-sm font-semibold text-slate-700">
+          <label className="flex items-center px-4 py-2 bg-white border border-slate-200 rounded-xl shadow-sm cursor-pointer hover:bg-white transition-colors text-sm font-semibold text-slate-700">
             {csvLoading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Upload className="h-4 w-4 mr-2" />}
             Upload CSV
             <input type="file" className="hidden" accept=".csv" onChange={handleFileUpload} disabled={csvLoading} />
@@ -259,7 +259,7 @@ export default function StudentsPage() {
             placeholder="Search by name or ID..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 bg-slate-900 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm font-medium"
+            className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm font-medium"
           />
         </div>
         <div className="flex gap-4 flex-wrap sm:flex-nowrap">
@@ -268,7 +268,7 @@ export default function StudentsPage() {
             <select
               value={teamFilter}
               onChange={(e) => setTeamFilter(e.target.value)}
-              className="w-full sm:w-auto px-4 py-2.5 bg-slate-900 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm font-medium min-w-[120px]"
+              className="w-full sm:w-auto px-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm font-medium min-w-[120px]"
             >
               <option value="All">All Teams</option>
               <option value="ZAMAAN">ZAMAAN</option>
@@ -280,7 +280,7 @@ export default function StudentsPage() {
             <select
               value={zoneFilter}
               onChange={(e) => setZoneFilter(e.target.value)}
-              className="w-full sm:w-auto px-4 py-2.5 bg-slate-900 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm font-medium min-w-[120px]"
+              className="w-full sm:w-auto px-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm font-medium min-w-[120px]"
             >
               <option value="All">All Zones</option>
               <option value="Sub Junior">Sub Junior</option>
@@ -297,7 +297,7 @@ export default function StudentsPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-slate-950/50 border-b border-slate-100">
+              <tr className="bg-slate-50 border-b border-slate-200">
                 <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">ID</th>
                 <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Name</th>
                 <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Class</th>
@@ -306,7 +306,7 @@ export default function StudentsPage() {
                 <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 bg-slate-900/50">
+            <tbody className="divide-y divide-slate-100 bg-white">
               {loading ? (
                 <tr>
                   <td colSpan={6} className="px-6 py-12 text-center">
@@ -317,17 +317,17 @@ export default function StudentsPage() {
               ) : filteredStudents.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="px-6 py-12 text-center">
-                    <div className="bg-slate-950 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <div className="bg-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                       <Users className="h-8 w-8 text-slate-400" />
                     </div>
-                    <p className="text-white font-bold mb-1">No students found</p>
+                    <p className="text-slate-900 font-bold mb-1">No students found</p>
                     <p className="text-slate-500 text-sm">Try adjusting your search or filters.</p>
                   </td>
                 </tr>
               ) : (
                 filteredStudents.map((student) => (
-                  <tr key={student.id} className="hover:bg-slate-950/80 transition-colors group">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-white">{student.id}</td>
+                  <tr key={student.id} className="hover:bg-slate-50 transition-colors group">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-slate-900">{student.id}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-slate-700">{student.name}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-600">{student.class}</td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -379,16 +379,16 @@ export default function StudentsPage() {
             <motion.div
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               onClick={() => setIsModalOpen(false)}
-              className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50"
+              className="fixed inset-0 bg-white/20 backdrop-blur-sm z-50"
             />
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-slate-900 rounded-[2rem] shadow-2xl z-50 overflow-hidden"
+              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white rounded-[2rem] shadow-2xl z-50 overflow-hidden"
             >
-              <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
-                <h2 className="text-xl font-bold text-white">{isEditMode ? "Edit Student" : "Add New Student"}</h2>
+              <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200">
+                <h2 className="text-xl font-bold text-slate-900">{isEditMode ? "Edit Student" : "Add New Student"}</h2>
                 <button type="button" onClick={() => setIsModalOpen(false)} className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors">
                   <X className="h-5 w-5" />
                 </button>
@@ -400,7 +400,7 @@ export default function StudentsPage() {
                     type="text" required value={manualStudent.id}
                     onChange={(e) => setManualStudent({...manualStudent, id: e.target.value})}
                     disabled={isEditMode}
-                    className="w-full px-4 py-2.5 bg-slate-950 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm disabled:opacity-60 disabled:cursor-not-allowed"
+                    className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm disabled:opacity-60 disabled:cursor-not-allowed"
                     placeholder="e.g. 101"
                   />
                 </div>
@@ -409,7 +409,7 @@ export default function StudentsPage() {
                   <input
                     type="text" required value={manualStudent.name}
                     onChange={(e) => setManualStudent({...manualStudent, name: e.target.value})}
-                    className="w-full px-4 py-2.5 bg-slate-950 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm"
+                    className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm"
                     placeholder="Student Name"
                   />
                 </div>
@@ -419,7 +419,7 @@ export default function StudentsPage() {
                     <input
                       type="text" required value={manualStudent.class}
                       onChange={(e) => setManualStudent({...manualStudent, class: e.target.value})}
-                      className="w-full px-4 py-2.5 bg-slate-950 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm"
+                      className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm"
                       placeholder="e.g. 5"
                     />
                   </div>
@@ -428,7 +428,7 @@ export default function StudentsPage() {
                     <select
                       required value={manualStudent.team}
                       onChange={(e) => setManualStudent({...manualStudent, team: e.target.value})}
-                      className="w-full px-4 py-2.5 bg-slate-950 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm"
+                      className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm"
                     >
                       <option value="" disabled>Select Team</option>
                       <option value="ZAMAAN">ZAMAAN</option>
@@ -441,7 +441,7 @@ export default function StudentsPage() {
                   <select
                     required value={manualStudent.zone}
                     onChange={(e) => setManualStudent({...manualStudent, zone: e.target.value})}
-                    className="w-full px-4 py-2.5 bg-slate-950 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm"
+                    className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm"
                   >
                     <option value="" disabled>Select Zone</option>
                     <option value="Minor Zone">Minor Zone</option>
@@ -449,7 +449,7 @@ export default function StudentsPage() {
                     <option value="Premier Zone">Premier Zone</option>
                   </select>
                 </div>
-                <div className="pt-4 border-t border-slate-100 mt-6">
+                <div className="pt-4 border-t border-slate-200 mt-6">
                   <button
                     type="submit" disabled={manualLoading}
                     className="w-full flex items-center justify-center px-4 py-3 bg-indigo-600 text-white rounded-xl shadow-sm hover:bg-indigo-700 transition-colors font-bold text-sm disabled:opacity-50"

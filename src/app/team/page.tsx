@@ -276,9 +276,9 @@ export default function TeamDashboard() {
 
   return (
     <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-8">
-      <motion.div variants={itemVariants} className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-slate-900/60 backdrop-blur-xl p-6 sm:p-8 rounded-[2rem] border border-white/50 shadow-sm">
+      <motion.div variants={itemVariants} className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white/60 backdrop-blur-xl p-6 sm:p-8 rounded-[2rem] border border-white/50 shadow-sm">
         <div>
-          <h1 className="text-3xl font-black text-white tracking-tight">Event Registrations</h1>
+          <h1 className="text-3xl font-black text-slate-900 tracking-tight">Event Registrations</h1>
           <div className="mt-3 flex items-center gap-4 flex-wrap">
             <div className="flex items-center">
               <span className="text-slate-400 font-bold uppercase tracking-widest text-xs mr-3">Status</span>
@@ -300,24 +300,24 @@ export default function TeamDashboard() {
             </div>
             
             {(getRegistrationStatus() === "OPEN" || getRegistrationStatus() === "UPCOMING") && (
-              <div className="flex items-center gap-2 text-white border-l border-slate-700 pl-4">
+              <div className="flex items-center gap-2 text-slate-900 border-l border-slate-200 pl-4">
                 <span className="text-slate-400 text-xs font-bold uppercase tracking-widest mr-1">
                   {getRegistrationStatus() === "OPEN" ? "Closes in:" : "Opens in:"}
                 </span>
                 <div className="flex items-center gap-1">
-                  <div className="bg-slate-800 px-2 py-1 rounded-md min-w-[2.5rem] text-center border border-slate-700">
+                  <div className="bg-white px-2 py-1 rounded-md min-w-[2.5rem] text-center border border-slate-200">
                     <span className="font-black">{timeLeft.days}</span><span className="text-[10px] text-slate-400 ml-0.5">d</span>
                   </div>
                   <span className="font-black text-slate-600">:</span>
-                  <div className="bg-slate-800 px-2 py-1 rounded-md min-w-[2.5rem] text-center border border-slate-700">
+                  <div className="bg-white px-2 py-1 rounded-md min-w-[2.5rem] text-center border border-slate-200">
                     <span className="font-black">{timeLeft.hours}</span><span className="text-[10px] text-slate-400 ml-0.5">h</span>
                   </div>
                   <span className="font-black text-slate-600">:</span>
-                  <div className="bg-slate-800 px-2 py-1 rounded-md min-w-[2.5rem] text-center border border-slate-700">
+                  <div className="bg-white px-2 py-1 rounded-md min-w-[2.5rem] text-center border border-slate-200">
                     <span className="font-black">{timeLeft.minutes}</span><span className="text-[10px] text-slate-400 ml-0.5">m</span>
                   </div>
                   <span className="font-black text-slate-600">:</span>
-                  <div className="bg-slate-800 px-2 py-1 rounded-md min-w-[2.5rem] text-center border border-slate-700">
+                  <div className="bg-white px-2 py-1 rounded-md min-w-[2.5rem] text-center border border-slate-200">
                     <span className="font-black">{timeLeft.seconds}</span><span className="text-[10px] text-slate-400 ml-0.5">s</span>
                   </div>
                 </div>
@@ -333,8 +333,8 @@ export default function TeamDashboard() {
               className={cn(
                 "flex items-center px-5 py-2.5 rounded-lg text-sm font-bold transition-all",
                 viewMode === "participant" 
-                  ? "bg-slate-900 text-white shadow-sm" 
-                  : "text-slate-400 hover:text-white"
+                  ? "bg-white text-blue-600 shadow-sm border border-blue-200" 
+                  : "text-slate-500 hover:text-slate-900"
               )}
             >
               <Users className="h-4 w-4 mr-2" />
@@ -345,8 +345,8 @@ export default function TeamDashboard() {
               className={cn(
                 "flex items-center px-5 py-2.5 rounded-lg text-sm font-bold transition-all",
                 viewMode === "event" 
-                  ? "bg-slate-900 text-white shadow-sm" 
-                  : "text-slate-400 hover:text-white"
+                  ? "bg-white text-blue-600 shadow-sm border border-blue-200" 
+                  : "text-slate-500 hover:text-slate-900"
               )}
             >
               <ClipboardList className="h-4 w-4 mr-2" />
@@ -357,7 +357,7 @@ export default function TeamDashboard() {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={generatePDF}
-            className="flex items-center justify-center px-6 py-2.5 bg-slate-900 text-white text-sm font-bold rounded-xl shadow-lg shadow-slate-900/20 hover:bg-slate-800 transition-all"
+            className="flex items-center justify-center px-6 py-2.5 bg-indigo-600 text-white text-sm font-bold rounded-xl shadow-lg shadow-indigo-600/20 hover:bg-indigo-700 transition-all"
           >
             <Download className="h-4 w-4 mr-2" />
             Export PDF
@@ -365,7 +365,7 @@ export default function TeamDashboard() {
         </div>
       </motion.div>
 
-      <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4 bg-slate-900/60 backdrop-blur-xl p-4 sm:p-5 rounded-[1.5rem] border border-white/50 shadow-sm">
+      <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4 bg-white/60 backdrop-blur-xl p-4 sm:p-5 rounded-[1.5rem] border border-white/50 shadow-sm">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
           <input
@@ -373,14 +373,14 @@ export default function TeamDashboard() {
             placeholder="Search events by name..."
             value={globalSearch}
             onChange={(e) => setGlobalSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-slate-900 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-fuchsia-500 transition-all font-medium text-slate-700 text-sm"
+            className="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-fuchsia-500 transition-all font-medium text-slate-700 text-sm"
           />
         </div>
         <div className="flex gap-4 flex-shrink-0">
           <select
             value={globalType}
             onChange={(e) => setGlobalType(e.target.value)}
-            className="w-full sm:w-auto px-4 py-2 bg-slate-900 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-fuchsia-500 transition-all font-medium text-slate-700 text-sm cursor-pointer"
+            className="w-full sm:w-auto px-4 py-2 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-fuchsia-500 transition-all font-medium text-slate-700 text-sm cursor-pointer"
           >
             <option value="All">All Types</option>
             <option value="Individual">Individual</option>
@@ -389,7 +389,7 @@ export default function TeamDashboard() {
           <select
             value={globalZone}
             onChange={(e) => setGlobalZone(e.target.value)}
-            className="w-full sm:w-auto px-4 py-2 bg-slate-900 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-fuchsia-500 transition-all font-medium text-slate-700 text-sm cursor-pointer"
+            className="w-full sm:w-auto px-4 py-2 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-fuchsia-500 transition-all font-medium text-slate-700 text-sm cursor-pointer"
           >
             <option value="All">All Zones</option>
             <option value="Minor Zone">Minor Zone</option>
@@ -436,8 +436,8 @@ export default function TeamDashboard() {
 
             return (
               <motion.div variants={itemVariants} key={category as string} className="glass-card rounded-[2rem] overflow-hidden">
-                <div className="px-8 py-5 border-b border-white/50 bg-slate-900/40">
-                  <h2 className="text-xl font-black text-white">{category as string}</h2>
+                <div className="px-8 py-5 border-b border-white/50 bg-white/40">
+                  <h2 className="text-xl font-black text-slate-900">{category as string}</h2>
                 </div>
                 <div className="divide-y divide-slate-100">
                   {validStudents.map(student => {
@@ -448,16 +448,16 @@ export default function TeamDashboard() {
                     const matchingRegisteredComps = catCompetitions.filter(comp => studentRegs.some(r => r.event_id === comp.id));
                     
                     return (
-                      <div key={student.id} className="p-8 hover:bg-slate-900/40 transition-colors">
+                      <div key={student.id} className="p-8 hover:bg-white/40 transition-colors">
                         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-4">
                           <div>
-                            <h3 className="text-lg font-bold text-white">{student.name}</h3>
+                            <h3 className="text-lg font-bold text-slate-900">{student.name}</h3>
                             <p className="text-sm font-semibold text-slate-400 mt-1">
                               <span className="bg-slate-100 px-2 py-0.5 rounded mr-2">ID: {student.id}</span>
                               <span className="bg-slate-100 px-2 py-0.5 rounded">Class {student.class}</span>
                             </p>
                           </div>
-                          <div className="flex items-center bg-slate-900 px-4 py-2 rounded-xl shadow-sm border border-slate-100">
+                          <div className="flex items-center bg-white px-4 py-2 rounded-xl shadow-sm border border-slate-100">
                             <span className="text-xs font-bold uppercase tracking-widest text-slate-400 mr-3">Individual Events</span>
                             <span className={cn(
                               "font-black text-lg",
@@ -539,8 +539,8 @@ export default function TeamDashboard() {
             
             return (
               <motion.div variants={itemVariants} key={category as string} className="glass-card rounded-[2rem] overflow-hidden">
-                <div className="px-8 py-5 border-b border-white/50 bg-slate-900/40">
-                  <h2 className="text-xl font-black text-white">{category as string}</h2>
+                <div className="px-8 py-5 border-b border-white/50 bg-white/40">
+                  <h2 className="text-xl font-black text-slate-900">{category as string}</h2>
                 </div>
                 <div className="divide-y divide-slate-100">
                   {catCompetitions.map(comp => {
@@ -548,10 +548,10 @@ export default function TeamDashboard() {
                     const registeredRegs = registrations.filter(r => r.event_id === comp.id);
                     
                     return (
-                      <div key={comp.id} className="p-8 hover:bg-slate-900/40 transition-colors">
+                      <div key={comp.id} className="p-8 hover:bg-white/40 transition-colors">
                         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-4">
                           <div>
-                            <h3 className="text-lg font-bold text-white">{comp.name}</h3>
+                            <h3 className="text-lg font-bold text-slate-900">{comp.name}</h3>
                             <span className={cn(
                               "inline-block mt-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider",
                               isGrp ? "bg-purple-100 text-purple-700" : "bg-slate-100 text-slate-600"
@@ -565,7 +565,7 @@ export default function TeamDashboard() {
                               {Array.from({ length: comp.max_groups_per_team || 1 }, (_, i) => i + 1).map(slot => {
                                 const count = registeredRegs.filter(r => r.team === teamName && r.group_slot === slot).length;
                                 return (
-                                  <div key={slot} className="flex flex-col items-center bg-slate-900 px-4 py-2 rounded-xl shadow-sm border border-slate-100">
+                                  <div key={slot} className="flex flex-col items-center bg-white px-4 py-2 rounded-xl shadow-sm border border-slate-100">
                                     <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">Group {slot}</span>
                                     <span className={cn("font-black text-sm", count >= (comp.max_participants || 2) ? "text-purple-600" : "text-slate-700")}>
                                       {count}/{comp.max_participants || 2}
@@ -575,7 +575,7 @@ export default function TeamDashboard() {
                               })}
                             </div>
                           ) : (
-                            <div className="flex items-center bg-slate-900 px-5 py-2.5 rounded-xl shadow-sm border border-slate-100">
+                            <div className="flex items-center bg-white px-5 py-2.5 rounded-xl shadow-sm border border-slate-100">
                               <span className="text-xs font-bold uppercase tracking-widest text-slate-400 mr-3">Registered</span>
                               <span className="font-black text-lg text-blue-600">{registeredRegs.length}</span>
                             </div>
@@ -595,7 +595,7 @@ export default function TeamDashboard() {
                                 "relative flex items-center justify-between p-4 rounded-xl border-2 transition-all",
                                 isRegistered 
                                   ? "border-emerald-200 bg-emerald-50/50 shadow-sm" 
-                                  : "border-slate-100 bg-slate-900 hover:border-blue-200 hover:shadow-sm"
+                                  : "border-slate-100 bg-white hover:border-blue-200 hover:shadow-sm"
                               )}>
                                 <div className="pr-3 flex-1 min-w-0">
                                   <p className={cn(
@@ -663,7 +663,7 @@ export default function TeamDashboard() {
                                       <button
                                         onClick={() => handleRegister(student.id, comp.id, 1)}
                                         disabled={!isOpen || isLoadingAny || (comp.category?.toLowerCase().trim() !== "general zone" && isMaxedOut)}
-                                        className="flex-shrink-0 p-2 text-slate-300 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors disabled:opacity-50"
+                                        className="flex-shrink-0 p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors disabled:opacity-50"
                                       >
                                         {isLoadingAny ? <Loader2 className="h-5 w-5 animate-spin" /> : <Plus className="h-5 w-5" />}
                                       </button>
@@ -689,15 +689,15 @@ export default function TeamDashboard() {
         {modalStudent && (
           <motion.div 
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-white/40 backdrop-blur-sm"
           >
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-slate-900 w-full max-w-4xl max-h-[90vh] rounded-[2rem] shadow-2xl flex flex-col overflow-hidden"
+              className="bg-white w-full max-w-4xl max-h-[90vh] rounded-[2rem] shadow-2xl flex flex-col overflow-hidden"
             >
-              <div className="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-slate-950/50">
+              <div className="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-white/50">
                 <div>
-                  <h3 className="text-xl font-black text-white">Assign Events</h3>
+                  <h3 className="text-xl font-black text-slate-900">Assign Events</h3>
                   <p className="text-sm font-semibold text-slate-400 mt-1">
                     Student: <span className="text-slate-700">{modalStudent.name}</span> • ID: {modalStudent.id}
                   </p>
@@ -707,7 +707,7 @@ export default function TeamDashboard() {
                 </button>
               </div>
               
-              <div className="p-4 sm:p-6 border-b border-slate-100 bg-slate-900">
+              <div className="p-4 sm:p-6 border-b border-slate-100 bg-white">
                 <div className="flex flex-col sm:flex-row gap-3">
                   <div className="relative flex-1">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
@@ -716,14 +716,14 @@ export default function TeamDashboard() {
                       placeholder="Search events by name..."
                       value={eventSearchQuery}
                       onChange={(e) => setEventSearchQuery(e.target.value)}
-                      className="w-full pl-10 pr-4 py-2.5 bg-slate-950 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:bg-slate-900 transition-all font-medium text-slate-700"
+                      className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:bg-slate-50 transition-all font-medium text-slate-700"
                     />
                   </div>
                   <div className="flex-shrink-0">
                     <select
                       value={eventTypeFilter}
                       onChange={(e) => setEventTypeFilter(e.target.value)}
-                      className="w-full sm:w-auto px-4 py-2.5 bg-slate-950 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-fuchsia-500 transition-all font-medium text-slate-700 cursor-pointer"
+                      className="w-full sm:w-auto px-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-fuchsia-500 transition-all font-medium text-slate-700 cursor-pointer"
                     >
                       <option value="All">All Types</option>
                       <option value="Individual">Individual</option>
@@ -733,7 +733,7 @@ export default function TeamDashboard() {
                 </div>
               </div>
               
-              <div className="flex-1 overflow-y-auto p-6 bg-slate-950/30">
+              <div className="flex-1 overflow-y-auto p-6 bg-slate-50">
                 <div>
                   {(() => {
                     const studentRegs = registrations.filter(r => r.student_id === modalStudent.id);
@@ -766,7 +766,7 @@ export default function TeamDashboard() {
                       
                       return (
                         <div key={comp.id} className={cn(
-                          "relative flex items-center justify-between p-4 rounded-xl border-2 transition-all bg-slate-900",
+                          "relative flex items-center justify-between p-4 rounded-xl border-2 transition-all bg-white",
                           isRegistered ? "border-emerald-200 shadow-sm" : "border-slate-100 hover:border-blue-200 hover:shadow-sm"
                         )}>
                           <div className="pr-2 flex-1 min-w-0">
@@ -839,7 +839,7 @@ export default function TeamDashboard() {
                                 <button
                                   onClick={() => handleRegister(modalStudent.id, comp.id, 1)}
                                   disabled={!isOpen || isLoadingAny || (comp.category?.toLowerCase().trim() !== "general zone" && isMaxedOut)}
-                                  className="flex-shrink-0 p-2 text-slate-300 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors disabled:opacity-50"
+                                  className="flex-shrink-0 p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors disabled:opacity-50"
                                   title={comp.category?.toLowerCase().trim() !== "general zone" && isMaxedOut ? "Max individual events reached" : "Add registration"}
                                 >
                                   {isLoadingAny ? <Loader2 className="h-5 w-5 animate-spin" /> : <Plus className="h-5 w-5" />}
