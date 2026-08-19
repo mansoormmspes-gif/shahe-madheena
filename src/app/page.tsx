@@ -331,15 +331,15 @@ export default function PublicPage() {
                   )}
                 >
                   <div className="relative z-10">
-                    <p className={cn("text-xs font-black uppercase tracking-widest mb-2", index === 0 ? "text-amber-100" : "text-slate-400")}>
+                    <p className={cn("text-xs font-black uppercase tracking-widest mb-2", index === 0 ? "text-amber-100" : "text-slate-500")}>
                       Rank 0{index + 1}
                     </p>
-                    <h3 className={cn("text-4xl font-black tracking-tight", index === 0 ? "text-white" : "text-white")}>
+                    <h3 className={cn("text-4xl font-black tracking-tight", index === 0 ? "text-white" : index === 1 ? "bg-gradient-to-r from-slate-400 to-gray-600 bg-clip-text text-transparent drop-shadow-sm" : "text-slate-900")}>
                       Team {team.team}
                     </h3>
                   </div>
                   <div className="text-right relative z-10">
-                    <p className={cn("text-6xl font-black tracking-tighter", index === 0 ? "text-white" : "text-white")}>
+                    <p className={cn("text-6xl font-black tracking-tighter", index === 0 ? "text-white" : index === 1 ? "bg-gradient-to-r from-slate-400 to-gray-600 bg-clip-text text-transparent drop-shadow-sm" : "text-slate-900")}>
                       {team.points}
                     </p>
                     <p className={cn("text-sm font-bold uppercase tracking-widest mt-1", index === 0 ? "text-amber-100" : "text-slate-400")}>
@@ -366,9 +366,9 @@ export default function PublicPage() {
           transition={{ duration: 0.6 }}
           className="max-w-5xl mx-auto"
         >
-          <div className="bg-white rounded-[3rem] shadow-2xl overflow-hidden relative border border-slate-800">
-            {/* Background glowing effects inside the dark card */}
-            <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/20 rounded-full blur-[100px] pointer-events-none" />
+          <div className="bg-white/60 backdrop-blur-xl rounded-[3rem] shadow-[0_8px_30px_rgb(0,0,0,0.08)] overflow-hidden relative border border-white">
+            {/* Background glowing effects inside the card */}
+            <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/10 rounded-full blur-[100px] pointer-events-none" />
             <div className="absolute bottom-0 left-0 w-96 h-96 bg-purple-500/20 rounded-full blur-[100px] pointer-events-none" />
 
             <div className="p-8 md:p-16 relative z-10">
