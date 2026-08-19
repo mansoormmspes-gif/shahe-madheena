@@ -84,7 +84,7 @@ export default function LoginPage() {
             <Image src="/logo.png" alt="Logo" fill className="object-contain drop-shadow-md" priority />
           </div>
         </div>
-        <h2 className="mt-2 text-center text-3xl font-extrabold text-slate-900 tracking-tight">
+        <h2 className="mt-2 text-center text-3xl font-black bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent tracking-tight">
           Welcome back
         </h2>
         <p className="mt-2 text-center text-sm text-slate-500">

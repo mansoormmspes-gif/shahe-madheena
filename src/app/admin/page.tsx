@@ -25,12 +25,12 @@ export default function AdminDashboard() {
   return (
     <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-8">
       <motion.div variants={itemVariants} className="flex items-center space-x-3 mb-8">
-        <div className="p-3 bg-emerald-100 text-emerald-600 rounded-2xl shadow-sm">
+        <div className="p-3 bg-gradient-to-br from-emerald-400 to-teal-500 text-white rounded-2xl shadow-lg shadow-emerald-500/20">
           <LayoutDashboard className="h-6 w-6" />
         </div>
         <div>
-          <h1 className="text-3xl font-black text-white tracking-tight">Welcome, Admin</h1>
-          <p className="text-slate-400 font-medium">Here's your control center for Meelad Fest 2k26.</p>
+          <h1 className="text-3xl md:text-4xl font-black bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent tracking-tight mb-1">Welcome, Admin</h1>
+          <p className="text-slate-500 font-bold text-sm md:text-base">Here's your control center for Meelad Fest 2k26.</p>
         </div>
       </motion.div>
 
