@@ -139,7 +139,7 @@ export default function ResultsPage() {
         </div>
       </motion.div>
 
-      <motion.div variants={itemVariants} className="glass-card rounded-[2rem] overflow-hidden p-8 sm:p-10">
+      <motion.div variants={itemVariants} className="glass-card rounded-[2rem] overflow-hidden p-4 md:p-8 sm:p-10">
         <div className="mb-8">
           <label className="block text-sm font-bold text-slate-700 mb-2">
             Select Competition

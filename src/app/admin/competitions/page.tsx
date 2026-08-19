@@ -315,7 +315,7 @@ export default function CompetitionsPage() {
         </div>
       </motion.div>
 
-      <motion.div variants={itemVariants} className="glass-card rounded-[2rem] overflow-hidden p-8 sm:p-10 mb-8">
+      <motion.div variants={itemVariants} className="glass-card rounded-[2rem] overflow-hidden p-4 md:p-8 sm:p-10 mb-8">
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 pb-6 border-b border-slate-200 gap-4">
           <div>
             <h2 className="text-xl font-bold text-slate-900 mb-1">Add Competitions</h2>
@@ -425,8 +425,8 @@ export default function CompetitionsPage() {
             No competitions found. Please upload a CSV or manually add one first.
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm text-left">
+          <div className="overflow-x-auto w-full">
+            <table className="w-full min-w-[800px] text-sm text-left">
               <thead className="bg-slate-50 text-slate-500 border-b border-slate-200">
                 <tr>
                   <th className="px-8 py-4 font-bold uppercase tracking-wider text-xs">Name</th>

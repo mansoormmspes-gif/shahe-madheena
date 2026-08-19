@@ -279,7 +279,7 @@ export default function TeamDashboard() {
     <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-8">
       <motion.div variants={itemVariants} className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white/60 backdrop-blur-xl p-6 sm:p-8 rounded-[2rem] border border-white/50 shadow-sm">
         <div>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight">Event Registrations</h1>
+          <h1 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">Event Registrations</h1>
           <div className="mt-3 flex items-center gap-4 flex-wrap">
             <div className="flex items-center">
               <span className="text-slate-400 font-bold uppercase tracking-widest text-xs mr-3">Status</span>
@@ -377,7 +377,7 @@ export default function TeamDashboard() {
             className="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-fuchsia-500 transition-all font-medium text-slate-700 text-sm"
           />
         </div>
-        <div className="flex gap-4 flex-shrink-0">
+        <div className="flex flex-col sm:flex-row gap-4 flex-shrink-0 w-full sm:w-auto">
           <select
             value={globalType}
             onChange={(e) => setGlobalType(e.target.value)}
@@ -562,7 +562,7 @@ export default function TeamDashboard() {
                           </div>
                           
                           {isGrp ? (
-                            <div className="flex gap-4">
+                            <div className="flex flex-col sm:flex-row gap-4 w-full">
                               {Array.from({ length: comp.max_groups_per_team || 1 }, (_, i) => i + 1).map(slot => {
                                 const count = registeredRegs.filter(r => r.team === teamName && r.group_slot === slot).length;
                                 return (

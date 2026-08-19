@@ -294,8 +294,8 @@ export default function StudentsPage() {
 
       {/* Data Table */}
       <motion.div variants={itemVariants} className="glass-card rounded-[2rem] overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+        <div className="overflow-x-auto w-full">
+          <table className="w-full min-w-[800px] text-left border-collapse">
             <thead>
               <tr className="bg-slate-50 border-b border-slate-200">
                 <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">ID</th>

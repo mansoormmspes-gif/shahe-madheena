@@ -119,16 +119,16 @@ export default function LeaderboardPage() {
         <div className="absolute top-[60%] -left-[10%] w-[40%] h-[40%] rounded-full bg-emerald-200/40 blur-3xl animate-float" style={{ animationDelay: '2s' }} />
       </div>
 
-      <main className="flex-1 max-w-5xl w-full mx-auto p-6 md:p-12 relative z-10">
+      <main className="flex-1 max-w-5xl w-full mx-auto p-4 sm:p-6 md:p-12 relative z-10">
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-center mb-8 md:mb-16"
         >
-          <div className="inline-flex items-center justify-center p-4 bg-white rounded-3xl shadow-xl shadow-slate-200/50 mb-6 border border-slate-100">
+          <div className="inline-flex items-center justify-center p-4 bg-white rounded-3xl shadow-xl shadow-slate-200/50 mb-4 md:mb-6 border border-slate-100">
             <Trophy className="h-10 w-10 text-amber-500 mr-3" />
-            <h1 className="text-4xl md:text-5xl font-black bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent tracking-tighter">
+            <h1 className="text-2xl md:text-5xl font-black bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent tracking-tighter">
               Live Leaderboard
             </h1>
           </div>
@@ -149,7 +149,7 @@ export default function LeaderboardPage() {
               <motion.div 
                 key={teamData.team}
                 variants={itemVariants}
-                className={`relative bg-white rounded-[2rem] p-6 md:p-8 flex items-center shadow-lg border-2 ${isFirst ? 'border-amber-400' : 'border-white'} transition-all`}
+                className={`relative bg-white rounded-[2rem] p-4 md:p-8 flex flex-col md:flex-row md:items-center text-center md:text-left gap-4 md:gap-0 shadow-lg border-2 ${isFirst ? 'border-amber-400' : 'border-white'} transition-all`}
               >
                 {/* Rank Badge */}
                 <div className={`w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-md ${
@@ -165,7 +165,7 @@ export default function LeaderboardPage() {
                 </div>
 
                 {/* Team Info */}
-                <div className="ml-6 flex-1">
+                <div className="ml-0 md:ml-6 flex-1">
                   <h2 className="text-2xl md:text-3xl font-black text-slate-800 tracking-tight mb-1">
                     Team {teamData.team}
                   </h2>
@@ -175,8 +175,8 @@ export default function LeaderboardPage() {
                 </div>
 
                 {/* Points */}
-                <div className={`ml-4 px-6 py-4 rounded-2xl bg-gradient-to-br ${getTeamColor(teamData.team)} shadow-lg text-white min-w-[120px] md:min-w-[160px] text-center transform hover:scale-105 transition-transform`}>
-                  <div className="text-4xl md:text-5xl font-black tracking-tighter mb-1">
+                <div className={`ml-0 md:ml-4 px-6 py-4 rounded-2xl w-full md:w-auto bg-gradient-to-br ${getTeamColor(teamData.team)} shadow-lg text-white min-w-[120px] md:min-w-[160px] text-center transform hover:scale-105 transition-transform`}>
+                  <div className="text-2xl md:text-5xl font-black tracking-tighter mb-1">
                     {teamData.points}
                   </div>
                   <div className="text-xs font-bold uppercase tracking-widest opacity-80">

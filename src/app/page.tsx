@@ -195,12 +195,12 @@ export default function PublicPage() {
               animate={{ opacity: 1, x: 0 }}
               className="flex items-center gap-4"
             >
-              <div className="relative w-16 h-16 flex items-center justify-center">
+              <div className="relative w-12 h-12 md:w-16 md:h-16 flex items-center justify-center flex-shrink-0">
                 <Image src="/logo.png" alt="Logo" fill className="object-contain" priority />
               </div>
               <div className="flex flex-col">
-                <span className="font-black text-xl md:text-2xl tracking-tighter text-white leading-tight">Meelad Fest 2k26</span>
-                <span className="font-bold text-[10px] md:text-xs tracking-widest uppercase text-slate-400">Irshadu swibiyan madrasa</span>
+                <span className="font-black text-lg md:text-2xl tracking-tighter text-slate-900 leading-tight">Meelad Fest 2k26</span>
+                <span className="font-bold text-[9px] md:text-xs tracking-widest uppercase text-slate-500">Irshadu swibiyan madrasa</span>
               </div>
             </motion.div>
             <motion.div
@@ -222,10 +222,11 @@ export default function PublicPage() {
                 <motion.button 
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="flex items-center text-sm font-bold text-slate-700 hover:text-slate-900 bg-white shadow-sm hover:shadow-md px-6 py-2.5 rounded-full transition-all border border-slate-100 group"
+                  className="flex items-center text-xs md:text-sm font-bold text-slate-700 hover:text-slate-900 bg-white shadow-sm hover:shadow-md px-4 md:px-6 py-2 md:py-2.5 rounded-full transition-all border border-slate-100 group"
                 >
-                  Portal Login
-                  <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                  <span className="hidden sm:inline">Portal Login</span>
+                  <span className="sm:hidden">Login</span>
+                  <ArrowRight className="w-4 h-4 ml-1 md:ml-2 group-hover:translate-x-1 transition-transform" />
                 </motion.button>
               </Link>
             </motion.div>
@@ -291,7 +292,7 @@ export default function PublicPage() {
               <div className={`mx-auto w-14 h-14 ${stat.bg} ${stat.color} rounded-2xl flex items-center justify-center mb-5 shadow-inner`}>
                 <stat.icon className="h-7 w-7" />
               </div>
-              <p className="text-4xl md:text-5xl font-black text-slate-900 tracking-tighter mb-1">{stat.value}</p>
+              <p className="text-3xl md:text-5xl font-black text-slate-900 tracking-tighter mb-1">{stat.value}</p>
               <p className="text-xs md:text-sm font-bold text-slate-400 uppercase tracking-widest">{stat.label}</p>
             </motion.div>
           ))}
@@ -306,7 +307,7 @@ export default function PublicPage() {
             className="mb-32"
           >
             <div className="text-center mb-12">
-              <h2 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tighter">Live Leaderboard</h2>
+              <h2 className="text-3xl md:text-5xl font-black text-slate-900 tracking-tighter">Live Leaderboard</h2>
               <div className="w-24 h-1.5 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto mt-6 rounded-full" />
             </div>
             
@@ -371,9 +372,9 @@ export default function PublicPage() {
             <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/10 rounded-full blur-[100px] pointer-events-none" />
             <div className="absolute bottom-0 left-0 w-96 h-96 bg-purple-500/20 rounded-full blur-[100px] pointer-events-none" />
 
-            <div className="p-8 md:p-16 relative z-10">
+            <div className="p-6 md:p-16 relative z-10">
               <div className="text-center max-w-2xl mx-auto mb-12">
-                <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-6 tracking-tight">Check Your Results</h2>
+                <h2 className="text-3xl md:text-5xl font-black text-slate-900 mb-6 tracking-tight">Check Your Results</h2>
                 <p className="text-slate-500 text-lg font-medium">
                   Search for a participant by name or class to view their winning positions and download a custom celebratory poster.
                 </p>
@@ -504,7 +505,7 @@ export default function PublicPage() {
               <div className="relative w-48 h-48 md:w-56 md:h-56 mx-auto mb-8 flex items-center justify-center p-4">
                 <img src="/logo.png" alt="Logo" className="w-full h-full object-contain drop-shadow-2xl" crossOrigin="anonymous" />
               </div>
-              <h2 className="text-white text-4xl md:text-5xl font-black tracking-[0.2em] uppercase drop-shadow-2xl">
+              <h2 className="text-white text-3xl md:text-5xl font-black tracking-[0.2em] uppercase drop-shadow-2xl">
                 Meelad Fest 2k26
               </h2>
               <p className="text-blue-200/80 text-xl md:text-2xl font-bold tracking-[0.3em] uppercase mt-4">Irshadu swibiyan madrasa</p>
@@ -512,7 +513,7 @@ export default function PublicPage() {
 
             {/* Center Content: Result Info */}
             <div className="absolute inset-0 flex flex-col items-center justify-center z-20 pt-48">
-              <div className="bg-slate-900/10 backdrop-blur-2xl rounded-[4rem] border border-white/20 p-16 w-4/5 text-center shadow-[0_30px_60px_rgba(0,0,0,0.4)] relative overflow-hidden">
+              <div className="bg-slate-900/10 backdrop-blur-2xl rounded-[4rem] border border-white/20 p-16 w-11/12 md:w-4/5 text-center shadow-[0_30px_60px_rgba(0,0,0,0.4)] relative overflow-hidden">
                 {/* Shine effect across the card */}
                 <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-white/10 to-transparent pointer-events-none"></div>
 
