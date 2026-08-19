@@ -28,48 +28,50 @@ export default function LeaderboardPage() {
 
   const fetchLeaderboard = async () => {
     try {
-      // Fetch students to map student_id to team
-      const { data: studentsData, error: studentsError } = await supabase
+      // First, get all distinct teams from the students table to ensure even teams with 0 points show up
+      const { data: studentsData } = await supabase
         .from('students')
-        .select('id, team');
-      
-      if (studentsError) throw studentsError;
+        .select('team');
+        
+      const teamPoints: Record<string, number> = {
+        "ZAMAAN": 0,
+        "ZAMEEN": 0
+      };
 
-      // Fetch all results
-      const { data: resultsData, error: resultsError } = await supabase
-        .from('results')
-        .select('student_id, points');
-
-      if (resultsError) throw resultsError;
-
-      if (studentsData && resultsData) {
-        const teamPoints: Record<string, number> = {
-          "ZAMAAN": 0,
-          "ZAMEEN": 0
-        };
-
-        // Initialize any dynamically found teams
+      if (studentsData) {
         studentsData.forEach(s => {
           if (s.team && teamPoints[s.team] === undefined) {
             teamPoints[s.team] = 0;
           }
         });
+      }
 
-        // Calculate points
-        resultsData.forEach(r => {
-          const student = studentsData.find(s => s.id === r.student_id);
-          if (student && student.team) {
-            teamPoints[student.team] += (r.points || 0);
+      // Fetch all results joined with the students table to get their team
+      const { data: resultsData, error: resultsError } = await supabase
+        .from('results')
+        .select('points, students!inner(team)');
+
+      if (resultsError) {
+        console.error("Error fetching results join:", resultsError);
+        throw resultsError;
+      }
+
+      if (resultsData) {
+        // Aggregate points
+        resultsData.forEach((r: any) => {
+          const team = r.students?.team;
+          if (team && teamPoints[team] !== undefined) {
+            teamPoints[team] += (r.points || 0);
           }
         });
-
-        // Convert to sorted array
-        const lb = Object.keys(teamPoints)
-          .map(team => ({ team, points: teamPoints[team] }))
-          .sort((a, b) => b.points - a.points);
-        
-        setLeaderboard(lb);
       }
+
+      // Convert to sorted array
+      const lb = Object.keys(teamPoints)
+        .map(team => ({ team, points: teamPoints[team] }))
+        .sort((a, b) => b.points - a.points);
+      
+      setLeaderboard(lb);
     } catch (error) {
       console.error("Error fetching leaderboard:", error);
     } finally {

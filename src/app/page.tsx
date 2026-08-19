@@ -54,7 +54,7 @@ export default function PublicPage() {
         .from("results")
         .select(`
           points,
-          registrations!inner (
+          students!inner (
             team
           )
         `);
@@ -63,7 +63,7 @@ export default function PublicPage() {
       
       if (resultsData) {
         resultsData.forEach((r: any) => {
-          const team = r.registrations.team;
+          const team = r.students.team;
           if (teamPoints[team] !== undefined) {
             teamPoints[team] += r.points;
           }
