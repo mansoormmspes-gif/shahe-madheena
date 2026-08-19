@@ -288,6 +288,7 @@ export default function PublicPage() {
                 <p className="text-slate-500 text-lg font-medium">
                   Search for a participant by name or class to view their winning positions and download a custom celebratory poster.
                 </p>
+              </div>
               <div className="flex justify-center mt-4">
                 <Link href="/results">
                   <motion.button
