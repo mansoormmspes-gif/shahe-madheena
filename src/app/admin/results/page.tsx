@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
-import { Loader2, Save, Trophy, Medal, Award } from "lucide-react";
+import { Loader2, Save, Trophy, Medal, Award, Trash2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function ResultsPage() {
@@ -70,6 +70,24 @@ export default function ResultsPage() {
 
     setResults(newResults);
     setLoadingEvent(false);
+  };
+
+  const handleDeleteRow = async (pos: 1|2|3) => {
+    if (!window.confirm(`Are you sure you want to delete the result for ${pos === 1 ? '1st' : pos === 2 ? '2nd' : '3rd'} Place?`)) return;
+    
+    setSaving(true);
+    try {
+      const { error } = await supabase.from("results").delete().eq("event_id", selectedEventId).eq("position", pos);
+      if (error) throw error;
+      
+      setResults({ ...results, [pos]: { student_id: "", points: 0 } });
+      setMessage({ text: "Result deleted successfully!", type: "success" });
+      setTimeout(() => setMessage({ text: "", type: "" }), 3000);
+    } catch (err: any) {
+      setMessage({ text: "Error deleting result: " + err.message, type: "error" });
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleSave = async (e: React.FormEvent) => {
@@ -242,6 +260,18 @@ export default function ResultsPage() {
                           className="block w-full px-4 py-3 bg-white/80 border border-white/50 rounded-xl focus:ring-4 focus:ring-amber-100 focus:border-amber-400 sm:text-sm text-slate-900 font-bold transition-all shadow-sm text-center outline-none"
                         />
                       </div>
+                      {results[pos as 1|2|3].student_id !== "" && (
+                        <div className="flex items-end flex-shrink-0 mt-4 md:mt-0">
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteRow(pos as 1|2|3)}
+                            className="p-3 bg-red-50 text-red-500 hover:bg-red-100 rounded-xl transition-colors shadow-sm"
+                            title="Delete Result"
+                          >
+                            <Trash2 className="h-5 w-5" />
+                          </button>
+                        </div>
+                      )}
                     </motion.div>
                   ))}
                 </div>
