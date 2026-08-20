@@ -9,6 +9,8 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
+import { sortStudents } from "@/lib/utils";
+
 export default function StudentsPage() {
   const [loading, setLoading] = useState(true);
   const [students, setStudents] = useState<any[]>([]);
@@ -36,14 +38,14 @@ export default function StudentsPage() {
   const fetchData = async () => {
     setLoading(true);
     const [{ data: studentsData, error: studentsError }, { data: settingsData }] = await Promise.all([
-      supabase.from("students").select("*").order("id", { ascending: true }),
+      supabase.from("students").select("*"),
       supabase.from("settings").select("zone_config").eq("id", 1).single()
     ]);
     
     if (studentsError) {
       setError(studentsError.message);
     } else {
-      setStudents(studentsData || []);
+      setStudents(sortStudents(studentsData || []));
     }
     
     if (settingsData && settingsData.zone_config) {

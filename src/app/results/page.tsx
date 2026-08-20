@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/lib/supabase";
 import { Loader2, Medal, Trophy, ArrowLeft, Award, Download, User } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, sortStudents } from "@/lib/utils";
 import Link from "next/link";
 import html2canvas from "html2canvas";
 
@@ -45,7 +45,7 @@ export default function ResultsPage() {
       supabase.from("settings").select("*").eq("id", 1).single()
     ]);
 
-    if (studentsRes.data) setStudents(studentsRes.data);
+    if (studentsRes.data) setStudents(sortStudents(studentsRes.data));
     if (compsRes.data) setCompetitions(compsRes.data);
     if (resultsRes.data) setResults(resultsRes.data);
     if (settingsRes.data) setSettings(settingsRes.data);
@@ -103,8 +103,8 @@ export default function ResultsPage() {
   const categories = Array.from(new Set(competitions.map(c => c.category))).sort();
   const filteredComps = competitions.filter(c => !selectedCategory || c.category === selectedCategory).sort((a, b) => a.name.localeCompare(b.name));
   
-  const classes = Array.from(new Set(students.map(s => s.class))).sort();
-  const filteredStudents = students.filter(s => !selectedClass || s.class === selectedClass).sort((a, b) => a.name.localeCompare(b.name));
+  const classes = Array.from(new Set(students.map(s => s.class)));
+  const filteredStudents = students.filter(s => !selectedClass || s.class === selectedClass);
 
   // Compute Competition Results
   const compResults = results.filter(r => r.event_id === selectedCompetition).map(r => ({

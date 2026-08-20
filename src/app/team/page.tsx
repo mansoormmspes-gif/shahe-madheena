@@ -6,7 +6,7 @@ import { Loader2, Download, AlertCircle, Users, ClipboardList, Plus, Trash2, Che
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { motion, AnimatePresence } from "framer-motion";
-import { cn } from "@/lib/utils";
+import { cn, sortStudents } from "@/lib/utils";
 
 export default function TeamDashboard() {
   const [loading, setLoading] = useState(true);
@@ -83,7 +83,7 @@ export default function TeamDashboard() {
 
     const { data: studentsData, error: studentsError } = await supabase.from("students").select("*").ilike("team", profile.team_name);
     console.log("Fetched students:", studentsData, "Error:", studentsError);
-    if (studentsData) setStudents(studentsData);
+    if (studentsData) setStudents(sortStudents(studentsData));
 
     const { data: compsData } = await supabase.from("competitions").select("*").order("name");
     if (compsData) setCompetitions(compsData);
