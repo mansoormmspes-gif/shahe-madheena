@@ -10,6 +10,7 @@ export default function ResultsPage() {
   const [saving, setSaving] = useState(false);
   const [competitions, setCompetitions] = useState<any[]>([]);
   const [selectedEventId, setSelectedEventId] = useState("");
+  const [selectedZone, setSelectedZone] = useState("");
   
   const [registrations, setRegistrations] = useState<any[]>([]);
   const [loadingEvent, setLoadingEvent] = useState(false);
@@ -27,7 +28,7 @@ export default function ResultsPage() {
   }, []);
 
   const fetchCompetitions = async () => {
-    const { data } = await supabase.from("competitions").select("id, name, type").order("name");
+    const { data } = await supabase.from("competitions").select("id, name, type, category").order("name");
     if (data) setCompetitions(data);
     setLoading(false);
   };
@@ -125,6 +126,9 @@ export default function ResultsPage() {
     }
   };
 
+  const zones = Array.from(new Set(competitions.map(c => c.category))).sort();
+  const filteredCompetitions = selectedZone ? competitions.filter(c => c.category === selectedZone) : [];
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
@@ -158,25 +162,54 @@ export default function ResultsPage() {
       </motion.div>
 
       <motion.div variants={itemVariants} className="glass-card rounded-[1rem] md:rounded-[2rem] overflow-hidden shadow-lg shadow-teal-900/5 border border-white/60 backdrop-blur-xl bg-white/60 p-3 sm:p-6 md:p-8">
-        <div className="mb-8">
-          <label className="block text-sm font-bold text-slate-700 mb-2">
-            Select Competition
-          </label>
-          <div className="relative max-w-xl">
-            <select
-              value={selectedEventId}
-              onChange={(e) => setSelectedEventId(e.target.value)}
-              className="block w-full pl-4 pr-10 py-4 bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-amber-100 focus:border-amber-400 sm:text-base font-medium text-slate-900 transition-all appearance-none cursor-pointer outline-none shadow-sm"
-            >
-              <option value="">-- Choose an event --</option>
-              {competitions.map(c => (
-                <option key={c.id} value={c.id}>{c.name} ({c.type})</option>
-              ))}
-            </select>
-            <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
-              <svg className="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-              </svg>
+        <div className="mb-8 grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl">
+          <div>
+            <label className="block text-sm font-bold text-slate-700 mb-2">
+              Select Zone
+            </label>
+            <div className="relative">
+              <select
+                value={selectedZone}
+                onChange={(e) => {
+                  setSelectedZone(e.target.value);
+                  setSelectedEventId("");
+                }}
+                className="block w-full pl-4 pr-10 py-4 bg-white border border-slate-200 rounded-xl focus:ring-4 focus:ring-amber-100 focus:border-amber-400 sm:text-base font-medium text-slate-900 transition-all appearance-none cursor-pointer outline-none shadow-sm"
+              >
+                <option value="">-- Choose a Zone --</option>
+                {zones.map(z => (
+                  <option key={z} value={z}>{z}</option>
+                ))}
+              </select>
+              <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
+                <svg className="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-bold text-slate-700 mb-2">
+              Select Competition
+            </label>
+            <div className="relative">
+              <select
+                value={selectedEventId}
+                onChange={(e) => setSelectedEventId(e.target.value)}
+                disabled={!selectedZone}
+                className="block w-full pl-4 pr-10 py-4 bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative/50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-amber-100 focus:border-amber-400 sm:text-base font-medium text-slate-900 transition-all appearance-none cursor-pointer outline-none shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <option value="">{selectedZone ? "-- Choose an event --" : "-- Select a Zone first --"}</option>
+                {filteredCompetitions.map(c => (
+                  <option key={c.id} value={c.id}>{c.name} ({c.type})</option>
+                ))}
+              </select>
+              <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
+                <svg className="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
             </div>
           </div>
         </div>
