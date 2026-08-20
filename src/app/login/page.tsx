@@ -3,9 +3,10 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
-import { Lock, User, Loader2, ArrowRight } from "lucide-react";
+import { Lock, User, Loader2, ArrowRight, ArrowLeft } from "lucide-react";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function LoginPage() {
   const supabase = createClient();
@@ -71,6 +72,14 @@ export default function LoginPage() {
           transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
           className="absolute -bottom-40 -left-40 w-96 h-96 rounded-full bg-amber-300/20 blur-[120px]"
         />
+      </div>
+
+      {/* Back Button */}
+      <div className="absolute top-6 left-6 z-20">
+        <Link href="/" className="flex items-center text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors bg-white/50 backdrop-blur-md px-4 py-2 rounded-full border border-slate-200 shadow-sm hover:shadow-md">
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back to Home
+        </Link>
       </div>
 
       <motion.div 
