@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
-import { Loader2, Save, Trophy, Medal, Award, Trash2, X } from "lucide-react";
+import { Loader2, Save, Trophy, Medal, Award, Trash2, X, Download } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function ResultsPage() {
@@ -110,6 +110,96 @@ export default function ResultsPage() {
       setMessage({ text: "Error clearing results: " + err.message, type: "error" });
     } finally {
       setSaving(false);
+    }
+  };
+
+  const [generatingPoster, setGeneratingPoster] = useState(false);
+
+  const handleGeneratePoster = async () => {
+    const comp = competitions.find(c => c.id === selectedEventId);
+    if (!comp) return;
+
+    setGeneratingPoster(true);
+    try {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      if (!ctx) throw new Error("Could not get canvas context");
+
+      const img = new Image();
+      img.src = "/poster-1.jpg";
+      // To prevent cross-origin issues if deployed remotely
+      img.crossOrigin = "anonymous";
+      
+      await new Promise((resolve, reject) => {
+        img.onload = resolve;
+        img.onerror = () => reject(new Error("Failed to load poster-1.jpg template. Make sure it exists in the public directory."));
+      });
+
+      canvas.width = img.width;
+      canvas.height = img.height;
+
+      // Draw background
+      ctx.drawImage(img, 0, 0);
+
+      const width = canvas.width;
+      const height = canvas.height;
+
+      const startX = width * 0.12;
+      let currentY = height * 0.35;
+
+      // Draw Competition Name (Yellow, Bold)
+      ctx.fillStyle = "#FBBF24"; 
+      ctx.font = `bold ${Math.floor(height * 0.08)}px sans-serif`;
+      ctx.textAlign = "left";
+      ctx.textBaseline = "top";
+      ctx.fillText(comp.name, startX, currentY);
+
+      // Draw Zone (White)
+      currentY += height * 0.09;
+      ctx.fillStyle = "#FFFFFF";
+      ctx.font = `bold ${Math.floor(height * 0.05)}px sans-serif`;
+      ctx.fillText(selectedZone || comp.category || "General Zone", startX, currentY);
+
+      // Draw Winners
+      currentY += height * 0.12;
+      ctx.font = `bold ${Math.floor(height * 0.045)}px sans-serif`;
+
+      const getNamesForPosition = (pos: 1|2|3) => {
+        return results[pos].student_ids.map(sid => {
+          const r = registrations.find(reg => reg.student_id === sid);
+          return r?.students?.name || "Unknown";
+        }).join(", ");
+      };
+
+      const firstPlace = getNamesForPosition(1);
+      const secondPlace = getNamesForPosition(2);
+      const thirdPlace = getNamesForPosition(3);
+
+      if (firstPlace) {
+        ctx.fillText(`1. ${firstPlace}`, startX, currentY);
+        currentY += height * 0.07;
+      }
+      if (secondPlace) {
+        ctx.fillText(`2. ${secondPlace}`, startX, currentY);
+        currentY += height * 0.07;
+      }
+      if (thirdPlace) {
+        ctx.fillText(`3. ${thirdPlace}`, startX, currentY);
+      }
+
+      const dataUrl = canvas.toDataURL("image/jpeg", 0.9);
+      const a = document.createElement("a");
+      a.href = dataUrl;
+      a.download = `${comp.name}_Result.jpg`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+    } catch (err: any) {
+      console.error("Poster generation failed", err);
+      alert(err.message || "Failed to generate poster.");
+    } finally {
+      setGeneratingPoster(false);
     }
   };
 
@@ -374,13 +464,24 @@ export default function ResultsPage() {
                   ))}
                 </div>
 
-                <div className="mt-10 flex justify-end">
+                <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-end">
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    type="button"
+                    onClick={handleGeneratePoster}
+                    disabled={generatingPoster || saving || (results[1].student_ids.length === 0 && results[2].student_ids.length === 0 && results[3].student_ids.length === 0)}
+                    className="inline-flex justify-center items-center px-8 py-4 border border-slate-200 rounded-xl shadow-sm text-sm font-bold text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-slate-100 disabled:opacity-50 transition-all"
+                  >
+                    {generatingPoster ? <Loader2 className="h-5 w-5 mr-2 animate-spin" /> : <Download className="h-5 w-5 mr-2 text-slate-500" />}
+                    Generate & Download Poster
+                  </motion.button>
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     type="submit"
                     disabled={saving}
-                    className="inline-flex items-center px-8 py-4 border border-transparent rounded-xl shadow-lg shadow-amber-500/20 text-sm font-bold text-white bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 focus:outline-none focus:ring-4 focus:ring-amber-200 disabled:opacity-50 transition-all"
+                    className="inline-flex justify-center items-center px-8 py-4 border border-transparent rounded-xl shadow-lg shadow-amber-500/20 text-sm font-bold text-white bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 focus:outline-none focus:ring-4 focus:ring-amber-200 disabled:opacity-50 transition-all"
                   >
                     {saving ? <Loader2 className="h-5 w-5 mr-2 animate-spin" /> : <Save className="h-5 w-5 mr-2" />}
                     Save Results
