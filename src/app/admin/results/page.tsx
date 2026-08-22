@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
-import { Loader2, Save, Trophy, Medal, Award, Trash2 } from "lucide-react";
+import { Loader2, Save, Trophy, Medal, Award, Trash2, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function ResultsPage() {
@@ -11,43 +11,57 @@ export default function ResultsPage() {
   const [competitions, setCompetitions] = useState<any[]>([]);
   const [selectedEventId, setSelectedEventId] = useState("");
   const [selectedZone, setSelectedZone] = useState("");
-  
   const [registrations, setRegistrations] = useState<any[]>([]);
   const [loadingEvent, setLoadingEvent] = useState(false);
   
-  const [results, setResults] = useState<{ [position: number]: { student_id: string, points: number } }>({
-    1: { student_id: "", points: 0 },
-    2: { student_id: "", points: 0 },
-    3: { student_id: "", points: 0 },
+  const [results, setResults] = useState<{ [position: number]: { student_ids: string[], points: number } }>({
+    1: { student_ids: [], points: 0 },
+    2: { student_ids: [], points: 0 },
+    3: { student_ids: [], points: 0 },
   });
+  const [originalResults, setOriginalResults] = useState<{ student_id: string, position: number }[]>([]);
 
   const [message, setMessage] = useState({ text: "", type: "" });
 
   useEffect(() => {
+    const fetchCompetitions = async () => {
+      const { data, error } = await supabase.from("competitions").select("*").order("name");
+      if (data) setCompetitions(data);
+      setLoading(false);
+    };
     fetchCompetitions();
   }, []);
 
-  const fetchCompetitions = async () => {
-    const { data } = await supabase.from("competitions").select("id, name, type, category").order("name");
-    if (data) setCompetitions(data);
-    setLoading(false);
-  };
-
   useEffect(() => {
     if (selectedEventId) {
-      fetchEventData(selectedEventId);
+      handleEventChange(selectedEventId);
     }
   }, [selectedEventId]);
 
-  const fetchEventData = async (eventId: string) => {
+  const handleEventChange = async (eventId: string) => {
     setLoadingEvent(true);
+    setResults({
+      1: { student_ids: [], points: 0 },
+      2: { student_ids: [], points: 0 },
+      3: { student_ids: [], points: 0 },
+    });
+    setOriginalResults([]);
     setMessage({ text: "", type: "" });
-    
+    if (!eventId) {
+      setLoadingEvent(false);
+      return;
+    }
+
     const { data: regs } = await supabase
       .from("registrations")
-      .select("student_id, group_slot, students(name, team)")
+      .select(`
+        student_id,
+        team,
+        group_slot,
+        students ( name, team )
+      `)
       .eq("event_id", eventId);
-      
+    
     if (regs) {
       setRegistrations(regs);
     }
@@ -58,34 +72,42 @@ export default function ResultsPage() {
       .eq("event_id", eventId);
 
     const newResults = {
-      1: { student_id: "", points: 0 },
-      2: { student_id: "", points: 0 },
-      3: { student_id: "", points: 0 },
+      1: { student_ids: [] as string[], points: 0 },
+      2: { student_ids: [] as string[], points: 0 },
+      3: { student_ids: [] as string[], points: 0 },
     };
+    
+    const originals: { student_id: string, position: number }[] = [];
 
     if (existingResults) {
       existingResults.forEach(r => {
-        newResults[r.position as 1|2|3] = { student_id: r.student_id, points: r.points };
+        if (r.position >= 1 && r.position <= 3) {
+          newResults[r.position as 1|2|3].student_ids.push(r.student_id);
+          newResults[r.position as 1|2|3].points = r.points;
+          originals.push({ student_id: r.student_id, position: r.position });
+        }
       });
     }
 
     setResults(newResults);
+    setOriginalResults(originals);
     setLoadingEvent(false);
   };
 
   const handleDeleteRow = async (pos: 1|2|3) => {
-    if (!window.confirm(`Are you sure you want to delete the result for ${pos === 1 ? '1st' : pos === 2 ? '2nd' : '3rd'} Place?`)) return;
+    if (!window.confirm(`Are you sure you want to clear all winners for ${pos === 1 ? '1st' : pos === 2 ? '2nd' : '3rd'} Place?`)) return;
     
     setSaving(true);
     try {
       const { error } = await supabase.from("results").delete().eq("event_id", selectedEventId).eq("position", pos);
       if (error) throw error;
       
-      setResults({ ...results, [pos]: { student_id: "", points: 0 } });
-      setMessage({ text: "Result deleted successfully!", type: "success" });
+      setResults({ ...results, [pos]: { student_ids: [], points: 0 } });
+      setOriginalResults(originalResults.filter(o => o.position !== pos));
+      setMessage({ text: "Results cleared successfully!", type: "success" });
       setTimeout(() => setMessage({ text: "", type: "" }), 3000);
     } catch (err: any) {
-      setMessage({ text: "Error deleting result: " + err.message, type: "error" });
+      setMessage({ text: "Error clearing results: " + err.message, type: "error" });
     } finally {
       setSaving(false);
     }
@@ -93,30 +115,45 @@ export default function ResultsPage() {
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!selectedEventId) return;
+
     setSaving(true);
     setMessage({ text: "", type: "" });
 
     try {
-      await supabase.from("results").delete().eq("event_id", selectedEventId);
+      const currentSidsByPos: Record<number, string[]> = {
+        1: results[1].student_ids,
+        2: results[2].student_ids,
+        3: results[3].student_ids,
+      };
 
-      const toInsert = [];
+      const toDelete = originalResults.filter(o => !currentSidsByPos[o.position].includes(o.student_id));
+      
+      if (toDelete.length > 0) {
+         for (const del of toDelete) {
+            await supabase.from("results").delete().eq("event_id", selectedEventId).eq("position", del.position).eq("student_id", del.student_id);
+         }
+      }
+
+      const toUpsert = [];
       for (const pos of [1, 2, 3]) {
         const r = results[pos as 1|2|3];
-        if (r.student_id) {
-          toInsert.push({
+        for (const sid of r.student_ids) {
+          toUpsert.push({
             event_id: selectedEventId,
-            student_id: r.student_id,
+            student_id: sid,
             position: pos,
             points: r.points
           });
         }
       }
 
-      if (toInsert.length > 0) {
-        const { error } = await supabase.from("results").insert(toInsert);
+      if (toUpsert.length > 0) {
+        const { error } = await supabase.from("results").upsert(toUpsert, { onConflict: 'event_id,student_id' });
         if (error) throw error;
       }
 
+      setOriginalResults(toUpsert.map(u => ({ student_id: u.student_id, position: u.position as number })));
       setMessage({ text: "Results saved successfully!", type: "success" });
       setTimeout(() => setMessage({ text: "", type: "" }), 3000);
     } catch (err: any) {
@@ -267,15 +304,43 @@ export default function ResultsPage() {
                         <span className={`font-black text-lg ${color}`}>{label}</span>
                       </div>
                       
-                      <div className="flex-1">
-                        <label className="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-widest">Select Student</label>
+                      <div className="flex-1 flex flex-col gap-2">
+                        <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest">Winners</label>
+                        <div className="flex flex-wrap gap-2 mb-1">
+                          {results[pos as 1|2|3].student_ids.map(sid => {
+                            const r = registrations.find(reg => reg.student_id === sid);
+                            const name = r?.students?.name || sid;
+                            const team = r?.students?.team || '';
+                            return (
+                              <div key={sid} className="flex items-center gap-1 bg-white border border-amber-200 text-amber-900 px-3 py-1.5 rounded-full text-sm font-bold shadow-sm">
+                                <span>{name} {team ? `(${team})` : ''}</span>
+                                <button type="button" onClick={() => {
+                                  setResults({
+                                    ...results,
+                                    [pos]: { ...results[pos as 1|2|3], student_ids: results[pos as 1|2|3].student_ids.filter(id => id !== sid) }
+                                  });
+                                }} className="text-amber-500 hover:text-red-500 ml-1">
+                                  <X className="w-4 h-4" />
+                                </button>
+                              </div>
+                            );
+                          })}
+                        </div>
                         <select
-                          value={results[pos as 1|2|3].student_id}
-                          onChange={(e) => setResults({...results, [pos]: { ...results[pos as 1|2|3], student_id: e.target.value }})}
+                          value=""
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            if (val && !results[pos as 1|2|3].student_ids.includes(val)) {
+                              setResults({
+                                ...results,
+                                [pos]: { ...results[pos as 1|2|3], student_ids: [...results[pos as 1|2|3].student_ids, val] }
+                              });
+                            }
+                          }}
                           className="block w-full px-4 py-3 bg-white/80 border border-white/50 rounded-xl focus:ring-4 focus:ring-amber-100 focus:border-amber-400 sm:text-sm text-slate-900 font-medium transition-all shadow-sm outline-none"
                         >
-                          <option value="">-- None --</option>
-                          {registrations.map(r => (
+                          <option value="">-- Add winner --</option>
+                          {registrations.filter(r => !results[pos as 1|2|3].student_ids.includes(r.student_id)).map(r => (
                             <option key={r.student_id} value={r.student_id}>
                               {r.students.name} — Team {r.students.team} {r.group_slot ? `(Group ${r.group_slot})` : ''}
                             </option>
@@ -293,13 +358,13 @@ export default function ResultsPage() {
                           className="block w-full px-4 py-3 bg-white/80 border border-white/50 rounded-xl focus:ring-4 focus:ring-amber-100 focus:border-amber-400 sm:text-sm text-slate-900 font-bold transition-all shadow-sm text-center outline-none"
                         />
                       </div>
-                      {results[pos as 1|2|3].student_id !== "" && (
+                      {results[pos as 1|2|3].student_ids.length > 0 && (
                         <div className="flex items-end flex-shrink-0 mt-4 md:mt-0">
                           <button
                             type="button"
                             onClick={() => handleDeleteRow(pos as 1|2|3)}
                             className="p-3 bg-red-50 text-red-500 hover:bg-red-100 rounded-xl transition-colors shadow-sm"
-                            title="Delete Result"
+                            title="Clear all winners"
                           >
                             <Trash2 className="h-5 w-5" />
                           </button>
