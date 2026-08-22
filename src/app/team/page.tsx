@@ -586,6 +586,7 @@ export default function TeamDashboard() {
                               setModalStudent(student);
                               setEventSearchQuery("");
                               setEventTypeFilter("All");
+                              setAdding(null);
                             }}
                             className="flex items-center justify-center p-4 rounded-xl border-2 border-dashed border-slate-300 hover:border-fuchsia-400 hover:bg-fuchsia-50 transition-all text-slate-400 hover:text-fuchsia-600 font-bold text-sm min-h-[76px]"
                           >
@@ -782,7 +783,12 @@ export default function TeamDashboard() {
                     Student: <span className="text-slate-700">{modalStudent.name}</span> • ID: {modalStudent.id}
                   </p>
                 </div>
-                <button onClick={() => setModalStudent(null)} className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors">
+                <button onClick={() => {
+                  setModalStudent(null);
+                  setEventSearchQuery("");
+                  setEventTypeFilter("All");
+                  setAdding(null);
+                }} className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors">
                   <X className="w-6 h-6" />
                 </button>
               </div>
