@@ -147,31 +147,28 @@ export default function ResultsPage() {
       // Ensure fonts are applied properly
       ctx.textBaseline = "top";
 
-      // Result Number (Top Right): bold 65pt Candara, White
+      const startX = width * 0.22; // Adjusted to be safely inside the box
+
+      // Result Number (Top Right): bold 35pt Candara, White (approx X = width * 0.70, Y = height * 0.28)
       ctx.fillStyle = "#FFFFFF";
-      ctx.font = `bold 65pt Candara, sans-serif`;
-      ctx.textAlign = "right";
-      ctx.fillText(comp.id, width - 80, 80);
-
-      // Reset align
+      ctx.font = `bold 35pt Candara, sans-serif`;
       ctx.textAlign = "left";
+      ctx.fillText(comp.id.padStart(2, '0'), width * 0.70, height * 0.28);
 
-      const startX = width * 0.12;
-      let currentY = height * 0.35;
-
-      // Competition Name (Top Left): bold 21.84pt Montserrat, Yellow
+      // Competition Name (Top Left): bold 18pt Montserrat, Yellow
+      let currentY = height * 0.28;
       ctx.fillStyle = "#FFD700"; 
-      ctx.font = `bold 21.84pt Montserrat, sans-serif`;
+      ctx.font = `bold 18pt Montserrat, sans-serif`;
       ctx.fillText(comp.name.toUpperCase(), startX, currentY);
 
-      // Zone Name (Below Comp): 24.35pt Montserrat, White
-      currentY += 45;
+      // Zone Name (Below Comp): 14pt Montserrat, White
+      currentY += 35; // Spacing below competition name
       ctx.fillStyle = "#FFFFFF";
-      ctx.font = `24.35pt Montserrat, sans-serif`;
+      ctx.font = `14pt Montserrat, sans-serif`;
       ctx.fillText((selectedZone || comp.category || "GENERAL ZONE").toUpperCase(), startX, currentY);
 
       // Winners List
-      currentY += 70;
+      currentY = height * 0.45; // Start winners lower down inside the box
 
       const drawWinnersForPosition = (pos: 1|2|3, placePrefix: string) => {
         const sids = results[pos].student_ids;
@@ -182,23 +179,24 @@ export default function ResultsPage() {
           const studentName = (r?.students?.name || "Unknown").toUpperCase();
           const teamName = (r?.students?.team || "Unknown").toUpperCase();
 
-          // 1. Place Number
+          // 1. Place Number: bold 20pt Montserrat
           ctx.fillStyle = "#FFFFFF";
-          ctx.font = `bold 30pt Montserrat, sans-serif`;
+          ctx.font = `bold 20pt Montserrat, sans-serif`;
           ctx.fillText(placePrefix, startX, currentY);
           const placeWidth = ctx.measureText(placePrefix).width;
 
-          // 2. Student Name
-          ctx.font = `21.84pt Montserrat, sans-serif`;
-          const nameX = startX + placeWidth + 15; 
-          ctx.fillText(studentName, nameX, currentY + 8); 
+          // 2. Student Name: 15pt Montserrat
+          ctx.font = `15pt Montserrat, sans-serif`;
+          const nameX = startX + placeWidth + 10; // 10px padding
+          ctx.fillText(studentName, nameX, currentY + 4); // +4 for vertical alignment with 20pt
           const nameWidth = ctx.measureText(studentName).width;
 
-          // 3. Team Name
-          const teamX = nameX + nameWidth + 15;
-          ctx.fillText(`( ${teamName} )`, teamX, currentY + 8);
+          // 3. Team Name: 13pt Montserrat
+          ctx.font = `13pt Montserrat, sans-serif`;
+          const teamX = nameX + nameWidth + 10;
+          ctx.fillText(`( ${teamName} )`, teamX, currentY + 5);
 
-          currentY += 55; // Spacing for next winner
+          currentY += 45; // Clean vertical spacing for next winner
         }
       };
 
