@@ -144,48 +144,67 @@ export default function ResultsPage() {
       const width = canvas.width;
       const height = canvas.height;
 
+      // Ensure fonts are applied properly
+      ctx.textBaseline = "top";
+
+      // Result Number (Top Right): bold 65pt Candara, White
+      ctx.fillStyle = "#FFFFFF";
+      ctx.font = `bold 65pt Candara, sans-serif`;
+      ctx.textAlign = "right";
+      ctx.fillText(comp.id, width - 80, 80);
+
+      // Reset align
+      ctx.textAlign = "left";
+
       const startX = width * 0.12;
       let currentY = height * 0.35;
 
-      // Draw Competition Name (Yellow, Bold)
-      ctx.fillStyle = "#FBBF24"; 
-      ctx.font = `bold ${Math.floor(height * 0.08)}px sans-serif`;
-      ctx.textAlign = "left";
-      ctx.textBaseline = "top";
-      ctx.fillText(comp.name, startX, currentY);
+      // Competition Name (Top Left): bold 21.84pt Montserrat, Yellow
+      ctx.fillStyle = "#FFD700"; 
+      ctx.font = `bold 21.84pt Montserrat, sans-serif`;
+      ctx.fillText(comp.name.toUpperCase(), startX, currentY);
 
-      // Draw Zone (White)
-      currentY += height * 0.09;
+      // Zone Name (Below Comp): 24.35pt Montserrat, White
+      currentY += 45;
       ctx.fillStyle = "#FFFFFF";
-      ctx.font = `bold ${Math.floor(height * 0.05)}px sans-serif`;
-      ctx.fillText(selectedZone || comp.category || "General Zone", startX, currentY);
+      ctx.font = `24.35pt Montserrat, sans-serif`;
+      ctx.fillText((selectedZone || comp.category || "GENERAL ZONE").toUpperCase(), startX, currentY);
 
-      // Draw Winners
-      currentY += height * 0.12;
-      ctx.font = `bold ${Math.floor(height * 0.045)}px sans-serif`;
+      // Winners List
+      currentY += 70;
 
-      const getNamesForPosition = (pos: 1|2|3) => {
-        return results[pos].student_ids.map(sid => {
+      const drawWinnersForPosition = (pos: 1|2|3, placePrefix: string) => {
+        const sids = results[pos].student_ids;
+        if (sids.length === 0) return;
+
+        for (const sid of sids) {
           const r = registrations.find(reg => reg.student_id === sid);
-          return r?.students?.name || "Unknown";
-        }).join(", ");
+          const studentName = (r?.students?.name || "Unknown").toUpperCase();
+          const teamName = (r?.students?.team || "Unknown").toUpperCase();
+
+          // 1. Place Number
+          ctx.fillStyle = "#FFFFFF";
+          ctx.font = `bold 30pt Montserrat, sans-serif`;
+          ctx.fillText(placePrefix, startX, currentY);
+          const placeWidth = ctx.measureText(placePrefix).width;
+
+          // 2. Student Name
+          ctx.font = `21.84pt Montserrat, sans-serif`;
+          const nameX = startX + placeWidth + 15; 
+          ctx.fillText(studentName, nameX, currentY + 8); 
+          const nameWidth = ctx.measureText(studentName).width;
+
+          // 3. Team Name
+          const teamX = nameX + nameWidth + 15;
+          ctx.fillText(`( ${teamName} )`, teamX, currentY + 8);
+
+          currentY += 55; // Spacing for next winner
+        }
       };
 
-      const firstPlace = getNamesForPosition(1);
-      const secondPlace = getNamesForPosition(2);
-      const thirdPlace = getNamesForPosition(3);
-
-      if (firstPlace) {
-        ctx.fillText(`1. ${firstPlace}`, startX, currentY);
-        currentY += height * 0.07;
-      }
-      if (secondPlace) {
-        ctx.fillText(`2. ${secondPlace}`, startX, currentY);
-        currentY += height * 0.07;
-      }
-      if (thirdPlace) {
-        ctx.fillText(`3. ${thirdPlace}`, startX, currentY);
-      }
+      drawWinnersForPosition(1, "1.");
+      drawWinnersForPosition(2, "2.");
+      drawWinnersForPosition(3, "3.");
 
       const dataUrl = canvas.toDataURL("image/jpeg", 0.9);
       const a = document.createElement("a");
