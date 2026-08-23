@@ -151,8 +151,8 @@ export default function ResultsPage() {
 
       // 3. Zone Name
       ctx.fillStyle = "#FFFFFF";
-      ctx.font = `22px Montserrat, sans-serif`;
-      ctx.fillText((selectedZone || comp.category || "GENERAL ZONE").toUpperCase(), 279, 475);
+      ctx.font = `18px Montserrat, sans-serif`;
+      ctx.fillText((selectedZone || comp.category || "GENERAL ZONE").toUpperCase(), 279, 470);
 
       // 4. Winners Loop
       let winnerIndex = 0;
@@ -170,7 +170,7 @@ export default function ResultsPage() {
 
           // Place Number
           ctx.fillStyle = "#FFFFFF";
-          ctx.font = `600 26px Montserrat, sans-serif`;
+          ctx.font = `600 24px Montserrat, sans-serif`;
           ctx.fillText(placePrefix, 280, Y);
 
           // Student Name
