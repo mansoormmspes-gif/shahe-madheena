@@ -149,19 +149,19 @@ export default function ResultsPage() {
       const paddedIndex = String(compIndex).padStart(2, '0');
       
       ctx.fillStyle = "#FFFFFF";
-      ctx.font = `65pt Candara, sans-serif`;
+      ctx.font = `bold 80px Candara, sans-serif`;
       ctx.textAlign = "left";
-      ctx.fillText(paddedIndex, 741, 364);
+      ctx.fillText(paddedIndex, 741, 310);
 
       // 2. Competition Name
       ctx.fillStyle = "#FFD700"; 
-      ctx.font = `600 21.84pt Montserrat, sans-serif`;
+      ctx.font = `600 30px Montserrat, sans-serif`;
       ctx.fillText(comp.name.toUpperCase(), 279, 430);
 
       // 3. Zone Name
       ctx.fillStyle = "#FFFFFF";
-      ctx.font = `24.35pt Montserrat, sans-serif`;
-      ctx.fillText((selectedZone || comp.category || "GENERAL ZONE").toUpperCase(), 281, 468);
+      ctx.font = `32px Montserrat, sans-serif`;
+      ctx.fillText((selectedZone || comp.category || "GENERAL ZONE").toUpperCase(), 281, 470);
 
       // 4. Winners Loop
       let winnerIndex = 0;
@@ -179,16 +179,17 @@ export default function ResultsPage() {
 
           // Place Number
           ctx.fillStyle = "#FFFFFF";
-          ctx.font = `600 30pt Montserrat, sans-serif`;
+          ctx.font = `600 40px Montserrat, sans-serif`;
           ctx.fillText(placePrefix, 280, Y);
 
           // Student Name
-          ctx.font = `21.84pt Montserrat, sans-serif`;
+          ctx.font = `30px Montserrat, sans-serif`;
           ctx.fillText(studentName, 334, Y);
 
           // Team Name
-          ctx.font = `21.84pt Montserrat, sans-serif`;
-          ctx.fillText(`( ${teamName} )`, 568, Y);
+          ctx.font = `30px Montserrat, sans-serif`;
+          const teamX = 334 + ctx.measureText(studentName).width + 15;
+          ctx.fillText(`( ${teamName} )`, teamX, Y);
 
           winnerIndex++;
         }
