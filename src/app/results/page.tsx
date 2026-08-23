@@ -6,7 +6,6 @@ import { supabase } from "@/lib/supabase";
 import { Loader2, Medal, Trophy, ArrowLeft, Award, Download, User } from "lucide-react";
 import { cn, sortStudents } from "@/lib/utils";
 import Link from "next/link";
-import html2canvas from "html2canvas";
 
 export default function ResultsPage() {
   const [loading, setLoading] = useState(true);
@@ -27,8 +26,7 @@ export default function ResultsPage() {
   const [selectedStudent, setSelectedStudent] = useState("");
 
   const [generatingPoster, setGeneratingPoster] = useState<string | null>(null);
-  const [activePosterData, setActivePosterData] = useState<any | null>(null);
-  const posterRef = useRef<HTMLDivElement>(null);
+  const [generatedPosterMap, setGeneratedPosterMap] = useState<Record<string, string>>({});
 
   useEffect(() => {
     fetchData();
@@ -53,51 +51,87 @@ export default function ResultsPage() {
     setLoading(false);
   };
 
-  const generatePoster = async (result: any, compName: string, studentData: any) => {
-    setGeneratingPoster(studentData.id + compName);
-    setActivePosterData({ ...result, student: studentData, competitions: { name: compName, category: studentData.category } });
-    
-    setTimeout(async () => {
-      if (posterRef.current) {
-        try {
-          const canvas = await html2canvas(posterRef.current, {
-            scale: 2,
-            useCORS: true,
-            allowTaint: true,
-            backgroundColor: null
-          });
-          
-          const image = canvas.toDataURL("image/png");
-          const link = document.createElement("a");
-          link.href = image;
-          link.download = `Meelad_Fest_${studentData.name.replace(/\s+/g, '_')}_Result.png`;
-          link.click();
-        } catch (error) {
-          console.error("Failed to generate poster:", error);
-          alert("Failed to generate the poster image.");
-        }
-      }
+  const generateCanvasPoster = async (compId: string, specificResults: any[] = []) => {
+    const resToUse = specificResults.length > 0 ? specificResults : results.filter(r => r.event_id === compId).map(r => ({
+      ...r,
+      student: students.find(s => s.id === r.student_id)
+    })).sort((a, b) => a.position - b.position);
+
+    if (resToUse.length === 0) return null;
+
+    setGeneratingPoster(compId);
+    try {
+      const comp = competitions.find(c => c.id === compId);
+      if (!comp) return null;
+
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      if (!ctx) throw new Error("Could not get canvas context");
+
+      const img = new Image();
+      img.src = "/poster-1.jpg";
+      img.crossOrigin = "anonymous";
+      
+      await new Promise((resolve, reject) => {
+        img.onload = resolve;
+        img.onerror = () => reject(new Error("Failed to load poster-1.jpg template."));
+      });
+
+      canvas.width = 1023;
+      canvas.height = 1280;
+
+      ctx.drawImage(img, 0, 0, 1023, 1280);
+      ctx.textBaseline = "top";
+
+      // 2. Competition Name
+      ctx.fillStyle = "#FFD700"; 
+      ctx.font = `600 28px Montserrat, sans-serif`;
+      ctx.fillText(comp.name.toUpperCase(), 279, 430);
+
+      // 3. Zone Name
+      ctx.fillStyle = "#FFFFFF";
+      ctx.font = `18px Montserrat, sans-serif`;
+      ctx.fillText((comp.category || "GENERAL ZONE").toUpperCase(), 279, 470);
+
+      // 4. Winners Loop
+      let winnerIndex = 0;
+      
+      [1, 2, 3].forEach(pos => {
+        const winners = resToUse.filter(r => r.position === pos);
+        if (winners.length === 0) return;
+        const placePrefix = pos + ".";
+        
+        winners.forEach(w => {
+          const studentName = (w.student?.name || "Unknown").toUpperCase();
+          const teamName = (w.student?.team || "Unknown").toUpperCase();
+
+          const Y = 590 + (winnerIndex * 65);
+
+          ctx.fillStyle = "#FFFFFF";
+          ctx.font = `600 24px Montserrat, sans-serif`;
+          ctx.fillText(placePrefix, 280, Y);
+
+          ctx.font = `20px Montserrat, sans-serif`;
+          ctx.fillText(studentName, 330, Y);
+
+          ctx.font = `20px Montserrat, sans-serif`;
+          const teamX = 330 + ctx.measureText(studentName).width + 12;
+          ctx.fillText(`( ${teamName} )`, teamX, Y);
+
+          winnerIndex++;
+        });
+      });
+
+      const dataUrl = canvas.toDataURL("image/jpeg", 0.9);
+      setGeneratedPosterMap(prev => ({ ...prev, [compId]: dataUrl }));
+      return dataUrl;
+    } catch (err: any) {
+      console.error("Poster generation failed", err);
+    } finally {
       setGeneratingPoster(null);
-      setActivePosterData(null);
-    }, 500);
+    }
+    return null;
   };
-
-  const getPositionText = (pos: number) => {
-    if (pos === 1) return "1st Position";
-    if (pos === 2) return "2nd Position";
-    if (pos === 3) return "3rd Position";
-    return `${pos}th Position`;
-  };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-transparent">
-        <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}>
-          <Loader2 className="h-12 w-12 text-blue-600" />
-        </motion.div>
-      </div>
-    );
-  }
 
   // Helper arrays for dropdowns
   const categories = Array.from(new Set(competitions.map(c => c.category))).sort();
@@ -120,6 +154,31 @@ export default function ResultsPage() {
   
   const studentData = students.find(s => s.id === selectedStudent);
   const totalPoints = studentResults.reduce((acc, curr) => acc + curr.points, 0);
+
+  useEffect(() => {
+    if (activeTab === "competition" && selectedCompetition && compResults.length > 0) {
+      if (!generatedPosterMap[selectedCompetition]) {
+        generateCanvasPoster(selectedCompetition, compResults);
+      }
+    }
+  }, [selectedCompetition, compResults, activeTab]);
+
+  const getPositionText = (pos: number) => {
+    if (pos === 1) return "1st Position";
+    if (pos === 2) return "2nd Position";
+    if (pos === 3) return "3rd Position";
+    return `${pos}th Position`;
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-transparent">
+        <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}>
+          <Loader2 className="h-12 w-12 text-blue-600" />
+        </motion.div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen relative z-10 py-12 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
@@ -204,38 +263,51 @@ export default function ResultsPage() {
               {selectedCompetition && (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-8">
                   {compResults.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                      {compResults.map(res => (
-                        <div key={res.id} className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm relative overflow-hidden group hover:shadow-md transition-all">
-                          <div className={cn(
-                            "absolute top-0 left-0 w-full h-1", 
-                            res.position === 1 ? "bg-amber-400" : res.position === 2 ? "bg-slate-300" : "bg-amber-700"
-                          )} />
-                          <div className="flex justify-between items-start mb-4">
-                            <div className="flex items-center space-x-2">
-                              <Medal className={cn("w-6 h-6", res.position === 1 ? 'text-amber-400' : res.position === 2 ? 'text-slate-400' : 'text-amber-700')} />
-                              <span className="font-black text-slate-900 text-sm">{getPositionText(res.position)}</span>
+                    <div>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                        {compResults.map(res => (
+                          <div key={res.id} className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm relative overflow-hidden group hover:shadow-md transition-all">
+                            <div className={cn(
+                              "absolute top-0 left-0 w-full h-1", 
+                              res.position === 1 ? "bg-amber-400" : res.position === 2 ? "bg-slate-300" : "bg-amber-700"
+                            )} />
+                            <div className="flex justify-between items-start mb-4">
+                              <div className="flex items-center space-x-2">
+                                <Medal className={cn("w-6 h-6", res.position === 1 ? 'text-amber-400' : res.position === 2 ? 'text-slate-400' : 'text-amber-700')} />
+                                <span className="font-black text-slate-900 text-sm">{getPositionText(res.position)}</span>
+                              </div>
+                              <span className="bg-blue-50 text-blue-700 px-3 py-1 rounded-lg text-xs font-bold">{res.points} PTS</span>
                             </div>
-                            <span className="bg-blue-50 text-blue-700 px-3 py-1 rounded-lg text-xs font-bold">{res.points} PTS</span>
+                            <h3 className="text-xl font-bold text-slate-900 mb-1">{res.student?.name}</h3>
+                            <p className="text-sm font-medium text-slate-500">Class {res.student?.class} • {res.student?.team}</p>
                           </div>
-                          <h3 className="text-xl font-bold text-slate-900 mb-1">{res.student?.name}</h3>
-                          <p className="text-sm font-medium text-slate-500">Class {res.student?.class} • {res.student?.team}</p>
-                          
-                          <motion.button 
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                            onClick={() => generatePoster(res, competitions.find(c => c.id === selectedCompetition)?.name || "", res.student)}
-                            disabled={generatingPoster === res.student?.id + selectedCompetition}
-                            className="mt-6 w-full flex items-center justify-center px-4 py-2.5 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-xl font-bold transition-all disabled:opacity-50 text-sm"
+                        ))}
+                      </div>
+
+                      {/* Visual Poster Display */}
+                      {generatedPosterMap[selectedCompetition] && (
+                        <div className="flex flex-col items-center bg-white/50 p-8 rounded-3xl border border-slate-100 shadow-sm mt-8">
+                          <h3 className="text-xl font-black text-slate-800 mb-6">Official Result Poster</h3>
+                          <div className="relative group rounded-2xl overflow-hidden shadow-2xl border-4 border-white max-w-sm w-full">
+                            <img 
+                              src={generatedPosterMap[selectedCompetition]} 
+                              alt="Result Poster" 
+                              className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-[1.02]" 
+                            />
+                          </div>
+                          <button 
+                            onClick={() => {
+                              const link = document.createElement("a");
+                              link.href = generatedPosterMap[selectedCompetition];
+                              link.download = `${competitions.find(c => c.id === selectedCompetition)?.name}_Result.jpg`;
+                              link.click();
+                            }}
+                            className="mt-8 flex items-center justify-center px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold transition-all shadow-xl hover:shadow-2xl text-lg w-full max-w-xs"
                           >
-                            {generatingPoster === res.student?.id + selectedCompetition ? (
-                              <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Generating...</>
-                            ) : (
-                              <><Download className="w-4 h-4 mr-2" /> Poster</>
-                            )}
-                          </motion.button>
+                            <Download className="w-6 h-6 mr-3" /> Download Poster
+                          </button>
                         </div>
-                      ))}
+                      )}
                     </div>
                   ) : (
                     <div className="text-center py-12 bg-white/50 rounded-3xl border border-slate-100">
@@ -317,12 +389,23 @@ export default function ResultsPage() {
                             <div className="flex items-center gap-4">
                               <span className="font-bold text-slate-700 bg-white px-3 py-1 rounded-lg border border-slate-200 shadow-sm">{res.points} pts</span>
                               <button 
-                                onClick={() => generatePoster(res, res.competition?.name, studentData)}
-                                disabled={generatingPoster === studentData.id + res.competition?.name}
+                                onClick={async () => {
+                                  let dataUrl = generatedPosterMap[res.event_id];
+                                  if (!dataUrl) {
+                                    dataUrl = await generateCanvasPoster(res.event_id) || "";
+                                  }
+                                  if (dataUrl) {
+                                    const link = document.createElement("a");
+                                    link.href = dataUrl;
+                                    link.download = `${res.competition?.name}_Result.jpg`;
+                                    link.click();
+                                  }
+                                }}
+                                disabled={generatingPoster === res.event_id}
                                 className="text-blue-600 bg-blue-50 p-2 rounded-xl hover:bg-blue-100 transition-colors disabled:opacity-50"
-                                title="Download Poster"
+                                title="Download Competition Poster"
                               >
-                                {generatingPoster === studentData.id + res.competition?.name ? <Loader2 className="w-5 h-5 animate-spin" /> : <Download className="w-5 h-5" />}
+                                {generatingPoster === res.event_id ? <Loader2 className="w-5 h-5 animate-spin" /> : <Download className="w-5 h-5" />}
                               </button>
                             </div>
                           </div>
@@ -340,83 +423,6 @@ export default function ResultsPage() {
           )}
         </AnimatePresence>
       </div>
-
-      {/* Hidden Poster Template */}
-      {activePosterData && (
-        <div style={{ position: 'absolute', top: '-9999px', left: '-9999px' }}>
-          <div 
-            ref={posterRef} 
-            className="relative w-[1080px] h-[1080px] bg-slate-900 overflow-hidden"
-            style={{
-              backgroundImage: settings?.poster_template_url ? `url(${settings.poster_template_url})` : 'linear-gradient(135deg, #0f172a 0%, #020617 100%)',
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-            }}
-          >
-            {/* If no background URL provided, show beautiful placeholder graphics */}
-            {!settings?.poster_template_url && (
-              <div className="absolute inset-0 opacity-20 mix-blend-screen">
-                <div className="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] bg-blue-500 rounded-full blur-[150px]"></div>
-                <div className="absolute bottom-[-20%] left-[-10%] w-[800px] h-[800px] bg-purple-500 rounded-full blur-[150px]"></div>
-              </div>
-            )}
-            
-            {/* Elegant Glass Border Frame */}
-            <div className="absolute inset-10 border-2 border-white/20 rounded-[3rem] z-10 pointer-events-none backdrop-blur-[2px] shadow-[inset_0_0_100px_rgba(255,255,255,0.1)]"></div>
-            <div className="absolute inset-12 border border-white/10 rounded-[2.5rem] z-10 pointer-events-none"></div>
-
-            {/* Top Logo & Title */}
-            <div className="absolute top-24 w-full text-center z-20">
-              <div className="relative w-48 h-48 md:w-56 md:h-56 mx-auto mb-8 flex items-center justify-center p-4">
-                <img src="/logo.png" alt="Logo" className="w-full h-full object-contain drop-shadow-2xl" crossOrigin="anonymous" />
-              </div>
-              <h2 className="text-white text-3xl md:text-5xl font-black tracking-[0.2em] uppercase drop-shadow-2xl">
-                Meelad Fest 2k26
-              </h2>
-              <p className="text-blue-200/80 text-xl md:text-2xl font-bold tracking-[0.3em] uppercase mt-4">Irshadu swibiyan madrasa</p>
-            </div>
-
-            {/* Center Content: Result Info */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center z-20 pt-48">
-              <div className="bg-slate-900/10 backdrop-blur-2xl rounded-[4rem] border border-white/20 p-16 w-11/12 md:w-4/5 text-center shadow-[0_30px_60px_rgba(0,0,0,0.4)] relative overflow-hidden">
-                {/* Shine effect across the card */}
-                <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-white/10 to-transparent pointer-events-none"></div>
-
-                <div className="mb-10 inline-flex items-center justify-center bg-gradient-to-r from-amber-400 to-orange-500 text-white px-10 py-3 rounded-full text-2xl font-black uppercase tracking-widest shadow-xl border border-amber-300/50">
-                  <Trophy className="w-8 h-8 mr-4" />
-                  {getPositionText(activePosterData.position)}
-                </div>
-                
-                <h1 className="text-[5.5rem] font-black text-white leading-[1.1] mb-6 drop-shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
-                  {activePosterData.student.name}
-                </h1>
-                
-                <p className="text-2xl text-blue-100 font-bold mb-14 uppercase tracking-[0.2em] bg-black/20 inline-block px-8 py-3 rounded-full border border-white/10">
-                  Class {activePosterData.student.class} <span className="mx-4 text-white/30">|</span> Team {activePosterData.student.team}
-                </p>
-                
-                <div className="inline-block relative w-full max-w-2xl">
-                  <div className="absolute inset-0 bg-blue-500/20 blur-[50px] rounded-full"></div>
-                  <h3 className="relative text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-200 via-white to-blue-200 drop-shadow-sm mb-4 leading-tight">
-                    {activePosterData.competitions.name}
-                  </h3>
-                  <p className="relative text-xl text-blue-200 uppercase tracking-[0.3em] font-bold">
-                    {activePosterData.competitions.category}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Bottom Footer */}
-            <div className="absolute bottom-24 w-full text-center z-20">
-              <p className="text-white/40 text-xl font-bold tracking-[0.3em] uppercase">
-                Congratulations on your outstanding performance
-              </p>
-              <div className="w-24 h-1 bg-slate-900/20 mx-auto mt-6 rounded-full"></div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
