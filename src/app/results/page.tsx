@@ -25,7 +25,7 @@ export default function ResultsPage() {
   const [selectedClass, setSelectedClass] = useState("");
   const [selectedStudent, setSelectedStudent] = useState("");
 
-  const templates = ["/poster-1.jpg", "/poster-2.jpg", "/poster-3.png"];
+  const templates = ["/poster-1.jpg", "/poster-2.jpg", "/poster-3.png", "/poster-4.jpg"];
   const [selectedTemplate, setSelectedTemplate] = useState(templates[0]);
   const [generatingPoster, setGeneratingPoster] = useState<string | null>(null);
   const [generatedPosterMap, setGeneratedPosterMap] = useState<Record<string, string>>({});
@@ -80,7 +80,7 @@ export default function ResultsPage() {
         img.onerror = () => reject(new Error("Failed to load " + template));
       });
 
-      if (template.includes("poster-3")) {
+      if (template.includes("poster-3") || template.includes("poster-4")) {
         canvas.width = 1080;
         canvas.height = 1080;
         ctx.drawImage(img, 0, 0, 1080, 1080);
@@ -190,6 +190,41 @@ export default function ResultsPage() {
             ctx.fillStyle = "#FFD700";
             ctx.font = `600 24px Montserrat, sans-serif`;
             ctx.fillText(teamName, 230, Y + 40);
+
+            winnerIndex++;
+          });
+        });
+      } else if (template.includes("poster-4")) {
+        ctx.fillStyle = "#FFFFFF";
+        ctx.font = `600 24px Montserrat, sans-serif`;
+        ctx.fillText((comp.category || "GENERAL ZONE").toUpperCase(), 260, 350);
+
+        ctx.fillStyle = "#FFD700";
+        ctx.font = `bold 42px Montserrat, sans-serif`;
+        ctx.fillText(comp.name.toUpperCase(), 260, 400);
+
+        let winnerIndex = 0;
+        
+        [1, 2, 3].forEach(pos => {
+          const winners = resToUse.filter(r => r.position === pos);
+          if (winners.length === 0) return;
+          const placePrefix = pos + ". ";
+          
+          winners.forEach(w => {
+            const studentName = (w.student?.name || "Unknown").toUpperCase();
+            const placeAndStudentText = `${placePrefix}${studentName}`;
+            const teamName = (w.student?.team || "Unknown").toUpperCase();
+
+            const Y = 510 + (winnerIndex * 85);
+            const rowColor = pos === 1 ? "#FFD700" : "#FFFFFF";
+
+            ctx.fillStyle = rowColor;
+            ctx.font = `bold 32px Montserrat, sans-serif`;
+            ctx.fillText(placeAndStudentText, 260, Y);
+
+            ctx.font = `22px Montserrat, sans-serif`;
+            const teamX = 260 + ctx.measureText(placeAndStudentText).width + 15;
+            ctx.fillText(teamName, teamX, Y);
 
             winnerIndex++;
           });
