@@ -66,6 +66,8 @@ export default function ResultsPage() {
     try {
       const comp = competitions.find(c => c.id === compId);
       if (!comp) return null;
+      
+      const isGroup = comp.type === "Group" || comp.type === "group";
 
       const canvas = document.createElement("canvas");
       const ctx = canvas.getContext("2d");
@@ -109,7 +111,8 @@ export default function ResultsPage() {
           const placePrefix = pos + ".";
           
           winners.forEach(w => {
-            const studentName = (w.student?.name || "Unknown").toUpperCase();
+            const baseName = (w.student?.name || "Unknown").toUpperCase();
+            const studentName = isGroup ? `${baseName} & TEAM` : baseName;
             const teamName = (w.student?.team || "Unknown").toUpperCase();
 
             const Y = 590 + (winnerIndex * 65);
@@ -145,7 +148,8 @@ export default function ResultsPage() {
           const placePrefix = pos + ". ";
           
           winners.forEach(w => {
-            const studentName = (w.student?.name || "Unknown").toUpperCase();
+            const baseName = (w.student?.name || "Unknown").toUpperCase();
+            const studentName = isGroup ? `${baseName} & TEAM` : baseName;
             const teamName = (w.student?.team || "Unknown").toUpperCase();
 
             const Y = 640 + (winnerIndex * 115);
@@ -178,7 +182,8 @@ export default function ResultsPage() {
           const placePrefix = pos + ". ";
           
           winners.forEach(w => {
-            const studentName = (w.student?.name || "Unknown").toUpperCase();
+            const baseName = (w.student?.name || "Unknown").toUpperCase();
+            const studentName = isGroup ? `${baseName} & TEAM` : baseName;
             const teamName = (w.student?.team || "Unknown").toUpperCase();
 
             const Y = 440 + (winnerIndex * 120);
@@ -211,7 +216,8 @@ export default function ResultsPage() {
           const placePrefix = pos + ". ";
           
           winners.forEach(w => {
-            const studentName = (w.student?.name || "Unknown").toUpperCase();
+            const baseName = (w.student?.name || "Unknown").toUpperCase();
+            const studentName = isGroup ? `${baseName} & TEAM` : baseName;
             const placeAndStudentText = `${placePrefix}${studentName}`;
             const teamName = (w.student?.team || "Unknown").toUpperCase();
 
