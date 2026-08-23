@@ -135,11 +135,11 @@ export default function ResultsPage() {
         img.onerror = () => reject(new Error("Failed to load poster-1.jpg template. Make sure it exists in the public directory."));
       });
 
-      canvas.width = 1080;
-      canvas.height = 1920;
+      canvas.width = 1023;
+      canvas.height = 1280;
 
       // Draw background
-      ctx.drawImage(img, 0, 0, 1080, 1920);
+      ctx.drawImage(img, 0, 0, 1023, 1280);
 
       // Ensure fonts are applied properly
       ctx.textBaseline = "top";
@@ -149,19 +149,19 @@ export default function ResultsPage() {
       const paddedIndex = String(compIndex).padStart(2, '0');
       
       ctx.fillStyle = "#FFFFFF";
-      ctx.font = `65pt Candara, sans-serif`;
+      ctx.font = `bold 85px Candara, sans-serif`;
       ctx.textAlign = "left";
       ctx.fillText(paddedIndex, 741, 364);
 
       // 2. Competition Name
       ctx.fillStyle = "#FFD700"; 
-      ctx.font = `600 21.84pt Montserrat, sans-serif`;
+      ctx.font = `600 30px Montserrat, sans-serif`;
       ctx.fillText(comp.name.toUpperCase(), 279, 430);
 
       // 3. Zone Name
       ctx.fillStyle = "#FFFFFF";
-      ctx.font = `24.35pt Montserrat, sans-serif`;
-      ctx.fillText((selectedZone || comp.category || "GENERAL ZONE").toUpperCase(), 281, 468);
+      ctx.font = `32px Montserrat, sans-serif`;
+      ctx.fillText((selectedZone || comp.category || "GENERAL ZONE").toUpperCase(), 279, 475);
 
       // 4. Winners Loop
       let winnerIndex = 0;
@@ -175,20 +175,20 @@ export default function ResultsPage() {
           const studentName = (r?.students?.name || "Unknown").toUpperCase();
           const teamName = (r?.students?.team || "Unknown").toUpperCase();
 
-          const Y = 588 + (winnerIndex * 75);
+          const Y = 590 + (winnerIndex * 75);
 
           // Place Number
           ctx.fillStyle = "#FFFFFF";
-          ctx.font = `600 30pt Montserrat, sans-serif`;
+          ctx.font = `600 40px Montserrat, sans-serif`;
           ctx.fillText(placePrefix, 280, Y);
 
           // Student Name
-          ctx.font = `21.84pt Montserrat, sans-serif`;
-          ctx.fillText(studentName, 334, Y);
+          ctx.font = `30px Montserrat, sans-serif`;
+          ctx.fillText(studentName, 335, Y);
 
           // Team Name
-          ctx.font = `21.84pt Montserrat, sans-serif`;
-          const teamX = 334 + ctx.measureText(studentName).width + 15;
+          ctx.font = `30px Montserrat, sans-serif`;
+          const teamX = 335 + ctx.measureText(studentName).width + 15;
           ctx.fillText(`( ${teamName} )`, teamX, Y);
 
           winnerIndex++;
