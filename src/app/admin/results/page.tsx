@@ -135,11 +135,11 @@ export default function ResultsPage() {
         img.onerror = () => reject(new Error("Failed to load poster-1.jpg template. Make sure it exists in the public directory."));
       });
 
-      canvas.width = img.naturalWidth || img.width;
-      canvas.height = img.naturalHeight || img.height;
+      canvas.width = 1080;
+      canvas.height = 1920;
 
       // Draw background
-      ctx.drawImage(img, 0, 0);
+      ctx.drawImage(img, 0, 0, 1080, 1920);
 
       // Ensure fonts are applied properly
       ctx.textBaseline = "top";
@@ -149,19 +149,19 @@ export default function ResultsPage() {
       const paddedIndex = String(compIndex).padStart(2, '0');
       
       ctx.fillStyle = "#FFFFFF";
-      ctx.font = `bold 80px Candara, sans-serif`;
+      ctx.font = `65pt Candara, sans-serif`;
       ctx.textAlign = "left";
-      ctx.fillText(paddedIndex, 741, 310);
+      ctx.fillText(paddedIndex, 741, 364);
 
       // 2. Competition Name
       ctx.fillStyle = "#FFD700"; 
-      ctx.font = `600 30px Montserrat, sans-serif`;
+      ctx.font = `600 21.84pt Montserrat, sans-serif`;
       ctx.fillText(comp.name.toUpperCase(), 279, 430);
 
       // 3. Zone Name
       ctx.fillStyle = "#FFFFFF";
-      ctx.font = `25px Montserrat, sans-serif`;
-      ctx.fillText((selectedZone || comp.category || "GENERAL ZONE").toUpperCase(), 281, 470);
+      ctx.font = `24.35pt Montserrat, sans-serif`;
+      ctx.fillText((selectedZone || comp.category || "GENERAL ZONE").toUpperCase(), 281, 468);
 
       // 4. Winners Loop
       let winnerIndex = 0;
@@ -179,15 +179,15 @@ export default function ResultsPage() {
 
           // Place Number
           ctx.fillStyle = "#FFFFFF";
-          ctx.font = `600 34px Montserrat, sans-serif`;
+          ctx.font = `600 30pt Montserrat, sans-serif`;
           ctx.fillText(placePrefix, 280, Y);
 
           // Student Name
-          ctx.font = `24px Montserrat, sans-serif`;
+          ctx.font = `21.84pt Montserrat, sans-serif`;
           ctx.fillText(studentName, 334, Y);
 
           // Team Name
-          ctx.font = `24px Montserrat, sans-serif`;
+          ctx.font = `21.84pt Montserrat, sans-serif`;
           const teamX = 334 + ctx.measureText(studentName).width + 15;
           ctx.fillText(`( ${teamName} )`, teamX, Y);
 
