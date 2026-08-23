@@ -164,7 +164,7 @@ export default function ResultsPage() {
       } else if (template.includes("poster-3")) {
         ctx.fillStyle = "#FFD700";
         ctx.font = `600 24px Montserrat, sans-serif`;
-        ctx.fillText((comp.category || "GENERAL ZONE").toUpperCase(), 180, 250);
+        ctx.fillText((comp.category || "GENERAL ZONE").toUpperCase(), 180, 280);
 
         ctx.fillStyle = "#FFFFFF";
         ctx.font = `bold 48px Montserrat, sans-serif`;
