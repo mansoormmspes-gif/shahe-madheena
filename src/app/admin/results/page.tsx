@@ -144,23 +144,14 @@ export default function ResultsPage() {
       // Ensure fonts are applied properly
       ctx.textBaseline = "top";
 
-      // 1. Result Number (01, 02...)
-      const compIndex = competitions.findIndex(c => c.id === selectedEventId) + 1;
-      const paddedIndex = String(compIndex).padStart(2, '0');
-      
-      ctx.fillStyle = "#FFFFFF";
-      ctx.font = `bold 85px Candara, sans-serif`;
-      ctx.textAlign = "left";
-      ctx.fillText(paddedIndex, 741, 364);
-
       // 2. Competition Name
       ctx.fillStyle = "#FFD700"; 
-      ctx.font = `600 30px Montserrat, sans-serif`;
+      ctx.font = `600 28px Montserrat, sans-serif`;
       ctx.fillText(comp.name.toUpperCase(), 279, 430);
 
       // 3. Zone Name
       ctx.fillStyle = "#FFFFFF";
-      ctx.font = `32px Montserrat, sans-serif`;
+      ctx.font = `22px Montserrat, sans-serif`;
       ctx.fillText((selectedZone || comp.category || "GENERAL ZONE").toUpperCase(), 279, 475);
 
       // 4. Winners Loop
@@ -175,20 +166,20 @@ export default function ResultsPage() {
           const studentName = (r?.students?.name || "Unknown").toUpperCase();
           const teamName = (r?.students?.team || "Unknown").toUpperCase();
 
-          const Y = 590 + (winnerIndex * 75);
+          const Y = 590 + (winnerIndex * 65);
 
           // Place Number
           ctx.fillStyle = "#FFFFFF";
-          ctx.font = `600 40px Montserrat, sans-serif`;
+          ctx.font = `600 26px Montserrat, sans-serif`;
           ctx.fillText(placePrefix, 280, Y);
 
           // Student Name
-          ctx.font = `30px Montserrat, sans-serif`;
-          ctx.fillText(studentName, 335, Y);
+          ctx.font = `20px Montserrat, sans-serif`;
+          ctx.fillText(studentName, 330, Y);
 
           // Team Name
-          ctx.font = `30px Montserrat, sans-serif`;
-          const teamX = 335 + ctx.measureText(studentName).width + 15;
+          ctx.font = `20px Montserrat, sans-serif`;
+          const teamX = 330 + ctx.measureText(studentName).width + 12;
           ctx.fillText(`( ${teamName} )`, teamX, Y);
 
           winnerIndex++;
