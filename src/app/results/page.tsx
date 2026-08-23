@@ -197,11 +197,11 @@ export default function ResultsPage() {
       } else if (template.includes("poster-4")) {
         ctx.fillStyle = "#FFFFFF";
         ctx.font = `600 24px Montserrat, sans-serif`;
-        ctx.fillText((comp.category || "GENERAL ZONE").toUpperCase(), 260, 350);
+        ctx.fillText((comp.category || "GENERAL ZONE").toUpperCase(), 260, 370);
 
         ctx.fillStyle = "#FFD700";
         ctx.font = `bold 42px Montserrat, sans-serif`;
-        ctx.fillText(comp.name.toUpperCase(), 260, 400);
+        ctx.fillText(comp.name.toUpperCase(), 260, 410);
 
         let winnerIndex = 0;
         
@@ -215,16 +215,15 @@ export default function ResultsPage() {
             const placeAndStudentText = `${placePrefix}${studentName}`;
             const teamName = (w.student?.team || "Unknown").toUpperCase();
 
-            const Y = 510 + (winnerIndex * 85);
-            const rowColor = pos === 1 ? "#FFD700" : "#FFFFFF";
+            const Y = 510 + (winnerIndex * 110);
 
-            ctx.fillStyle = rowColor;
+            ctx.fillStyle = "#FFFFFF";
             ctx.font = `bold 32px Montserrat, sans-serif`;
             ctx.fillText(placeAndStudentText, 260, Y);
 
+            ctx.fillStyle = "#FFD700";
             ctx.font = `22px Montserrat, sans-serif`;
-            const teamX = 260 + ctx.measureText(placeAndStudentText).width + 15;
-            ctx.fillText(teamName, teamX, Y);
+            ctx.fillText(teamName, 260, Y + 35);
 
             winnerIndex++;
           });
