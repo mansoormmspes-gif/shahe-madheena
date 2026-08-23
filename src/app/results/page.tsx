@@ -25,7 +25,7 @@ export default function ResultsPage() {
   const [selectedClass, setSelectedClass] = useState("");
   const [selectedStudent, setSelectedStudent] = useState("");
 
-  const templates = ["/poster-1.jpg", "/poster-2.jpg"];
+  const templates = ["/poster-1.jpg", "/poster-2.jpg", "/poster-3.png"];
   const [selectedTemplate, setSelectedTemplate] = useState(templates[0]);
   const [generatingPoster, setGeneratingPoster] = useState<string | null>(null);
   const [generatedPosterMap, setGeneratedPosterMap] = useState<Record<string, string>>({});
@@ -80,10 +80,16 @@ export default function ResultsPage() {
         img.onerror = () => reject(new Error("Failed to load " + template));
       });
 
-      canvas.width = 1023;
-      canvas.height = 1280;
-
-      ctx.drawImage(img, 0, 0, 1023, 1280);
+      if (template.includes("poster-3")) {
+        canvas.width = 1080;
+        canvas.height = 1080;
+        ctx.drawImage(img, 0, 0, 1080, 1080);
+      } else {
+        canvas.width = 1023;
+        canvas.height = 1280;
+        ctx.drawImage(img, 0, 0, 1023, 1280);
+      }
+      
       ctx.textBaseline = "top";
 
       if (template.includes("poster-1")) {
@@ -151,6 +157,39 @@ export default function ResultsPage() {
             ctx.fillStyle = "#C8102E";
             ctx.font = `600 22px Montserrat, sans-serif`;
             ctx.fillText(teamName, 540, Y + 35);
+
+            winnerIndex++;
+          });
+        });
+      } else if (template.includes("poster-3")) {
+        ctx.fillStyle = "#FFD700";
+        ctx.font = `600 24px Montserrat, sans-serif`;
+        ctx.fillText((comp.category || "GENERAL ZONE").toUpperCase(), 180, 250);
+
+        ctx.fillStyle = "#FFFFFF";
+        ctx.font = `bold 48px Montserrat, sans-serif`;
+        ctx.fillText(comp.name.toUpperCase(), 180, 310);
+
+        let winnerIndex = 0;
+        
+        [1, 2, 3].forEach(pos => {
+          const winners = resToUse.filter(r => r.position === pos);
+          if (winners.length === 0) return;
+          const placePrefix = pos + ". ";
+          
+          winners.forEach(w => {
+            const studentName = (w.student?.name || "Unknown").toUpperCase();
+            const teamName = (w.student?.team || "Unknown").toUpperCase();
+
+            const Y = 440 + (winnerIndex * 120);
+
+            ctx.fillStyle = "#FFFFFF";
+            ctx.font = `bold 34px Montserrat, sans-serif`;
+            ctx.fillText(`${placePrefix}${studentName}`, 180, Y);
+
+            ctx.fillStyle = "#FFD700";
+            ctx.font = `600 24px Montserrat, sans-serif`;
+            ctx.fillText(teamName, 230, Y + 40);
 
             winnerIndex++;
           });
