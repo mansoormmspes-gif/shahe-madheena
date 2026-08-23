@@ -160,7 +160,7 @@ export default function ResultsPage() {
 
       // 3. Zone Name
       ctx.fillStyle = "#FFFFFF";
-      ctx.font = `32px Montserrat, sans-serif`;
+      ctx.font = `25px Montserrat, sans-serif`;
       ctx.fillText((selectedZone || comp.category || "GENERAL ZONE").toUpperCase(), 281, 470);
 
       // 4. Winners Loop
@@ -179,15 +179,15 @@ export default function ResultsPage() {
 
           // Place Number
           ctx.fillStyle = "#FFFFFF";
-          ctx.font = `600 40px Montserrat, sans-serif`;
+          ctx.font = `600 34px Montserrat, sans-serif`;
           ctx.fillText(placePrefix, 280, Y);
 
           // Student Name
-          ctx.font = `30px Montserrat, sans-serif`;
+          ctx.font = `24px Montserrat, sans-serif`;
           ctx.fillText(studentName, 334, Y);
 
           // Team Name
-          ctx.font = `30px Montserrat, sans-serif`;
+          ctx.font = `24px Montserrat, sans-serif`;
           const teamX = 334 + ctx.measureText(studentName).width + 15;
           ctx.fillText(`( ${teamName} )`, teamX, Y);
 
