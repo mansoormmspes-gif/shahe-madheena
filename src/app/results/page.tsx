@@ -221,9 +221,11 @@ export default function ResultsPage() {
             ctx.font = `bold 32px Montserrat, sans-serif`;
             ctx.fillText(placeAndStudentText, 260, Y);
 
+            const indent = ctx.measureText(placePrefix).width;
+
             ctx.fillStyle = "#FFD700";
             ctx.font = `22px Montserrat, sans-serif`;
-            ctx.fillText(teamName, 260, Y + 35);
+            ctx.fillText(teamName, 260 + indent, Y + 35);
 
             winnerIndex++;
           });
