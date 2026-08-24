@@ -2,8 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
-import { Loader2, Save, Trophy, Medal, Award, Trash2, X, Download } from "lucide-react";
+import { Loader2, Save, Trophy, Medal, Award, Trash2, X, Download, Archive } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import JSZip from "jszip";
+import { saveAs } from "file-saver";
 
 export default function ResultsPage() {
   const [loading, setLoading] = useState(true);
@@ -115,91 +117,260 @@ export default function ResultsPage() {
 
   const [generatingPoster, setGeneratingPoster] = useState(false);
 
+  
+  const [bulkDownloading, setBulkDownloading] = useState(false);
+
+  const generatePosterCanvasDataUrl = async (comp: any, compResults: any[], template: string, overrideZone: string | null = null): Promise<string> => {
+    return new Promise<string>(async (resolve, reject) => {
+      try {
+        const isGroup = comp.type === "Group" || comp.type === "group";
+
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        if (!ctx) throw new Error("Could not get canvas context");
+
+        const img = new Image();
+        img.src = template;
+        img.crossOrigin = "anonymous";
+        
+        await new Promise((res, rej) => {
+          img.onload = res;
+          img.onerror = () => rej(new Error("Failed to load " + template));
+        });
+
+        if (template.includes("poster-3") || template.includes("poster-4")) {
+          canvas.width = 1080;
+          canvas.height = 1080;
+          ctx.drawImage(img, 0, 0, 1080, 1080);
+        } else {
+          canvas.width = 1023;
+          canvas.height = 1280;
+          ctx.drawImage(img, 0, 0, 1023, 1280);
+        }
+        
+        ctx.textBaseline = "top";
+        const zoneStr = (overrideZone || comp.category || "GENERAL ZONE").toUpperCase();
+
+        if (template.includes("poster-1")) {
+          ctx.fillStyle = "#FFD700"; 
+          ctx.font = `600 28px Montserrat, sans-serif`;
+          ctx.fillText(comp.name.toUpperCase(), 279, 430);
+
+          ctx.fillStyle = "#FFFFFF";
+          ctx.font = `18px Montserrat, sans-serif`;
+          ctx.fillText(zoneStr, 279, 470);
+
+          let winnerIndex = 0;
+          
+          [1, 2, 3].forEach(pos => {
+            const winners = compResults.filter((r: any) => r.position === pos);
+            if (winners.length === 0) return;
+            const placePrefix = pos + ".";
+            
+            winners.forEach((w: any) => {
+              const baseName = (w.student?.name || "Unknown").toUpperCase();
+              const studentName = isGroup ? `${baseName} & TEAM` : baseName;
+              const teamName = (w.student?.team || "Unknown").toUpperCase();
+
+              const Y = 590 + (winnerIndex * 65);
+
+              ctx.fillStyle = "#FFFFFF";
+              ctx.font = `600 24px Montserrat, sans-serif`;
+              ctx.fillText(placePrefix, 280, Y);
+
+              ctx.font = `20px Montserrat, sans-serif`;
+              ctx.fillText(studentName, 330, Y);
+
+              ctx.font = `20px Montserrat, sans-serif`;
+              const teamX = 330 + ctx.measureText(studentName).width + 12;
+              ctx.fillText(`( ${teamName} )`, teamX, Y);
+
+              winnerIndex++;
+            });
+          });
+        } else if (template.includes("poster-2")) {
+          ctx.fillStyle = "#C8102E";
+          ctx.font = `600 22px Montserrat, sans-serif`;
+          ctx.fillText(zoneStr, 490, 480);
+
+          ctx.fillStyle = "#332211";
+          ctx.font = `bold 34px Montserrat, sans-serif`;
+          ctx.fillText(comp.name.toUpperCase(), 490, 505);
+
+          let winnerIndex = 0;
+          
+          [1, 2, 3].forEach(pos => {
+            const winners = compResults.filter((r: any) => r.position === pos);
+            if (winners.length === 0) return;
+            const placePrefix = pos + ". ";
+            
+            winners.forEach((w: any) => {
+              const baseName = (w.student?.name || "Unknown").toUpperCase();
+              const studentName = isGroup ? `${baseName} & TEAM` : baseName;
+              const teamName = (w.student?.team || "Unknown").toUpperCase();
+
+              const Y = 640 + (winnerIndex * 115);
+
+              ctx.fillStyle = "#332211";
+              ctx.font = `bold 30px Montserrat, sans-serif`;
+              ctx.fillText(`${placePrefix}${studentName}`, 490, Y);
+
+              ctx.fillStyle = "#C8102E";
+              ctx.font = `600 22px Montserrat, sans-serif`;
+              ctx.fillText(teamName, 540, Y + 35);
+
+              winnerIndex++;
+            });
+          });
+        } else if (template.includes("poster-3")) {
+          ctx.fillStyle = "#FFD700";
+          ctx.font = `600 24px Montserrat, sans-serif`;
+          ctx.fillText(zoneStr, 180, 280);
+
+          ctx.fillStyle = "#FFFFFF";
+          ctx.font = `bold 48px Montserrat, sans-serif`;
+          ctx.fillText(comp.name.toUpperCase(), 180, 310);
+
+          let winnerIndex = 0;
+          
+          [1, 2, 3].forEach(pos => {
+            const winners = compResults.filter((r: any) => r.position === pos);
+            if (winners.length === 0) return;
+            const placePrefix = pos + ". ";
+            
+            winners.forEach((w: any) => {
+              const baseName = (w.student?.name || "Unknown").toUpperCase();
+              const studentName = isGroup ? `${baseName} & TEAM` : baseName;
+              const teamName = (w.student?.team || "Unknown").toUpperCase();
+
+              const Y = 440 + (winnerIndex * 120);
+
+              ctx.fillStyle = "#FFFFFF";
+              ctx.font = `bold 34px Montserrat, sans-serif`;
+              ctx.fillText(`${placePrefix}${studentName}`, 180, Y);
+
+              ctx.fillStyle = "#FFD700";
+              ctx.font = `600 24px Montserrat, sans-serif`;
+              ctx.fillText(teamName, 230, Y + 40);
+
+              winnerIndex++;
+            });
+          });
+        } else if (template.includes("poster-4")) {
+          ctx.fillStyle = "#FFFFFF";
+          ctx.font = `600 24px Montserrat, sans-serif`;
+          ctx.fillText(zoneStr, 260, 370);
+
+          ctx.fillStyle = "#FFD700";
+          ctx.font = `bold 42px Montserrat, sans-serif`;
+          ctx.fillText(comp.name.toUpperCase(), 260, 410);
+
+          let winnerIndex = 0;
+          
+          [1, 2, 3].forEach(pos => {
+            const winners = compResults.filter((r: any) => r.position === pos);
+            if (winners.length === 0) return;
+            const placePrefix = pos + ". ";
+            
+            winners.forEach((w: any) => {
+              const baseName = (w.student?.name || "Unknown").toUpperCase();
+              const studentName = isGroup ? `${baseName} & TEAM` : baseName;
+              const placeAndStudentText = `${placePrefix}${studentName}`;
+              const teamName = (w.student?.team || "Unknown").toUpperCase();
+
+              const Y = 510 + (winnerIndex * 110);
+
+              ctx.fillStyle = "#FFFFFF";
+              ctx.font = `bold 32px Montserrat, sans-serif`;
+              ctx.fillText(placeAndStudentText, 260, Y);
+
+              const indent = ctx.measureText(placePrefix).width;
+
+              ctx.fillStyle = "#FFD700";
+              ctx.font = `22px Montserrat, sans-serif`;
+              ctx.fillText(teamName, 260 + indent, Y + 35);
+
+              winnerIndex++;
+            });
+          });
+        }
+
+        resolve(canvas.toDataURL("image/jpeg", 0.9));
+      } catch (err: any) {
+        reject(err);
+      }
+    });
+  };
+
+  const handleBulkDownload = async () => {
+    setBulkDownloading(true);
+    try {
+      const { data: allRes } = await supabase.from("results").select("*, students(name, team)");
+      const { data: comps } = await supabase.from("competitions").select("*");
+      if (!allRes || !comps) throw new Error("Failed to fetch data");
+
+      const zip = new JSZip();
+      const templates = ["/poster-1.jpg", "/poster-2.jpg", "/poster-3.png", "/poster-4.jpg"];
+
+      const compsWithResults = Array.from(new Set(allRes.map((r: any) => r.event_id)));
+
+      for (const compId of compsWithResults) {
+        const comp = comps.find(c => c.id === compId);
+        if (!comp) continue;
+        
+        const compResults = allRes.filter((r: any) => r.event_id === compId).map(r => ({
+           position: r.position,
+           student: r.students
+        })).sort((a,b) => a.position - b.position);
+
+        const template = templates[Math.floor(Math.random() * templates.length)];
+        const dataUrl = await generatePosterCanvasDataUrl(comp, compResults, template, comp.category);
+        
+        if (dataUrl) {
+           const base64Data = dataUrl.split(",")[1];
+           zip.file(`${comp.name.replace(/[^a-zA-Z0-9 ]/g, "")}_Poster.jpg`, base64Data, { base64: true });
+        }
+      }
+
+      const content = await zip.generateAsync({ type: "blob" });
+      saveAs(content, "Results_Posters.zip");
+    } catch (err: any) {
+      console.error(err);
+      alert("Bulk download failed.");
+    } finally {
+      setBulkDownloading(false);
+    }
+  };
+
   const handleGeneratePoster = async () => {
     const comp = competitions.find(c => c.id === selectedEventId);
     if (!comp) return;
 
     setGeneratingPoster(true);
     try {
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
-      if (!ctx) throw new Error("Could not get canvas context");
-
-      const img = new Image();
-      img.src = "/poster-1.jpg";
-      // To prevent cross-origin issues if deployed remotely
-      img.crossOrigin = "anonymous";
-      
-      await new Promise((resolve, reject) => {
-        img.onload = resolve;
-        img.onerror = () => reject(new Error("Failed to load poster-1.jpg template. Make sure it exists in the public directory."));
+      const compResults: any[] = [];
+      [1, 2, 3].forEach(pos => {
+         results[pos].student_ids.forEach(sid => {
+            const r = registrations.find(reg => reg.student_id === sid);
+            compResults.push({
+               position: pos,
+               student: { name: r?.students?.name || "Unknown", team: r?.students?.team || "Unknown" }
+            });
+         });
       });
-
-      canvas.width = 1023;
-      canvas.height = 1280;
-
-      // Draw background
-      ctx.drawImage(img, 0, 0, 1023, 1280);
-
-      // Ensure fonts are applied properly
-      ctx.textBaseline = "top";
-
-      // 2. Competition Name
-      ctx.fillStyle = "#FFD700"; 
-      ctx.font = `600 28px Montserrat, sans-serif`;
-      ctx.fillText(comp.name.toUpperCase(), 279, 430);
-
-      // 3. Zone Name
-      ctx.fillStyle = "#FFFFFF";
-      ctx.font = `18px Montserrat, sans-serif`;
-      ctx.fillText((selectedZone || comp.category || "GENERAL ZONE").toUpperCase(), 279, 470);
-
-      // 4. Winners Loop
-      let winnerIndex = 0;
-
-      const drawWinnersForPosition = (pos: 1|2|3, placePrefix: string) => {
-        const sids = results[pos].student_ids;
-        if (sids.length === 0) return;
-
-        for (const sid of sids) {
-          const r = registrations.find(reg => reg.student_id === sid);
-          const studentName = (r?.students?.name || "Unknown").toUpperCase();
-          const teamName = (r?.students?.team || "Unknown").toUpperCase();
-
-          const Y = 590 + (winnerIndex * 65);
-
-          // Place Number
-          ctx.fillStyle = "#FFFFFF";
-          ctx.font = `600 24px Montserrat, sans-serif`;
-          ctx.fillText(placePrefix, 280, Y);
-
-          // Student Name
-          ctx.font = `20px Montserrat, sans-serif`;
-          ctx.fillText(studentName, 330, Y);
-
-          // Team Name
-          ctx.font = `20px Montserrat, sans-serif`;
-          const teamX = 330 + ctx.measureText(studentName).width + 12;
-          ctx.fillText(`( ${teamName} )`, teamX, Y);
-
-          winnerIndex++;
-        }
-      };
-
-      drawWinnersForPosition(1, "1.");
-      drawWinnersForPosition(2, "2.");
-      drawWinnersForPosition(3, "3.");
-
-      const dataUrl = canvas.toDataURL("image/jpeg", 0.9);
-      const a = document.createElement("a");
-      a.href = dataUrl;
-      a.download = `${comp.name}_Result.jpg`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-
+      
+      const templates = ["/poster-1.jpg", "/poster-2.jpg", "/poster-3.png", "/poster-4.jpg"];
+      const template = templates[Math.floor(Math.random() * templates.length)];
+      
+      const dataUrl = await generatePosterCanvasDataUrl(comp, compResults, template, selectedZone);
+      if (dataUrl) {
+         const a = document.createElement("a");
+         a.href = dataUrl;
+         a.download = `${comp.name.replace(/[^a-zA-Z0-9 ]/g, "")}_Poster.jpg`;
+         a.click();
+      }
     } catch (err: any) {
-      console.error("Poster generation failed", err);
+      console.error(err);
       alert(err.message || "Failed to generate poster.");
     } finally {
       setGeneratingPoster(false);
@@ -280,16 +451,28 @@ export default function ResultsPage() {
   }
 
   return (
-    <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-8">
-      <motion.div variants={itemVariants} className="flex items-center space-x-3 mb-8">
-        <div className="p-3 bg-amber-100 text-amber-600 rounded-2xl shadow-sm">
-          <Trophy className="h-6 w-6" />
-        </div>
-        <div>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight">Results Management</h1>
-          <p className="text-slate-500 font-medium">Assign winners and points for each competition.</p>
-        </div>
-      </motion.div>
+      <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-8">
+        <motion.div variants={itemVariants} className="flex flex-col sm:flex-row sm:items-center justify-between space-y-4 sm:space-y-0 mb-8">
+          <div className="flex items-center space-x-3">
+            <div className="p-3 bg-amber-100 text-amber-600 rounded-2xl shadow-sm">
+              <Trophy className="h-6 w-6" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-black text-slate-900 tracking-tight">Results Management</h1>
+              <p className="text-slate-500 font-medium">Assign winners and points for each competition.</p>
+            </div>
+          </div>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={handleBulkDownload}
+            disabled={bulkDownloading}
+            className="inline-flex items-center px-6 py-3 border border-transparent rounded-xl shadow-md text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-100 disabled:opacity-50 transition-all"
+          >
+            {bulkDownloading ? <Loader2 className="h-5 w-5 mr-2 animate-spin" /> : <Archive className="h-5 w-5 mr-2" />}
+            Bulk Download All Posters
+          </motion.button>
+        </motion.div>
 
       <motion.div variants={itemVariants} className="glass-card rounded-[1rem] md:rounded-[2rem] overflow-hidden shadow-lg shadow-teal-900/5 border border-white/60 backdrop-blur-xl bg-white/60 p-3 sm:p-6 md:p-8">
         <div className="mb-8 grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl">

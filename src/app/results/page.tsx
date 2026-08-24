@@ -297,6 +297,30 @@ export default function ResultsPage() {
     );
   }
 
+  if (settings?.zone_config?.public_results_enabled === false) {
+    return (
+      <div className="min-h-screen relative z-10 py-12 px-4 flex flex-col items-center justify-center">
+        <div className="bg-white/60 backdrop-blur-xl rounded-[2rem] p-8 md:p-16 text-center max-w-2xl border border-white shadow-xl">
+          <Award className="w-16 h-16 text-slate-300 mx-auto mb-6" />
+          <h1 className="text-3xl md:text-4xl font-black text-slate-900 mb-4">Results Not Available</h1>
+          <p className="text-slate-500 text-lg font-medium mb-8">
+            The results for the competitions have not been published yet. Please check back later!
+          </p>
+          <Link href="/">
+            <motion.button 
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="inline-flex items-center text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-md px-6 py-3 rounded-full transition-all"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Return to Home
+            </motion.button>
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen relative z-10 py-12 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
       <div className="mb-8 flex items-center gap-4">

@@ -270,40 +270,42 @@ export default function PublicPage() {
         )}
 
         {/* Result Checker */}
-        <motion.div 
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.6 }}
-          className="max-w-5xl mx-auto"
-        >
-          <div className="bg-white/60 backdrop-blur-xl rounded-[3rem] shadow-[0_8px_30px_rgb(0,0,0,0.08)] overflow-hidden relative border border-white">
-            {/* Background glowing effects inside the card */}
-            <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/10 rounded-full blur-[100px] pointer-events-none" />
-            <div className="absolute bottom-0 left-0 w-96 h-96 bg-purple-500/20 rounded-full blur-[100px] pointer-events-none" />
-
-            <div className="p-6 md:p-16 relative z-10">
-              <div className="text-center max-w-2xl mx-auto mb-12">
-                <h2 className="text-3xl md:text-5xl font-black text-slate-900 mb-6 tracking-tight">Check Your Results</h2>
-                <p className="text-slate-500 text-lg font-medium">
-                  Search for a participant by name or class to view their winning positions and download a custom celebratory poster.
-                </p>
-              </div>
-              <div className="flex justify-center mt-4">
-                <Link href="/results">
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="flex items-center text-lg md:text-xl font-black text-white bg-blue-600 hover:bg-blue-700 shadow-xl hover:shadow-2xl px-10 py-5 rounded-full transition-all border border-blue-500 group"
-                  >
-                    Get Result
-                    <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-2 transition-transform" />
-                  </motion.button>
-                </Link>
+        {settings?.zone_config?.public_results_enabled !== false && (
+          <motion.div 
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6 }}
+            className="max-w-5xl mx-auto"
+          >
+            <div className="bg-white/60 backdrop-blur-xl rounded-[3rem] shadow-[0_8px_30px_rgb(0,0,0,0.08)] overflow-hidden relative border border-white">
+              {/* Background glowing effects inside the card */}
+              <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/10 rounded-full blur-[100px] pointer-events-none" />
+              <div className="absolute bottom-0 left-0 w-96 h-96 bg-purple-500/20 rounded-full blur-[100px] pointer-events-none" />
+  
+              <div className="p-6 md:p-16 relative z-10">
+                <div className="text-center max-w-2xl mx-auto mb-12">
+                  <h2 className="text-3xl md:text-5xl font-black text-slate-900 mb-6 tracking-tight">Check Your Results</h2>
+                  <p className="text-slate-500 text-lg font-medium">
+                    Search for a participant by name or class to view their winning positions and download a custom celebratory poster.
+                  </p>
+                </div>
+                <div className="flex justify-center mt-4">
+                  <Link href="/results">
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="flex items-center text-lg md:text-xl font-black text-white bg-blue-600 hover:bg-blue-700 shadow-xl hover:shadow-2xl px-10 py-5 rounded-full transition-all border border-blue-500 group"
+                    >
+                      Get Result
+                      <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-2 transition-transform" />
+                    </motion.button>
+                  </Link>
+                </div>
               </div>
             </div>
-          </div>
-        </motion.div>
+          </motion.div>
+        )}
       </main>
 
     </div>

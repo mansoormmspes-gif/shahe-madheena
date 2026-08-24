@@ -185,7 +185,7 @@ export default function SettingsPage() {
                   />
                 </div>
 
-                <div className="pt-2">
+                <div className="pt-2 space-y-4">
                   <label className="relative flex items-center cursor-pointer p-4 bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative/50 border border-slate-200 rounded-xl hover:bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative transition-colors">
                     <input
                       type="checkbox"
@@ -197,6 +197,20 @@ export default function SettingsPage() {
                     <div className="ml-4 flex flex-col">
                       <span className="text-sm font-bold text-slate-900">Show Leaderboard Publicly</span>
                       <span className="text-xs font-medium text-slate-500">Toggle live points on the public page</span>
+                    </div>
+                  </label>
+
+                  <label className="relative flex items-center cursor-pointer p-4 bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative/50 border border-slate-200 rounded-xl hover:bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative transition-colors">
+                    <input
+                      type="checkbox"
+                      className="sr-only peer"
+                      checked={settings.zone_config?.public_results_enabled ?? true}
+                      onChange={(e) => setSettings({ ...settings, zone_config: { ...(settings.zone_config || {}), public_results_enabled: e.target.checked } })}
+                    />
+                    <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-100 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[18px] after:left-[18px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                    <div className="ml-4 flex flex-col">
+                      <span className="text-sm font-bold text-slate-900">Enable Public Results</span>
+                      <span className="text-xs font-medium text-slate-500">Show or hide the public results portal</span>
                     </div>
                   </label>
                 </div>
