@@ -1,4 +1,7 @@
+﻿
+const fs = require("fs");
 
+const newContent = `
 "use client";
 
 import { motion } from "framer-motion";
@@ -20,14 +23,14 @@ export default function AdminDashboard() {
     try {
       const { data: results } = await supabase
         .from("results")
-        .select(`
+        .select(\`
           points,
           student_id,
           students!inner (
             name,
             team
           )
-        `);
+        \`);
 
       if (results) {
         const teamPts: Record<string, number> = {};
@@ -103,10 +106,10 @@ export default function AdminDashboard() {
               whileTap={{ scale: 0.98 }}
               className="glass-card rounded-[2rem] p-6 flex flex-col items-center justify-center text-center h-48 cursor-pointer group transition-all"
             >
-              <div className={`p-4 rounded-full ${link.bg} mb-4 group-hover:${link.hover} transition-colors`}>
-                <link.icon className={`h-8 w-8 ${link.color} group-hover:text-white transition-colors`} />
+              <div className={\`p-4 rounded-full \${link.bg} mb-4 group-hover:\${link.hover} transition-colors\`}>
+                <link.icon className={\`h-8 w-8 \${link.color} group-hover:text-white transition-colors\`} />
               </div>
-              <h2 className="text-lg font-bold text-slate-800">{`${link.label}`}</h2>
+              <h2 className="text-lg font-bold text-slate-800">{\`\${link.label}\`}</h2>
             </motion.div>
           </Link>
         ))}
@@ -136,13 +139,13 @@ export default function AdminDashboard() {
               </h3>
               <div className="space-y-4">
                 {teamLeaderboard.map((team, index) => (
-                  <div key={team.team} className={`glass-card rounded-2xl p-6 flex items-center justify-between border ${index === 0 ? "border-amber-200 bg-amber-50/50" : "border-slate-100"}`}>
+                  <div key={team.team} className={\`glass-card rounded-2xl p-6 flex items-center justify-between border \${index === 0 ? "border-amber-200 bg-amber-50/50" : "border-slate-100"}\`}>
                     <div className="flex items-center gap-4">
-                      <div className={`w-12 h-12 rounded-full flex items-center justify-center font-black text-xl ${
+                      <div className={\`w-12 h-12 rounded-full flex items-center justify-center font-black text-xl \${
                          index === 0 ? "bg-gradient-to-br from-amber-300 to-yellow-500 text-white shadow-lg shadow-amber-500/30" : 
                          index === 1 ? "bg-gradient-to-br from-slate-300 to-slate-400 text-white" : 
                          "bg-gradient-to-br from-amber-700 to-amber-900 text-white"
-                      }`}>
+                      }\`}>
                         {index + 1}
                       </div>
                       <div>
@@ -216,11 +219,11 @@ export default function AdminDashboard() {
                                 </p>
                               </td>
                               <td className="px-6 py-4">
-                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold ${
+                                <span className={\`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold \${
                                   student.team === "ZAMAAN" ? "bg-indigo-100 text-indigo-800" :
                                   student.team === "ZAMEEN" ? "bg-emerald-100 text-emerald-800" :
                                   "bg-slate-100 text-slate-800"
-                                }`}>
+                                }\`}>
                                   {student.team}
                                 </span>
                               </td>
@@ -243,3 +246,8 @@ export default function AdminDashboard() {
     </motion.div>
   );
 }
+`;
+
+fs.writeFileSync("src/app/admin/page.tsx", newContent, "utf-8");
+console.log("Rewrote dashboard successfully.");
+
