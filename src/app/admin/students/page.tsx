@@ -200,12 +200,16 @@ export default function StudentsPage() {
   };
 
   const filteredStudents = students.filter(student => {
-    const matchesSearch = student.name?.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          student.id?.toString().toLowerCase().includes(searchQuery.toLowerCase());
+    const searchLower = searchQuery.toLowerCase().trim();
+    const matchesSearch = !searchLower || 
+                          (student.name && String(student.name).toLowerCase().includes(searchLower)) || 
+                          (student.id && String(student.id).toLowerCase().includes(searchLower));
     const matchesTeam = teamFilter === "All" || student.team === teamFilter;
     const matchesZone = zoneFilter === "All" || student.category === zoneFilter;
     return matchesSearch && matchesTeam && matchesZone;
   });
+
+  const availableZones = Array.from(new Set(students.map(s => s.category).filter(Boolean))).sort();
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -307,16 +311,16 @@ export default function StudentsPage() {
           </div>
           <div className="flex items-center space-x-2 w-full sm:w-auto">
             <Filter className="h-4 w-4 text-slate-400 hidden sm:block" />
-            <select
-              value={zoneFilter}
-              onChange={(e) => setZoneFilter(e.target.value)}
-              className="w-full sm:w-auto px-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm font-medium min-w-[120px]"
-            >
-              <option value="All">All Zones</option>
-              {zoneConfig && Object.keys(zoneConfig).map(zone => (
-                <option key={zone} value={zone}>{zone}</option>
-              ))}
-            </select>
+              <select
+                value={zoneFilter}
+                onChange={(e) => setZoneFilter(e.target.value)}
+                className="w-full sm:w-auto px-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm font-medium min-w-[120px]"
+              >
+                <option value="All">All Zones</option>
+                {availableZones.map(zone => (
+                  <option key={String(zone)} value={String(zone)}>{String(zone)}</option>
+                ))}
+              </select>
           </div>
         </div>
       </motion.div>
@@ -473,19 +477,19 @@ export default function StudentsPage() {
                     </select>
                   </div>
                 </div>
-                <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-1.5">Zone</label>
-                  <select
-                    required value={manualStudent.zone}
-                    onChange={(e) => setManualStudent({...manualStudent, zone: e.target.value})}
-                    className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm"
-                  >
-                    <option value="" disabled>Select Zone</option>
-                    {zoneConfig && Object.keys(zoneConfig).map(zone => (
-                      <option key={zone} value={zone}>{zone}</option>
-                    ))}
-                  </select>
-                </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-bold text-slate-700">Zone</label>
+                    <select
+                      value={manualStudent.zone}
+                      onChange={(e) => setManualStudent({...manualStudent, zone: e.target.value})}
+                      className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm"
+                    >
+                      <option value="" disabled>Select Zone</option>
+                      {["Minor Zone", "Mid Zone", "Premier Zone", "General Zone"].map(zone => (
+                        <option key={zone} value={zone}>{zone}</option>
+                      ))}
+                    </select>
+                  </div>
                 <div className="pt-4 border-t border-slate-200 mt-6">
                   <button
                     type="submit" disabled={manualLoading}
