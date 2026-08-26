@@ -2,10 +2,12 @@
 
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
-import { Loader2, Save, Trophy, Medal, Award, Trash2, X, Download, Archive } from "lucide-react";
+import { Loader2, Save, Trophy, Medal, Award, Trash2, X, Download, Archive, FileText } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
+import { jsPDF } from "jspdf";
+import autoTable from "jspdf-autotable";
 
 export default function ResultsPage() {
   const [loading, setLoading] = useState(true);
@@ -119,6 +121,7 @@ export default function ResultsPage() {
 
   
   const [bulkDownloading, setBulkDownloading] = useState(false);
+  const [downloadingPDF, setDownloadingPDF] = useState(false);
 
   const generatePosterCanvasDataUrl = async (comp: any, compResults: any[], template: string, overrideZone: string | null = null): Promise<string> => {
     return new Promise<string>(async (resolve, reject) => {
@@ -300,6 +303,96 @@ export default function ResultsPage() {
         reject(err);
       }
     });
+  };
+
+  
+  const handleDownloadPDF = async () => {
+    setDownloadingPDF(true);
+    try {
+      const { data: allRes } = await supabase.from("results").select("*, students(name, team)");
+      const { data: comps } = await supabase.from("competitions").select("*");
+      if (!allRes || !comps) throw new Error("Failed to fetch data");
+
+      const doc = new jsPDF();
+      
+      const zoneOrder = ["MINOR ZONE", "MID ZONE", "PREMIER ZONE", "GENERAL ZONE"];
+      
+      doc.setFontSize(22);
+      doc.setTextColor(30, 30, 30);
+      doc.text("Complete Results Report", 14, 20);
+      
+      let yPos = 35;
+
+      for (const zone of zoneOrder) {
+        const zoneComps = comps.filter(c => {
+           const z = (c.category || "GENERAL ZONE").toUpperCase();
+           return z === zone;
+        });
+
+        if (zoneComps.length === 0) continue;
+        
+        // Check if any comp in this zone has results
+        const hasResults = zoneComps.some(c => allRes.some((r: any) => r.event_id === c.id));
+        if (!hasResults) continue;
+
+        // Print Zone Header
+        doc.setFontSize(18);
+        doc.setTextColor(220, 38, 38); // Red-ish for Zone Title
+        doc.text(zone, 14, yPos);
+        yPos += 10;
+
+        for (const comp of zoneComps) {
+           const compResults = allRes.filter((r: any) => r.event_id === comp.id).sort((a: any, b: any) => a.position - b.position);
+           if (compResults.length === 0) continue;
+
+           const isGroup = comp.type === "Group" || comp.type === "group";
+
+           doc.setFontSize(14);
+           doc.setTextColor(60, 60, 60);
+           doc.text(comp.name, 14, yPos);
+           yPos += 5;
+
+           const tableData = compResults.map((r: any) => {
+               let sName = (r.students?.name || "Unknown").toUpperCase();
+               if (isGroup) sName += " & TEAM";
+               return [
+                  r.position === 1 ? "1st" : r.position === 2 ? "2nd" : r.position === 3 ? "3rd" : `${r.position}th`,
+                  sName,
+                  (r.students?.team || "Unknown").toUpperCase()
+               ];
+           });
+
+           autoTable(doc, {
+             startY: yPos,
+             head: [["Position", "Student Name", "Team"]],
+             body: tableData,
+             theme: "grid",
+             headStyles: { fillColor: [79, 70, 229] },
+             margin: { left: 14, right: 14 },
+           });
+
+           yPos = (doc as any).lastAutoTable.finalY + 15;
+
+           if (yPos > 260) {
+              doc.addPage();
+              yPos = 20;
+           }
+        }
+        
+        yPos += 5;
+        if (yPos > 260) {
+           doc.addPage();
+           yPos = 20;
+        }
+      }
+
+      doc.save("Complete_Results_Report.pdf");
+    } catch (err: any) {
+      console.error(err);
+      alert("PDF generation failed.");
+    } finally {
+      setDownloadingPDF(false);
+    }
   };
 
   const handleBulkDownload = async () => {
