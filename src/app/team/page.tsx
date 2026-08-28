@@ -450,7 +450,7 @@ export default function TeamDashboard() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
           <input
             type="text"
-            placeholder="Search events by name..."
+            placeholder="Search students or events..."
             value={globalSearch}
             onChange={(e) => setGlobalSearch(e.target.value)}
             className="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-fuchsia-500 transition-all font-medium text-slate-700 text-sm"
@@ -472,10 +472,9 @@ export default function TeamDashboard() {
             className="w-full sm:w-auto px-4 py-2 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-fuchsia-500 transition-all font-medium text-slate-700 text-sm cursor-pointer"
           >
             <option value="All">All Zones</option>
-            {settings?.zone_config && Object.keys(settings.zone_config).map(zone => (
+            {["Minor Zone", "Mid Zone", "Premier Zone", "General Zone"].map(zone => (
               <option key={zone} value={zone}>{zone}</option>
             ))}
-            <option value="General Zone">General Zone</option>
           </select>
         </div>
       </motion.div>
@@ -508,7 +507,14 @@ export default function TeamDashboard() {
             
             const isFilterActive = globalSearch !== "" || globalType !== "All" || globalZone !== "All";
             const validStudents = catStudents.filter(student => {
-              if (isFilterActive && catCompetitions.length === 0) return false;
+              const searchLower = globalSearch.toLowerCase().trim();
+              const matchesStudentSearch = searchLower && (
+                (student.name && String(student.name).toLowerCase().includes(searchLower)) ||
+                (student.id && String(student.id).toLowerCase().includes(searchLower))
+              );
+
+              if (matchesStudentSearch) return true;
+              if (isFilterActive && catCompetitions.length === 0 && !matchesStudentSearch) return false;
               return true;
             });
 
