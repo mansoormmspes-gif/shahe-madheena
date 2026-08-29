@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
-import { Loader2, Save, Trophy, Medal, Award, Trash2, X, Download, Archive, FileText } from "lucide-react";
+import { Loader2, Save, Trophy, Medal, Award, Trash2, X, Download, Archive, FileText, AlertCircle, CheckCircle, Clock, ChevronDown, ChevronUp } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
@@ -13,6 +13,8 @@ export default function ResultsPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [competitions, setCompetitions] = useState<any[]>([]);
+  const [allResults, setAllResults] = useState<any[]>([]);
+  const [expandedSection, setExpandedSection] = useState<string | null>(null);
   const [selectedEventId, setSelectedEventId] = useState("");
   const [selectedZone, setSelectedZone] = useState("");
   const [registrations, setRegistrations] = useState<any[]>([]);
@@ -28,12 +30,14 @@ export default function ResultsPage() {
   const [message, setMessage] = useState({ text: "", type: "" });
 
   useEffect(() => {
-    const fetchCompetitions = async () => {
-      const { data, error } = await supabase.from("competitions").select("*").order("name");
-      if (data) setCompetitions(data);
+    const fetchData = async () => {
+      const { data: compData } = await supabase.from("competitions").select("*").order("name");
+      const { data: resData } = await supabase.from("results").select("competition_id, points");
+      if (compData) setCompetitions(compData);
+      if (resData) setAllResults(resData);
       setLoading(false);
     };
-    fetchCompetitions();
+    fetchData();
   }, []);
 
   useEffect(() => {
@@ -578,6 +582,62 @@ export default function ResultsPage() {
             </motion.button>
           </div>
         </motion.div>
+          {/* Results Status Tracker */}
+          {(() => {
+            const pendingComps = competitions.filter(c => !allResults.some(r => r.competition_id === c.id));
+            const completedComps = competitions.filter(c => {
+               const compResults = allResults.filter(r => r.competition_id === c.id);
+               return compResults.length > 0 && compResults.every(r => r.points !== null && r.points > 0);
+            });
+            const missingPointsComps = competitions.filter(c => {
+               const compResults = allResults.filter(r => r.competition_id === c.id);
+               return compResults.length > 0 && compResults.some(r => r.points === null || r.points === 0);
+            });
+
+            const renderAccordion = (title: string, items: any[], icon: any, bgColor: string, textColor: string, key: string) => (
+              <div className={"glass-card overflow-hidden rounded-[1.5rem] shadow-sm border border-slate-100 " + bgColor}>
+                <button 
+                  onClick={() => setExpandedSection(expandedSection === key ? null : key)}
+                  className={"w-full flex items-center justify-between p-4 focus:outline-none transition-colors " + textColor}
+                >
+                  <div className="flex items-center gap-3">
+                    {icon}
+                    <h3 className="font-bold text-lg">{title} ({items.length})</h3>
+                  </div>
+                  {expandedSection === key ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                </button>
+                <AnimatePresence>
+                  {expandedSection === key && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      className="bg-white/60 backdrop-blur-md"
+                    >
+                      <ul className="p-4 space-y-2 max-h-60 overflow-y-auto">
+                        {items.length === 0 ? (
+                           <li className="text-sm font-medium text-slate-500">None</li>
+                        ) : items.map((c: any) => (
+                          <li key={c.id} className="text-sm font-semibold text-slate-700 flex justify-between items-center bg-white p-2 rounded-lg shadow-sm">
+                            <span>{c.name}</span>
+                            <span className="text-xs px-2 py-1 bg-slate-100 rounded-full">{c.category}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            );
+
+            return (
+              <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                {renderAccordion("Pending Results", pendingComps, <Clock className="w-6 h-6" />, "bg-slate-50", "text-slate-700", "pending")}
+                {renderAccordion("Missing Points", missingPointsComps, <AlertCircle className="w-6 h-6" />, "bg-red-50", "text-red-700", "missing")}
+                {renderAccordion("Completed", completedComps, <CheckCircle className="w-6 h-6" />, "bg-emerald-50", "text-emerald-700", "completed")}
+              </motion.div>
+            );
+          })()}
 
       <motion.div variants={itemVariants} className="glass-card rounded-[1rem] md:rounded-[2rem] overflow-hidden shadow-lg shadow-teal-900/5 border border-white/60 backdrop-blur-xl bg-white/60 p-3 sm:p-6 md:p-8">
         <div className="mb-8 grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl">
