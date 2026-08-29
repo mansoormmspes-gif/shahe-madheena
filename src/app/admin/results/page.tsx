@@ -32,7 +32,7 @@ export default function ResultsPage() {
   useEffect(() => {
     const fetchData = async () => {
       const { data: compData } = await supabase.from("competitions").select("*").order("name");
-      const { data: resData } = await supabase.from("results").select("competition_id, points");
+      const { data: resData } = await supabase.from("results").select("event_id, points");
       if (compData) setCompetitions(compData);
       if (resData) setAllResults(resData);
       setLoading(false);
@@ -584,13 +584,13 @@ export default function ResultsPage() {
         </motion.div>
           {/* Results Status Tracker */}
           {(() => {
-            const pendingComps = competitions.filter(c => !allResults.some(r => r.competition_id === c.id));
+            const pendingComps = competitions.filter(c => !allResults.some(r => r.event_id === c.id));
             const completedComps = competitions.filter(c => {
-               const compResults = allResults.filter(r => r.competition_id === c.id);
+               const compResults = allResults.filter(r => r.event_id === c.id);
                return compResults.length > 0 && compResults.every(r => r.points !== null && r.points > 0);
             });
             const missingPointsComps = competitions.filter(c => {
-               const compResults = allResults.filter(r => r.competition_id === c.id);
+               const compResults = allResults.filter(r => r.event_id === c.id);
                return compResults.length > 0 && compResults.some(r => r.points === null || r.points === 0);
             });
 
