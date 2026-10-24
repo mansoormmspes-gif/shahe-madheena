@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/lib/supabase";
 import { Loader2, Medal, Trophy, ArrowLeft, Award, Download, User } from "lucide-react";
@@ -249,27 +249,55 @@ export default function ResultsPage() {
     return null;
   };
 
-  // Helper arrays for dropdowns
-  const categories = Array.from(new Set(competitions.map(c => c.category))).sort();
-  const filteredComps = competitions.filter(c => !selectedCategory || c.category === selectedCategory).sort((a, b) => a.name.localeCompare(b.name));
-  
-  const classes = Array.from(new Set(students.map(s => s.class)));
-  const filteredStudents = students.filter(s => !selectedClass || s.class === selectedClass);
+  // O(1) Lookup Maps
+  const studentMap = useMemo(() => new Map(students.map(s => [s.id, s])), [students]);
+  const compMap = useMemo(() => new Map(competitions.map(c => [c.id, c])), [competitions]);
 
-  // Compute Competition Results
-  const compResults = results.filter(r => r.event_id === selectedCompetition).map(r => ({
-    ...r,
-    student: students.find(s => s.id === r.student_id)
-  })).sort((a, b) => a.position - b.position);
-
-  // Compute Student Report Card
-  const studentResults = results.filter(r => r.student_id === selectedStudent).map(r => ({
-    ...r,
-    competition: competitions.find(c => c.id === r.event_id)
-  })).sort((a, b) => a.position - b.position);
+  // Helper arrays for dropdowns (memoized)
+  const categories = useMemo(() => Array.from(new Set(competitions.map(c => c.category))).sort(), [competitions]);
+  const filteredComps = useMemo(() => {
+    return competitions
+      .filter(c => !selectedCategory || c.category === selectedCategory)
+      .sort((a, b) => a.name.localeCompare(b.name));
+  }, [competitions, selectedCategory]);
   
-  const studentData = students.find(s => s.id === selectedStudent);
-  const totalPoints = studentResults.reduce((acc, curr) => acc + curr.points, 0);
+  const classes = useMemo(() => Array.from(new Set(students.map(s => s.class))), [students]);
+  const filteredStudents = useMemo(() => {
+    return students.filter(s => !selectedClass || s.class === selectedClass);
+  }, [students, selectedClass]);
+
+  // Compute Competition Results (memoized with O(1) student map)
+  const compResults = useMemo(() => {
+    if (!selectedCompetition) return [];
+    return results
+      .filter(r => r.event_id === selectedCompetition)
+      .map(r => ({
+        ...r,
+        student: studentMap.get(r.student_id)
+      }))
+      .sort((a, b) => a.position - b.position);
+  }, [results, selectedCompetition, studentMap]);
+
+  // Compute Student Report Card (memoized with O(1) comp map)
+  const studentResults = useMemo(() => {
+    if (!selectedStudent) return [];
+    return results
+      .filter(r => r.student_id === selectedStudent)
+      .map(r => ({
+        ...r,
+        competition: compMap.get(r.event_id)
+      }))
+      .sort((a, b) => a.position - b.position);
+  }, [results, selectedStudent, compMap]);
+  
+  const studentData = useMemo(() => {
+    if (!selectedStudent) return null;
+    return studentMap.get(selectedStudent);
+  }, [selectedStudent, studentMap]);
+
+  const totalPoints = useMemo(() => {
+    return studentResults.reduce((acc, curr) => acc + curr.points, 0);
+  }, [studentResults]);
 
   useEffect(() => {
     if (activeTab === "competition" && selectedCompetition && compResults.length > 0) {
@@ -278,7 +306,7 @@ export default function ResultsPage() {
         generateCanvasPoster(selectedCompetition, compResults, selectedTemplate);
       }
     }
-  }, [selectedCompetition, compResults, activeTab, selectedTemplate]);
+  }, [selectedCompetition, compResults.length, activeTab, selectedTemplate]);
 
   const getPositionText = (pos: number) => {
     if (pos === 1) return "1st Position";
@@ -300,21 +328,19 @@ export default function ResultsPage() {
   if (settings?.zone_config?.public_results_enabled === false) {
     return (
       <div className="min-h-screen relative z-10 py-12 px-4 flex flex-col items-center justify-center">
-        <div className="bg-white/60 backdrop-blur-xl rounded-[2rem] p-8 md:p-16 text-center max-w-2xl border border-white shadow-xl">
+        <div className="bg-white/95 rounded-[2rem] p-8 md:p-16 text-center max-w-2xl border border-slate-200 shadow-xl">
           <Award className="w-16 h-16 text-slate-300 mx-auto mb-6" />
           <h1 className="text-3xl md:text-4xl font-black text-slate-900 mb-4">Results Not Available</h1>
           <p className="text-slate-500 text-lg font-medium mb-8">
             The results for the competitions have not been published yet. Please check back later!
           </p>
           <Link href="/">
-            <motion.button 
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+            <button 
               className="inline-flex items-center text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-md px-6 py-3 rounded-full transition-all"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Return to Home
-            </motion.button>
+            </button>
           </Link>
         </div>
       </div>
@@ -325,14 +351,12 @@ export default function ResultsPage() {
     <div className="min-h-screen relative z-10 py-12 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
       <div className="mb-8 flex items-center gap-4">
         <Link href="/">
-          <motion.button 
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+          <button 
             className="flex items-center text-sm font-bold text-slate-700 hover:text-slate-900 bg-white shadow-sm hover:shadow-md px-4 py-2 rounded-full transition-all border border-slate-200"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Home
-          </motion.button>
+          </button>
         </Link>
       </div>
 
@@ -343,7 +367,7 @@ export default function ResultsPage() {
         </p>
       </div>
 
-      <div className="bg-white/60 backdrop-blur-xl rounded-[2.5rem] shadow-[0_8px_30px_rgb(0,0,0,0.08)] overflow-hidden border border-white p-6 md:p-10">
+      <div className="bg-white/95 rounded-[2.5rem] shadow-[0_8px_30px_rgb(0,0,0,0.06)] overflow-hidden border border-slate-200 p-6 md:p-10">
         
         {/* Tabs */}
         <div className="flex bg-slate-100/80 p-1.5 rounded-2xl shadow-inner mb-8 max-w-md mx-auto">
@@ -367,13 +391,10 @@ export default function ResultsPage() {
           </button>
         </div>
 
-        <AnimatePresence mode="wait">
+        <div>
           {activeTab === "competition" ? (
-            <motion.div 
+            <div 
               key="competition"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
               className="space-y-8"
             >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -402,7 +423,7 @@ export default function ResultsPage() {
               </div>
 
               {selectedCompetition && (
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-8">
+                <div className="mt-8">
                   {compResults.length > 0 ? (
                     <div>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
@@ -473,15 +494,12 @@ export default function ResultsPage() {
                       <p className="text-slate-500 font-medium">No results published for this competition yet.</p>
                     </div>
                   )}
-                </motion.div>
+                </div>
               )}
-            </motion.div>
+            </div>
           ) : (
-            <motion.div 
+            <div 
               key="student"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
               className="space-y-8"
             >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -510,7 +528,7 @@ export default function ResultsPage() {
               </div>
 
               {selectedStudent && studentData && (
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-8">
+                <div className="mt-8">
                   <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-md">
                     <div className="flex flex-col md:flex-row justify-between md:items-center gap-6 mb-8 border-b border-slate-100 pb-8">
                       <div>
@@ -576,11 +594,11 @@ export default function ResultsPage() {
                       </div>
                     )}
                   </div>
-                </motion.div>
+                </div>
               )}
-            </motion.div>
+            </div>
           )}
-        </AnimatePresence>
+        </div>
       </div>
     </div>
   );

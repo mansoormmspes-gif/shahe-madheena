@@ -76,7 +76,7 @@ export default function LoginPage() {
 
       {/* Back Button */}
       <div className="absolute top-6 left-6 z-20">
-        <Link href="/" className="flex items-center text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors bg-white/50 backdrop-blur-md px-4 py-2 rounded-full border border-slate-200 shadow-sm hover:shadow-md">
+        <Link href="/" className="flex items-center text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors bg-white px-4 py-2 rounded-full border border-slate-200 shadow-sm hover:shadow-md">
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back to Home
         </Link>
@@ -130,7 +130,7 @@ export default function LoginPage() {
                   required
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  className="block w-full pl-11 pr-4 py-3 border border-slate-200 rounded-xl focus:ring-4 focus:ring-slate-100 focus:border-slate-400 sm:text-sm transition-all bg-white/80 backdrop-blur-sm hover:bg-white focus:bg-white text-slate-900 placeholder:text-slate-400 font-medium outline-none"
+                  className="block w-full pl-11 pr-4 py-3 border border-slate-200 rounded-xl focus:ring-4 focus:ring-slate-100 focus:border-slate-400 sm:text-sm transition-all bg-white hover:bg-white focus:bg-white text-slate-900 placeholder:text-slate-400 font-medium outline-none"
                   placeholder="admin or team_name"
                 />
               </div>
@@ -154,7 +154,7 @@ export default function LoginPage() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full pl-11 pr-4 py-3 border border-slate-200 rounded-xl focus:ring-4 focus:ring-slate-100 focus:border-slate-400 sm:text-sm transition-all bg-white/80 backdrop-blur-sm hover:bg-white focus:bg-white text-slate-900 placeholder:text-slate-400 font-medium outline-none"
+                  className="block w-full pl-11 pr-4 py-3 border border-slate-200 rounded-xl focus:ring-4 focus:ring-slate-100 focus:border-slate-400 sm:text-sm transition-all bg-white hover:bg-white focus:bg-white text-slate-900 placeholder:text-slate-400 font-medium outline-none"
                   placeholder="••••••••"
                 />
               </div>

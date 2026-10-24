@@ -326,7 +326,7 @@ export default function StudentsPage() {
       </motion.div>
 
       {/* Data Table */}
-      <motion.div variants={itemVariants} className="glass-card rounded-[1rem] md:rounded-[2rem] overflow-hidden shadow-lg shadow-teal-900/5 border border-white/60 backdrop-blur-xl bg-white/60 w-full">
+      <div className="bg-white rounded-[1rem] md:rounded-[2rem] overflow-hidden shadow-sm border border-slate-200 w-full">
         <div className="w-full overflow-x-auto block">
           <table className="w-full min-w-[800px] text-left border-collapse">
             <thead>
@@ -403,7 +403,7 @@ export default function StudentsPage() {
             </tbody>
           </table>
         </div>
-      </motion.div>
+      </div>
 
       {/* Manual Add Modal */}
       <AnimatePresence>
@@ -412,7 +412,7 @@ export default function StudentsPage() {
             <motion.div
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               onClick={() => setIsModalOpen(false)}
-              className="fixed inset-0 bg-white/20 backdrop-blur-sm z-50"
+              className="fixed inset-0 bg-slate-900/40 z-50"
             />
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}

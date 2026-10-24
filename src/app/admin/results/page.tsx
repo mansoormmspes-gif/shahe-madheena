@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { supabase } from "@/lib/supabase";
 import { Loader2, Save, Trophy, Medal, Award, Trash2, X, Download, Archive, FileText, AlertCircle, CheckCircle, Clock, ChevronDown, ChevronUp } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -524,8 +524,34 @@ export default function ResultsPage() {
     }
   };
 
-  const zones = Array.from(new Set(competitions.map(c => c.category))).sort();
-  const filteredCompetitions = selectedZone ? competitions.filter(c => c.category === selectedZone) : [];
+  const zones = useMemo(() => Array.from(new Set(competitions.map(c => c.category))).sort(), [competitions]);
+  const filteredCompetitions = useMemo(() => selectedZone ? competitions.filter(c => c.category === selectedZone) : [], [competitions, selectedZone]);
+
+  const { pendingComps, completedComps, missingPointsComps } = useMemo(() => {
+    const resultsByEvent = new Map<string, any[]>();
+    for (const r of allResults) {
+      const list = resultsByEvent.get(r.event_id) || [];
+      list.push(r);
+      resultsByEvent.set(r.event_id, list);
+    }
+
+    const pending: any[] = [];
+    const completed: any[] = [];
+    const missing: any[] = [];
+
+    for (const c of competitions) {
+      const compRes = resultsByEvent.get(c.id);
+      if (!compRes || compRes.length === 0) {
+        pending.push(c);
+      } else if (compRes.every(r => r.points !== null && r.points > 0)) {
+        completed.push(c);
+      } else {
+        missing.push(c);
+      }
+    }
+
+    return { pendingComps: pending, completedComps: completed, missingPointsComps: missing };
+  }, [competitions, allResults]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -547,9 +573,45 @@ export default function ResultsPage() {
     );
   }
 
+  const renderAccordion = (title: string, items: any[], icon: any, bgColor: string, textColor: string, key: string) => (
+    <div className={"overflow-hidden rounded-[1.5rem] shadow-sm border border-slate-200 bg-white " + bgColor}>
+      <button 
+        onClick={() => setExpandedSection(expandedSection === key ? null : key)}
+        className={"w-full flex items-center justify-between p-4 focus:outline-none transition-colors " + textColor}
+      >
+        <div className="flex items-center gap-3">
+          {icon}
+          <h3 className="font-bold text-lg">{title} ({items.length})</h3>
+        </div>
+        {expandedSection === key ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+      </button>
+      <AnimatePresence>
+        {expandedSection === key && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="bg-white"
+          >
+            <ul className="p-4 space-y-2 max-h-60 overflow-y-auto">
+              {items.length === 0 ? (
+                 <li className="text-sm font-medium text-slate-500">None</li>
+              ) : items.map((c: any) => (
+                <li key={c.id} className="text-sm font-semibold text-slate-700 flex justify-between items-center bg-slate-50 p-2 rounded-lg border border-slate-100">
+                  <span>{c.name}</span>
+                  <span className="text-xs px-2 py-1 bg-white rounded-full border border-slate-200">{c.category}</span>
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+
   return (
-      <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-8">
-        <motion.div variants={itemVariants} className="flex flex-col sm:flex-row sm:items-center justify-between space-y-4 sm:space-y-0 mb-8">
+      <div className="space-y-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between space-y-4 sm:space-y-0 mb-8">
           <div className="flex items-center space-x-3">
             <div className="p-3 bg-amber-100 text-amber-600 rounded-2xl shadow-sm">
               <Trophy className="h-6 w-6" />
@@ -560,86 +622,33 @@ export default function ResultsPage() {
             </div>
           </div>
           <div className="flex flex-col sm:flex-row gap-4">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+            <button
               onClick={handleDownloadPDF}
               disabled={downloadingPDF || bulkDownloading}
               className="inline-flex items-center px-6 py-3 border border-transparent rounded-xl shadow-md text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-4 focus:ring-emerald-100 disabled:opacity-50 transition-all"
             >
               {downloadingPDF ? <Loader2 className="h-5 w-5 mr-2 animate-spin" /> : <FileText className="h-5 w-5 mr-2" />}
               Full Results (PDF)
-            </motion.button>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+            </button>
+            <button
               onClick={handleBulkDownload}
               disabled={bulkDownloading || downloadingPDF}
               className="inline-flex items-center px-6 py-3 border border-transparent rounded-xl shadow-md text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-100 disabled:opacity-50 transition-all"
             >
               {bulkDownloading ? <Loader2 className="h-5 w-5 mr-2 animate-spin" /> : <Archive className="h-5 w-5 mr-2" />}
               Bulk Download All Posters
-            </motion.button>
+            </button>
           </div>
-        </motion.div>
-          {/* Results Status Tracker */}
-          {(() => {
-            const pendingComps = competitions.filter(c => !allResults.some(r => r.event_id === c.id));
-            const completedComps = competitions.filter(c => {
-               const compResults = allResults.filter(r => r.event_id === c.id);
-               return compResults.length > 0 && compResults.every(r => r.points !== null && r.points > 0);
-            });
-            const missingPointsComps = competitions.filter(c => {
-               const compResults = allResults.filter(r => r.event_id === c.id);
-               return compResults.length > 0 && compResults.some(r => r.points === null || r.points === 0);
-            });
+        </div>
 
-            const renderAccordion = (title: string, items: any[], icon: any, bgColor: string, textColor: string, key: string) => (
-              <div className={"glass-card overflow-hidden rounded-[1.5rem] shadow-sm border border-slate-100 " + bgColor}>
-                <button 
-                  onClick={() => setExpandedSection(expandedSection === key ? null : key)}
-                  className={"w-full flex items-center justify-between p-4 focus:outline-none transition-colors " + textColor}
-                >
-                  <div className="flex items-center gap-3">
-                    {icon}
-                    <h3 className="font-bold text-lg">{title} ({items.length})</h3>
-                  </div>
-                  {expandedSection === key ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-                </button>
-                <AnimatePresence>
-                  {expandedSection === key && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      className="bg-white/60 backdrop-blur-md"
-                    >
-                      <ul className="p-4 space-y-2 max-h-60 overflow-y-auto">
-                        {items.length === 0 ? (
-                           <li className="text-sm font-medium text-slate-500">None</li>
-                        ) : items.map((c: any) => (
-                          <li key={c.id} className="text-sm font-semibold text-slate-700 flex justify-between items-center bg-white p-2 rounded-lg shadow-sm">
-                            <span>{c.name}</span>
-                            <span className="text-xs px-2 py-1 bg-slate-100 rounded-full">{c.category}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            );
+        {/* Results Status Tracker */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          {renderAccordion("Pending Results", pendingComps, <Clock className="w-6 h-6" />, "bg-slate-50", "text-slate-700", "pending")}
+          {renderAccordion("Missing Points", missingPointsComps, <AlertCircle className="w-6 h-6" />, "bg-red-50", "text-red-700", "missing")}
+          {renderAccordion("Completed", completedComps, <CheckCircle className="w-6 h-6" />, "bg-emerald-50", "text-emerald-700", "completed")}
+        </div>
 
-            return (
-              <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-                {renderAccordion("Pending Results", pendingComps, <Clock className="w-6 h-6" />, "bg-slate-50", "text-slate-700", "pending")}
-                {renderAccordion("Missing Points", missingPointsComps, <AlertCircle className="w-6 h-6" />, "bg-red-50", "text-red-700", "missing")}
-                {renderAccordion("Completed", completedComps, <CheckCircle className="w-6 h-6" />, "bg-emerald-50", "text-emerald-700", "completed")}
-              </motion.div>
-            );
-          })()}
-
-      <motion.div variants={itemVariants} className="glass-card rounded-[1rem] md:rounded-[2rem] overflow-hidden shadow-lg shadow-teal-900/5 border border-white/60 backdrop-blur-xl bg-white/60 p-3 sm:p-6 md:p-8">
+      <div className="bg-white rounded-[1rem] md:rounded-[2rem] overflow-hidden shadow-sm border border-slate-200 p-3 sm:p-6 md:p-8">
         <div className="mb-8 grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl">
           <div>
             <label className="block text-sm font-bold text-slate-700 mb-2">
@@ -842,7 +851,7 @@ export default function ResultsPage() {
             )
           )}
         </AnimatePresence>
-      </motion.div>
-    </motion.div>
+      </div>
+    </div>
   );
 }

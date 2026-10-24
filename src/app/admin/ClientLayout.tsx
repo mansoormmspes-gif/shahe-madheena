@@ -131,13 +131,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
       {/* Desktop Sidebar */}
       <aside className="hidden md:flex w-72 flex-col fixed inset-y-0 z-50">
-        <div className="flex-1 flex flex-col min-h-0 bg-white/60 backdrop-blur-2xl border-r border-white/60 shadow-lg shadow-teal-900/5 m-4 rounded-[2.5rem] shadow-sm overflow-hidden relative">
+        <div className="flex-1 flex flex-col min-h-0 bg-white border border-slate-200 m-4 rounded-[2.5rem] shadow-sm overflow-hidden relative">
           <SidebarContent />
         </div>
       </aside>
 
       {/* Mobile Header & Sidebar */}
-      <div className="md:hidden fixed top-0 inset-x-0 h-16 bg-white/80 backdrop-blur-lg border-b border-white/60 shadow-sm shadow-teal-900/5 z-40 flex items-center justify-between px-4">
+      <div className="md:hidden fixed top-0 inset-x-0 h-16 bg-white border-b border-slate-200 z-40 flex items-center justify-between px-4">
         <h1 className="text-lg font-bold text-slate-900">Admin Portal</h1>
         <button onClick={() => setMobileMenuOpen(true)} className="p-2 -mr-2 text-slate-600">
           <Menu className="h-6 w-6" />
@@ -152,7 +152,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setMobileMenuOpen(false)}
-              className="md:hidden fixed inset-0 bg-white/20 backdrop-blur-sm z-50"
+              className="md:hidden fixed inset-0 bg-slate-900/40 z-50"
             />
             <motion.aside
               initial={{ x: "-100%" }}

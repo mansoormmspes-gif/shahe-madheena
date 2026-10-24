@@ -8,6 +8,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import ScrollLogo from "@/components/ScrollLogo";
 
 export default function PublicPage() {
   const [loading, setLoading] = useState(true);
@@ -160,15 +161,13 @@ export default function PublicPage() {
             transition={{ delay: 0.2, type: "spring" as const, stiffness: 200, damping: 20 }}
             className="relative w-48 h-48 md:w-64 md:h-64 mx-auto mb-10"
           >
-            <div className="absolute inset-0 p-4 flex items-center justify-center">
-              <Image 
-                src="/logo.png" 
-                alt="Meelad Fest 2k26 Logo" 
-                fill
-                priority
-                className="object-contain drop-shadow-xl"
-              />
-            </div>
+            <ScrollLogo 
+              src="/logo.png" 
+              alt="Meelad Fest 2k26 Logo"
+              width={256}
+              height={256}
+              className="w-full h-full"
+            />
           </motion.div>
           
           <h2 className="text-xl md:text-3xl font-bold text-slate-400 tracking-widest uppercase mb-4">
@@ -280,7 +279,7 @@ export default function PublicPage() {
             transition={{ duration: 0.6 }}
             className="max-w-5xl mx-auto"
           >
-            <div className="bg-white/60 backdrop-blur-xl rounded-[3rem] shadow-[0_8px_30px_rgb(0,0,0,0.08)] overflow-hidden relative border border-white">
+            <div className="bg-white/95 rounded-[3rem] shadow-[0_8px_30px_rgb(0,0,0,0.06)] overflow-hidden relative border border-slate-100">
               {/* Background glowing effects inside the card */}
               <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/10 rounded-full blur-[100px] pointer-events-none" />
               <div className="absolute bottom-0 left-0 w-96 h-96 bg-purple-500/20 rounded-full blur-[100px] pointer-events-none" />

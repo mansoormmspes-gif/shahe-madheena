@@ -416,7 +416,7 @@ export default function CompetitionsPage() {
         </div>
       </motion.div>
 
-      <motion.div variants={itemVariants} className="glass-card rounded-[1rem] md:rounded-[2rem] overflow-hidden shadow-lg shadow-teal-900/5 border border-white/60 backdrop-blur-xl bg-white/60 w-full">
+      <div className="bg-white rounded-[1rem] md:rounded-[2rem] overflow-hidden shadow-sm border border-slate-200 w-full">
         <div className="px-8 py-6 border-b border-slate-200 bg-white">
           <h2 className="text-xl font-bold text-slate-900">Event Registry</h2>
         </div>
@@ -444,13 +444,10 @@ export default function CompetitionsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {competitions.map((c, idx) => (
-                  <motion.tr 
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: idx * 0.05 }}
+                {competitions.map((c) => (
+                  <tr 
                     key={c.id} 
-                    className="hover:bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative transition-colors group"
+                    className="hover:bg-slate-50 transition-colors group"
                   >
                     <td className="whitespace-nowrap px-8 py-5 text-slate-900 font-bold">{c.name}</td>
                     <td className="whitespace-nowrap px-8 py-5">
@@ -500,13 +497,13 @@ export default function CompetitionsPage() {
                         </motion.button>
                       </div>
                     </td>
-                  </motion.tr>
+                  </tr>
                 ))}
               </tbody>
             </table>
           </div>
         )}
-      </motion.div>
+      </div>
 
       {/* Edit Modal */}
       <AnimatePresence>
@@ -517,7 +514,7 @@ export default function CompetitionsPage() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setEditingComp(null)}
-              className="fixed inset-0 bg-white/20 backdrop-blur-sm z-40"
+              className="fixed inset-0 bg-slate-900/40 z-40"
             />
             <motion.div 
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -633,7 +630,7 @@ export default function CompetitionsPage() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsAddingNew(false)}
-              className="fixed inset-0 bg-white/20 backdrop-blur-sm z-40"
+              className="fixed inset-0 bg-slate-900/40 z-40"
             />
             <motion.div 
               initial={{ opacity: 0, scale: 0.95, y: 20 }}

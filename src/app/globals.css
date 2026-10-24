@@ -75,17 +75,17 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Glassmorphism utility classes */
+/* Glassmorphism utility classes - GPU optimized */
 .glass-panel {
-  @apply bg-white/80 backdrop-blur-xl border border-white/50 shadow-[0_8px_30px_rgb(0,0,0,0.05)];
+  @apply bg-white/95 border border-white/80 shadow-[0_4px_20px_rgb(0,0,0,0.03)];
 }
 
 .glass-card {
-  @apply bg-white/60 backdrop-blur-md border border-white shadow-sm transition-all duration-300;
+  @apply bg-white/95 border border-slate-200/80 shadow-sm transition-all duration-200;
 }
 
 .glass-card:hover {
-  @apply shadow-[0_20px_40px_rgb(0,0,0,0.1)] -translate-y-1;
+  @apply shadow-md -translate-y-0.5;
 }
 
 /* Base Form Inputs */

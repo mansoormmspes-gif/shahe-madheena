@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { supabase } from "@/lib/supabase";
 import { Loader2, Download, AlertCircle, Users, ClipboardList, Plus, Trash2, Check, Lock, Unlock, Search, X, Info } from "lucide-react";
 import jsPDF from "jspdf";
@@ -107,12 +107,21 @@ export default function TeamDashboard() {
 
   const isRegistrationOpen = () => getRegistrationStatus() === "OPEN";
 
+  const compMap = useMemo(() => new Map(competitions.map(c => [c.id, c])), [competitions]);
+
+  const studentIndEventCountMap = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const r of registrations) {
+      const comp = compMap.get(r.event_id);
+      if (comp?.type === "Individual" && comp?.category?.toLowerCase().trim() !== "general zone") {
+        counts.set(r.student_id, (counts.get(r.student_id) || 0) + 1);
+      }
+    }
+    return counts;
+  }, [registrations, compMap]);
+
   const getStudentIndividualEventCount = (studentId: string) => {
-    return registrations.filter(r => {
-      if (r.student_id !== studentId) return false;
-      const comp = competitions.find(c => c.id === r.event_id);
-      return comp?.type === "Individual" && comp?.category?.toLowerCase().trim() !== "general zone";
-    }).length;
+    return studentIndEventCountMap.get(studentId) || 0;
   };
 
   const handleRegister = async (studentId: string, eventId: string, groupSlot: number = 1) => {
@@ -340,8 +349,8 @@ export default function TeamDashboard() {
     );
   }
 
-  const studentCategories = Array.from(new Set(students.map(s => s.category)));
-  const compCategories = Array.from(new Set(competitions.map(c => c.category)));
+  const studentCategories = useMemo(() => Array.from(new Set(students.map(s => s.category))), [students]);
+  const compCategories = useMemo(() => Array.from(new Set(competitions.map(c => c.category))), [competitions]);
   const isOpen = isRegistrationOpen();
 
   const containerVariants = {
@@ -356,7 +365,7 @@ export default function TeamDashboard() {
 
   return (
     <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-8">
-      <motion.div variants={itemVariants} className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white/60 backdrop-blur-xl p-6 sm:p-8 rounded-[2rem] border border-white/50 shadow-sm">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white p-6 sm:p-8 rounded-[2rem] border border-slate-200 shadow-sm">
         <div>
           <h1 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">Event Registrations</h1>
           <div className="mt-3 flex items-center gap-4 flex-wrap">
@@ -443,9 +452,9 @@ export default function TeamDashboard() {
             Export PDF
           </motion.button>
         </div>
-      </motion.div>
+      </div>
 
-      <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4 bg-white/60 backdrop-blur-xl p-4 sm:p-5 rounded-[1.5rem] border border-white/50 shadow-sm">
+      <div className="flex flex-col sm:flex-row gap-4 bg-white p-4 sm:p-5 rounded-[1.5rem] border border-slate-200 shadow-sm">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
           <input
@@ -477,7 +486,7 @@ export default function TeamDashboard() {
             ))}
           </select>
         </div>
-      </motion.div>
+      </div>
 
       <AnimatePresence mode="wait">
         {error && (
@@ -776,7 +785,7 @@ export default function TeamDashboard() {
         {modalStudent && (
           <motion.div 
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-white/40 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40"
           >
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }}
@@ -993,7 +1002,7 @@ export default function TeamDashboard() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/20 backdrop-blur-sm"
+            className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/40"
             onClick={() => setRuleModal(null)}
           >
             <motion.div
